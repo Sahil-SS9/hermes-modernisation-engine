@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-10-14T19:04:29.965959+00:00",
+  "status": "BLOCKED_PHASE_0",
+  "sources": [
+    {
+      "path": "hermes_cli/plugins.py",
+      "git_pin": "0e427d788d253630d38a3a51cd76849e73cd6925",
+      "sha256": "f5a1c27a22025984bbf956b58154ce23914592307bd945d7a1c0167cc443d771"
+    },
+    {
+      "path": "hermes_cli/approval_transport.py",
+      "git_pin": "0e427d788d253630d38a3a51cd76849e73cd6925",
+      "sha256": "20157d77f6acb2426a90049bde5f2078105174af88823edff2e5f921e182a963"
+    },
+    {
+      "path": "tools/registry.py",
+      "git_pin": "0e427d788d253630d38a3a51cd76849e73cd6925",
+      "sha256": "4a05aae5b4dd40bf9a104d23582d4363326ad7ce3fdac1ac249e0af04334d909"
+    }
+  ],
+  "source_observations": {
+    "public_context_methods": [
+      "call_mcp",
+      "current_cron_execution",
+      "dispatch_tool",
+      "emit",
+      "get_config",
+      "has_capability",
+      "has_plugin",
+      "inject_message",
+      "llm",
+      "on_unload",
+      "platform_actions",
+      "plugin_id",
+      "profile_name",
+      "register_approval_transport",
+      "register_auxiliary_task",
+      "register_cli_command",
+      "register_command",
+      "register_context_engine",
+      "register_context_reference",
+      "register_dashboard_auth_provider",
+      "register_hook",
+      "register_locale",
+      "register_locale_dir",
+      "register_memory_provider",
+      "register_middleware",
+      "register_platform",
+      "register_platform_handler",
+      "register_redaction_patterns",
+      "register_slack_action_handler",
+      "register_system_prompt_section",
+      "register_telegram_handler",
+      "register_tool",
+      "set_config",
+      "spawn_task",
+      "state",
+      "subagent_lifecycle",
+      "subscribe"
+    ],
+    "approval_transport_registration": "def register_approval_transport(self, name: str, present_fn: Callable) -> None:\n        \"\"\"Register a human approval transport, inactive until ``security.approval.transport:\n        <name>`` selects it. It receives a redacted ``ApprovalRequest`` and returns only a\n        correlated decision; policy and persistence stay host-owned. ``present_fn`` may be async.\"\"\"\n        from hermes_cli.approval_transport import RegisteredApprovalTransport\n        transports = self._manager._approval_transports\n        clean = str(name).strip().lower()\n        if clean == \"builtin\":\n            raise ValueError(\"approval transport name 'builtin' is reserved\")\n        if not re.fullmatch(r\"[a-z0-9][a-z0-9_-]{0,63}\", clean):\n            raise ValueError(\"approval transport name must match [a-z0-9][a-z0-9_-]{0,63}\")\n        if not callable(present_fn):\n            raise TypeError(\"approval transport present_fn must be callable\")\n        if clean in transports:\n            owner = transports[clean].plugin_id\n            raise ValueError(f\"approval transport {clean!r} is already registered by {owner!r}\")\n        entry = RegisteredApprovalTransport(\n            name=clean, present=present_fn, plugin_id=self.plugin_id,\n            profile_home=str(get_hermes_home().resolve()),\n        )\n        logger.info(\"Plugin %s registered approval transport: %s\", self.plugin_id, clean)\n        # Duplicate names are rejected above, so there is never a displaced previous entry to restore;\n        # tracking makes unload/force-reload remove this transport.\n        self._track_mapping_entry(\"approval_transport\", clean, transports, entry, None)",
+    "registry_dispatch": "def dispatch_tool(self, tool_name: str, args: dict, **kwargs) -> str:\n        \"\"\"Dispatch a tool call through the registry with the parent agent (when available)\n        resolved automatically; returns the handler's JSON string. ``kwargs`` forward to dispatch.\"\"\"\n        from tools.registry import registry\n        # In gateway mode _cli_ref is None \u2014 tools degrade gracefully (no spinner, TERMINAL_CWD).\n        if \"parent_agent\" not in kwargs:\n            agent = getattr(self._manager._cli_ref, \"agent\", None)\n            if agent is not None:\n                kwargs[\"parent_agent\"] = agent\n        return registry.dispatch(tool_name, args, scope=self._manager.scope_key, **kwargs)",
+    "transport_public_definitions": [
+      "ApprovalDecision",
+      "ApprovalRequest",
+      "ApprovalTransportResult",
+      "RegisteredApprovalTransport",
+      "invoke_approval_transport"
+    ]
+  },
+  "benchmark": {
+    "path": "/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie",
+    "expected_base": "bdbc72300bb494a393992bf4b49259c06811c2b9",
+    "head": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "bdbc72300bb494a393992bf4b49259c06811c2b9\n",
+      "stderr": ""
+    },
+    "status": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "## test/modernisation-fastapi\n",
+      "stderr": ""
+    },
+    "remotes": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie",
+        "remote",
+        "-v"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "push_default": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie",
+        "config",
+        "--get",
+        "push.default"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "nothing\n",
+      "stderr": ""
+    }
+  },
+  "original": {
+    "path": "/home/kensei/repos/hermes-walkie-talkie",
+    "head": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/repos/hermes-walkie-talkie",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "bdbc72300bb494a393992bf4b49259c06811c2b9\n",
+      "stderr": ""
+    },
+    "status": {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "/home/kensei/repos/hermes-walkie-talkie",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "## main...origin/main\n",
+      "stderr": ""
+    }
+  },
+  "prerequisite_probes": {
+    "bubblewrap": {
+      "argv": [
+        "bwrap",
+        "--unshare-all",
+        "--die-with-parent",
+        "--ro-bind",
+        "/usr",
+        "/usr",
+        "--ro-bind",
+        "/lib",
+        "/lib",
+        "--ro-bind",
+        "/lib64",
+        "/lib64",
+        "--proc",
+        "/proc",
+        "--dev",
+        "/dev",
+        "/usr/bin/true"
+      ],
+      "cwd": null,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n"
+    },
+    "docker": {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{{json .SecurityOptions}}"
+      ],
+      "cwd": null,
+      "exit_code": 0,
+      "stdout": "[\"name=seccomp,profile=builtin\",\"name=rootless\",\"name=cgroupns\"]\n",
+      "stderr": ""
+    }
+  },
+  "limits": [
+    "No real plugin installation, loader, CLI, slash, agent or gateway smoke test performed.",
+    "No benchmark code, build hook, test suite or model call executed.",
+    "Source inspection is not runtime proof or proof that every possible host API is absent.",
+    "Docker info is discovery only; no container started and no isolation backend certified.",
+    "No licences or reference comparator conformance certified in this spike."
+  ],
+  "blockers": [
+    "M0.2: No demonstrated public request/grant/executor route binding authentic owner permission to the full operation contract.",
+    "M0.3: No validated isolation backend; Bubblewrap probe must be read literally; Docker remains a candidate needing owner approval and adversarial tests."
+  ]
+}
