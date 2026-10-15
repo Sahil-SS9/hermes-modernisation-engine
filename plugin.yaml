@@ -1,7 +1,12 @@
 name: modernisation-engine
 version: 0.0.1
 kind: standalone
-description: Isolated migration evidence engine; Phase 0 engineering preview only.
+description: Source-read-only assessment and migration evidence preview; execution gated.
 provides_tools:
   - modernise_status
+  - modernise_assess
+  - modernise_inventory
+  - modernise_plan
+  - modernise_compare
+  - modernise_report
 capabilities: []

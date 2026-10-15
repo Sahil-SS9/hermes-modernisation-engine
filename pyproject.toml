@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools==83.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-modernisation-engine"
+version = "0.0.1"
+description = "Source assessment and migration evidence engine — unreleased engineering preview"
+requires-python = ">=3.11,<3.15"
+readme = "README.md"
+dependencies = []
+
+[project.optional-dependencies]
+trusted-executor = ["cryptography>=46,<51"]
+
+[dependency-groups]
+dev = ["pytest==9.1.1", "ruff==0.15.10", "cryptography==50.0.1"]
+
+[project.scripts]
+modernisation-engine = "hermes_modernisation.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -ra"
+
+[tool.ruff]
+line-length = 100
