@@ -1,0 +1,7 @@
+name: modernisation-engine
+version: 0.0.1
+kind: standalone
+description: Isolated migration evidence engine; Phase 0 engineering preview only.
+provides_tools:
+  - modernise_status
+capabilities: []
