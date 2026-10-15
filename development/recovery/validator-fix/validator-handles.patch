@@ -1,0 +1,39 @@
+--- a/hermes_cli/plugin_validate.py
++++ b/hermes_cli/plugin_validate.py
+@@ -212,0 +213,27 @@
++class RecordingRegistration:
++    # Probe-local lease; never registers anything in the real host.
++
++    def __init__(self, entries, entry):
++        self._entries = entries
++        self._entry = entry
++        self.active = True
++
++    def dispose(self):
++        if not self.active:
++            return
++        self.active = False
++        for index, entry in enumerate(self._entries):
++            if entry is self._entry:
++                del self._entries[index]
++                break
++
++
++def record_registration(category, name):
++    # Identity, not equality: identical names may belong to different leases.
++    class RegistrationName(str):
++        pass
++    entry = RegistrationName(name)
++    recorded[category].append(entry)
++    return RecordingRegistration(recorded[category], entry)
++
++
+@@ -219 +246 @@
+-        recorded["tools"].append(str(name))
++        return record_registration("tools", str(name))
+@@ -228 +255 @@
+-        recorded["commands"].append(str(name))
++        return record_registration("commands", str(name))
+@@ -231 +258 @@
+-        recorded["commands"].append(str(name))
++        return record_registration("commands", str(name))

@@ -1,0 +1,19 @@
+{
+  "scope": "local full reachable Git blob history plus current worktree, known credential-shape scan only; not a complete DLP/security audit",
+  "history_blobs_scanned": 61,
+  "worktree_files_scanned": 81,
+  "patterns": [
+    "private-key-material",
+    "github-token",
+    "provider-token",
+    "aws-access-id",
+    "credential-url"
+  ],
+  "findings": [],
+  "original_plan_sha256": "fce1852ffc4b9e75bca2c07481e67d54ea7bdb390d844546fb36ceba8a3e3cde",
+  "original_plan_body_preserved": true,
+  "updated_plan_matches_local_handoff": true,
+  "recovery_payloads_hash_verified": true,
+  "private_authority_material_uploaded": false,
+  "code_history_base": "b914c6d118584a45736611c93bb772905108acd6"
+}

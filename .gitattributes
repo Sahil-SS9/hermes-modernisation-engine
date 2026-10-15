@@ -1,0 +1,5 @@
+# Recovery patches contain format-patch context spaces and mail signatures as data.
+development/recovery/*.patch -whitespace
+# Preserve the signed-off original design bytes, including its final blank line.
+docs/PLAN.md whitespace=-blank-at-eof
+docs/plans/original-2026-10-14-modernisation-engine.md whitespace=-blank-at-eof

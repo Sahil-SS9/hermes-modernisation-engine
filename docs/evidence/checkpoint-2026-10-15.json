@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-15T14:45:36.131482+00:00",
+  "status": "PARTIAL_PARKED_PRIVATE_BACKUP_NOT_RELEASE",
+  "code_baseline": "b914c6d118584a45736611c93bb772905108acd6",
+  "provenance": "observed by implementing assistant; NOT independent implementation review",
+  "latest_preview_gate": {
+    "tests_collected": 108,
+    "tests_passed": 108,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lint_exit": 0,
+    "validator_ok": true,
+    "exit_code": 0,
+    "container_removed": true,
+    "raw_log_sha256": "1086b41d944d748124391768e259a9f7b455cf53f8f0faf8346dac6085b9146c",
+    "local_receipt": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-checks-1792075507933141377.json",
+    "boundary": "rootless Linux pinned patched host; preview tests only"
+  },
+  "host": {
+    "base_pr": "https://github.com/NousResearch/hermes-agent/pull/138686",
+    "source_pin": "4539b09a730d6a97548b4d4102d10990033ead36",
+    "additional_local_validator_patch": true,
+    "image": "modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6",
+    "canonical_selected_tests_passed": 34,
+    "canonical_warning": "git missing during optional bytecode preparation; overall command exit 0",
+    "full_host_suite_claimed": false
+  },
+  "executor_controls": {
+    "fixture_only": true,
+    "real_owner_authority_used": false,
+    "cases": {
+      "success": {
+        "grade": "observed-process-only",
+        "process_exit_code": 0,
+        "timed_out": false,
+        "truncated": false,
+        "output_bytes": 41,
+        "output_sha256": "a99d379c5f6ac8949dfac154aacb1c87d8a0354e8118727dd0c88715d7dd19a5",
+        "container_removed": true,
+        "source_unchanged": true,
+        "verdict": "NOT_PROVEN"
+      },
+      "output": {
+        "grade": "observed-process-only",
+        "process_exit_code": 0,
+        "timed_out": false,
+        "truncated": true,
+        "output_bytes": 1024,
+        "output_sha256": "49abd65bbf7f7e40c7055093ed2e3fd75f2f602f2c5fcf955c213e3135eb03f7",
+        "container_removed": true,
+        "source_unchanged": true,
+        "verdict": "NOT_PROVEN"
+      },
+      "deadline": {
+        "grade": "observed-process-only",
+        "process_exit_code": 137,
+        "timed_out": true,
+        "truncated": false,
+        "output_bytes": 19,
+        "output_sha256": "e516a759c6cf7c4eb262b354db1c1c9194739a4a0d7cfa40a987b773a6ab8bd5",
+        "container_removed": true,
+        "source_unchanged": true,
+        "verdict": "NOT_PROVEN"
+      }
+    },
+    "replay_refused": true,
+    "local_evidence": "/home/kensei/projects/modernisation-benchmarks/control/executor-platform/run-1792072259644658325/summary.json"
+  },
+  "benchmark": {
+    "base_commit": "bdbc72300bb494a393992bf4b49259c06811c2b9",
+    "candidate_commit": "cc191ca18e7529097c2cb3095ca8b803957f5598",
+    "original_unchanged": true,
+    "candidate_behavioural_execution_accepted": false,
+    "patch_backup": "development/recovery/benchmark-candidate.patch",
+    "pending_grant_expiry_unix": 1792245405,
+    "fresh_signatures_required": true
+  },
+  "plan": {
+    "original_sha256": "fce1852ffc4b9e75bca2c07481e67d54ea7bdb390d844546fb36ceba8a3e3cde",
+    "original": "docs/plans/original-2026-10-14-modernisation-engine.md",
+    "updated": "docs/PLAN.md",
+    "todo": "docs/TODO.md",
+    "handoff": "docs/HANDOFF.md",
+    "body_preserved_verbatim": true
+  },
+  "artifacts": [
+    {
+      "path": "/home/kensei/handoff/agent-plugin-plans/artifacts/8fbd6bbe5ee9/hermes_modernisation_engine-0.0.1-py3-none-any.whl",
+      "sha256": "8fbd6bbe5ee911ee89e0bc63a1eb8021d2b1ae0b8fd616dc9bf6e88c7f0b4e97",
+      "bytes": 30349,
+      "scope": "engineering-preview only, NOT full-engine acceptance"
+    },
+    {
+      "path": "/home/kensei/handoff/agent-plugin-plans/artifacts/a42ee39f045c/modernisation-engine-preview.zip",
+      "sha256": "a42ee39f045cfc72f4f1ef4d2cf850774002f5b5a800269a40443d70f2bb4e80",
+      "bytes": 53374,
+      "scope": "engineering-preview only, NOT full-engine acceptance"
+    },
+    {
+      "path": "/home/kensei/handoff/agent-plugin-plans/artifacts/798af9fc8811/walkie-modernisation-assessment.html",
+      "sha256": "798af9fc8811128235e87c83b66f94da84c91fe6fa453b48f8cae9472d0d97db",
+      "bytes": 3110,
+      "scope": "engineering-preview only, NOT full-engine acceptance"
+    }
+  ],
+  "not_uploaded": [
+    "real owner keys/public enrolment files/grants/signatures",
+    "authority/job databases",
+    "raw logs and private benchmark source",
+    "third-party reference/host source or Docker images",
+    "preview wheel/zip/HTML binaries"
+  ],
+  "release_complete": false,
+  "independent_review_performed": false,
+  "live_installation_performed": false,
+  "private_push_permission": "owner explicitly requested private repository backup only; no public-release permission"
+}

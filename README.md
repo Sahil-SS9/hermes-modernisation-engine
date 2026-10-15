@@ -2,6 +2,17 @@
 
 This is NOT the finished migration engine and is NOT ready for live installation.
 
+## Parked checkpoint — start here
+
+Private backup: https://github.com/Sahil-SS9/hermes-modernisation-engine (branch `build/phase0`). No live installation or public release is authorised.
+
+- [Resume handoff](docs/HANDOFF.md): state verification, safe commands, local prerequisites and pickup order.
+- [Updated plan](docs/PLAN.md): current position plus the original requirements preserved verbatim.
+- [Completed work and TODO](docs/TODO.md): checked-off delivered components and every remaining milestone.
+- [Evidence checkpoint](docs/evidence/checkpoint-2026-10-15.json): producing code, verified scopes and recovery fingerprints.
+
+The implementation baseline is `b914c6d118584a45736611c93bb772905108acd6`. Current preview tests: 108 passed, zero failures/errors/skips; lint and native validation passed on the explicitly patched sandbox host. This is not full-engine or independent-release acceptance. Fresh exact owner signatures are required for the real regression runs; other prerequisite coding tasks can proceed independently when resumed.
+
 Implemented: source-only bounded assessment, lexical Python inventory with exact citations, conservative rule candidates, source fingerprints, durable profile-owned assessment jobs and content-addressed inventory pages, idempotent creation, stale-revision checks, source-replacement proposal validation and separate-candidate materialisation primitives, deterministic data comparison with conservative partial proof policy, review-only plans, explicit missing-evidence JSON/text/offline-HTML reporting, real Hermes CLI/tool/registered-slash-handler surfaces and external owner-signature primitives. An operator-only executor primitive has real synthetic-container tests for success, streaming output cap, timeout/descendant cleanup and replay refusal. Those are fixture-authority controls, not real owner migration acceptance.
 
 Not implemented/enabled: general baseline/candidate executor, patch/model orchestration, protected oracle lifecycle, authenticated receipt ingestion, behavioural equivalence proof, complete MigrationJob schema/state/fencing, owner-approved normalisation/tolerances, framework/module migration fixtures, benchmark/value experiments, independent implementation review and release gates. `run` and `resume` refuse; no command can manufacture approval. The signed baseline in private development evidence is a separately scoped external-adapter demonstration, not a claim that this package contains that complete execution service.
