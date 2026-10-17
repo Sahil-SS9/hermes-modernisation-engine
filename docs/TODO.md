@@ -25,6 +25,21 @@ Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised 
 - [x] Isolated walkie-talkie Python 3.14/FastAPI/httpx metadata candidate locally committed; original public repo unchanged.
 - [x] Updated plan, preserved original design, handoff, recovery recipes/patches and evidence summaries versioned for private backup. Private GitHub backup is not release approval.
 
+## Bounded trial pickup — 16 October 2026
+
+- [x] Read-only pickup verification completed: recorded engine/original/candidate commits, unchanged executable delta, private visibility, recovery checksums, rootless runtime, pinned images and both inert owner-v2 preflights. No real execution or claim. Exact current request nonces are unclaimed; signatures absent. This closes only the pickup checks, not M0 acceptance.
+- [x] Compared all 249 tracked original file bytes to the frozen baseline; unchanged. Candidate byte differences are only CI/Python/dependency/lock metadata. Full filesystem modes and original-only generated files differ and are explicitly retained in the private audit; byte equality is not full identity equality.
+- [ ] Real regression remains BLOCKED: authentic signatures absent, and existing v2 runner retains aggregate counts but discards temporary raw JUnit on container cleanup. Review bounded per-case evidence retention and baseline acceptance before candidate execution; any changed argv/environment/executor requires new exact requests and signatures. No SDK/validator defect reopened; no executor change made.
+- Private return: `/home/kensei/handoff/agent-plugin-plans/evidence/modernisation-first-upgrade/REPORT.txt`; structured audit `preflight-1792190776554361765.json` in the same directory. Original/candidate/core/ledger unchanged. Actual exits, JUnit and test counts remain unmeasured. No M0–M9 milestone closed.
+
+## V3 runner evidence fix — 17 October 2026 (owner-approved, KENSEI direct)
+
+- [x] v2 requests expired unsigned/unclaimed at 17/10 14:56:45 BST; superseded, not reused.
+- [x] Operator-side per-case evidence fix: signed v3 program emits bounded raw JUnit (base64 + SHA-256) to retained stdout; trusted host evaluator checks the exact predeclared 20 testcase IDs, per-case outcomes, counts and warnings; candidate phase requires re-evaluated ACCEPTED baseline evidence before any claim. Engine core, executor, sandbox, oracle, tests and images unchanged (core identity `434ecb3f…`). Archived in `development/recovery/owner-v3/`.
+- [x] Fixture self-test 13/13 (stub pytest, no repo code), incl. substituted-name and marker-injection cases that aggregate counts would have accepted. Both v3 preflights PASS inert; negative candidate attempt refused before claim; ledger hash unchanged.
+- [ ] Real regression: BLOCKED only on authentic owner signatures for `approvals/walkie-v3-1792267598341426808/` (expires 19/10/2026 21:06:38 BST). Then baseline first, candidate second, compare, report. v3 program not yet executed in the real images.
+- Private return: `evidence/modernisation-first-upgrade/REPORT-v3-runner-fix.txt`. No M0–M9 milestone closed.
+
 ## Ordered next actions
 
 1. [ ] **Verify before editing.** Follow HANDOFF.md: clean tree, descendant of code baseline, recovery hashes, exact pinned host/image prerequisites. No source changes authorised by merely opening the handoff.

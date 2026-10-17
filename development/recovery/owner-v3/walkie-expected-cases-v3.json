@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "Predeclared exact JUnit testcase identities for the selected original API/auth slice. Trusted operator input; never mounted into a candidate. Static declaration, not executed collection.",
+  "source_commit": "bdbc72300bb494a393992bf4b49259c06811c2b9",
+  "oracle_v2_sha256": "cfc9d94ef38de1b7a8053fca346ff861e6d823c908877fb45be2829084891275",
+  "skip_policy": "zero skips, failures or errors accepted",
+  "cases": [
+    ["tests.unit.test_dashboard_api", "test_health"],
+    ["tests.unit.test_dashboard_api", "test_metrics"],
+    ["tests.unit.test_dashboard_api", "test_peers"],
+    ["tests.unit.test_dashboard_api", "test_peers_summary"],
+    ["tests.unit.test_dashboard_api", "test_groups_empty_and_create"],
+    ["tests.unit.test_dashboard_api", "test_group_members"],
+    ["tests.unit.test_dashboard_api", "test_inbox_and_requests_empty"],
+    ["tests.unit.test_dashboard_api", "test_request_detail_and_respond"],
+    ["tests.unit.test_dashboard_api", "test_peer_send_message"],
+    ["tests.unit.test_dashboard_api", "test_peer_policy"],
+    ["tests.unit.test_dashboard_api", "test_events_websocket"],
+    ["tests.unit.test_dashboard_api", "test_inactive_manager_503"],
+    ["tests.unit.test_dashboard_api", "test_no_session_inbox_requests"],
+    ["tests.unit.test_dashboard_api", "test_unknown_broadcast_404"],
+    ["tests.unit.test_dashboard_api", "test_manager_import_failure_503"],
+    ["tests.unit.test_dashboard_api", "test_events_websocket_unauthorized_closes"],
+    ["tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed", "test_missing_auth_module_rejects"],
+    ["tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed", "test_auth_module_error_rejects"],
+    ["tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed", "test_real_delegate_decides"],
+    ["tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed", "test_injectable_without_import_dependency"]
+  ]
+}

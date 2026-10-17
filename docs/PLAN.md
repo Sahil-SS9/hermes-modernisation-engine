@@ -46,6 +46,14 @@ Executable code baseline: `b914c6d118584a45736611c93bb772905108acd6`; later hand
 | M8 | OPEN | Full native/supported-platform/settings/cancellation/upgrade matrix |
 | M9 | OPEN / OWNER GATE | Independent implementation review, approved matched experiments and release sign-off |
 
+## Bounded trial pickup — 16 October 2026
+
+Read-only pickup checks pass on the recorded engine/original/candidate commits and pinned rootless images; production bytes remain unchanged from the preview baseline. Both inert owner-v2 preflights return no execution/no claim. Requests were still unexpired and unclaimed at capture; no signatures were provided. All 249 tracked original files match the frozen baseline bytes. Candidate byte changes remain the three metadata files, with physical mode/generated-file differences retained separately rather than masked.
+
+The bounded trial is **BLOCKED, NOT RUN**. In addition to missing authentic signatures, the existing v2 argv leaves raw JUnit only in disposable container `/tmp`; aggregate stdout counts cannot supply the required retained per-case collection evidence. Review minimal bounded evidence retention and baseline acceptance before candidate execution. Changed execution identities require new exact signed requests. No host/core/validator/executor patch, benchmark execution or parent-milestone completion occurred. Safe audit/report only: `/home/kensei/handoff/agent-plugin-plans/evidence/modernisation-first-upgrade/REPORT.txt` and `preflight-1792190776554361765.json`. The original design below is preserved.
+
+**Update 17 October 2026.** The v2 requests expired unsigned and unclaimed. With owner approval, the evidence prerequisite is closed by an operator-side v3 runner: the signed program also returns bounded raw JUnit, and a trusted host evaluator checks the exact 20 predeclared testcase identities before the candidate may run. Engine core/executor/sandbox/oracle/tests/images are unchanged. Fresh v3 requests await authentic owner signatures (`approvals/walkie-v3-1792267598341426808/`, expiry 19/10/2026 21:06 BST). Evidence remains candidate-authored per-case JUnit, NOT_PROVEN at receipt grade. See `REPORT-v3-runner-fix.txt`.
+
 ## Immediate next step and holds
 
 1. Re-verify repo, code ancestry, private recovery payload hashes and local prerequisites. Follow `docs/HANDOFF.md`.
