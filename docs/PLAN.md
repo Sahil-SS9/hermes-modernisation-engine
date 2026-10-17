@@ -54,6 +54,8 @@ The bounded trial is **BLOCKED, NOT RUN**. In addition to missing authentic sign
 
 **Update 17 October 2026.** The v2 requests expired unsigned and unclaimed. With owner approval, the evidence prerequisite is closed by an operator-side v3 runner: the signed program also returns bounded raw JUnit, and a trusted host evaluator checks the exact 20 predeclared testcase identities before the candidate may run. Engine core/executor/sandbox/oracle/tests/images are unchanged. Fresh v3 requests await authentic owner signatures (`approvals/walkie-v3-1792267598341426808/`, expiry 19/10/2026 21:06 BST). Evidence remains candidate-authored per-case JUnit, NOT_PROVEN at receipt grade. See `REPORT-v3-runner-fix.txt`.
 
+**Result 17 October 2026.** Owner signed; trial ran baseline first, candidate second. The selected upgrade **PASSES THE DECLARED 20-TEST API/AUTH REGRESSION SCOPE**: identical testcase set and per-case outcomes, 20/20 on both Python 3.12.15 and 3.14.8. Named difference: warnings 1 → 1237, all third-party Python-3.16 deprecations (pytest-asyncio 0.24.0, starlette), not application code. Not equivalence, not automated migration, not M4 acceptance; no milestone closed. See `RESULT-v3-20261017.txt`.
+
 ## Immediate next step and holds
 
 1. Re-verify repo, code ancestry, private recovery payload hashes and local prerequisites. Follow `docs/HANDOFF.md`.

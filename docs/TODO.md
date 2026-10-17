@@ -37,7 +37,9 @@ Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised 
 - [x] v2 requests expired unsigned/unclaimed at 17/10 14:56:45 BST; superseded, not reused.
 - [x] Operator-side per-case evidence fix: signed v3 program emits bounded raw JUnit (base64 + SHA-256) to retained stdout; trusted host evaluator checks the exact predeclared 20 testcase IDs, per-case outcomes, counts and warnings; candidate phase requires re-evaluated ACCEPTED baseline evidence before any claim. Engine core, executor, sandbox, oracle, tests and images unchanged (core identity `434ecb3f…`). Archived in `development/recovery/owner-v3/`.
 - [x] Fixture self-test 13/13 (stub pytest, no repo code), incl. substituted-name and marker-injection cases that aggregate counts would have accepted. Both v3 preflights PASS inert; negative candidate attempt refused before claim; ledger hash unchanged.
-- [ ] Real regression: BLOCKED only on authentic owner signatures for `approvals/walkie-v3-1792267598341426808/` (expires 19/10/2026 21:06:38 BST). Then baseline first, candidate second, compare, report. v3 program not yet executed in the real images.
+- [x] Real regression run 17/10/2026 under owner-signed one-use v3 grants (baseline first, candidate second; replay refused). Result: PASSES DECLARED SCOPE — exact same 20 testcase IDs, 20/20 passed on Python 3.12.15 original and Python 3.14.8 candidate; zero fail/error/skip; sources unchanged; containers removed. Receipts NOT_PROVEN (process-only); per-case evidence candidate-authored.
+- [ ] Named difference to follow up (outside trial): warnings 1 → 1237, all third-party DeprecationWarnings (`asyncio.iscoroutinefunction`/`get_event_loop_policy`, removal in Python 3.16) from pytest-asyncio 0.24.0 and starlette; candidate lock also has anyio 4.14.2 vs original 4.15.1. Bump and re-run before claiming 3.16-readiness.
+- Result: `evidence/modernisation-first-upgrade/RESULT-v3-20261017.txt`; artifacts `run-v3-20261017/`.
 - Private return: `evidence/modernisation-first-upgrade/REPORT-v3-runner-fix.txt`. No M0–M9 milestone closed.
 
 ## Ordered next actions
