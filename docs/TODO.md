@@ -70,6 +70,9 @@ Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised 
 
 ### M4–M5 — execution and proof remain PARTIAL
 
+- [x] M4.1 slice (17/10/2026): engine-core `evaluator.py` — predeclared exact testcase expectation (duplicate-free, zero-skip policy), per-case JUnit evaluation from retained run output, refuses zero/all-skipped/forged/duplicate/substituted/DOCTYPE/oversize/marker-injected/count-inflated results; tamper-evident evaluation digest; per-case before/after comparison with warning delta. Always `NOT_PROVEN`. Parity with the operator v3 evaluator on all three real walkie runs.
+- [x] M5.1 slice (17/10/2026): 19 planted-mutation controls against an accepted run (each refused) plus comparison self-mutation (changed case named; edited evaluation refused). 135/135 engine tests, lint and plugin validate pass in the isolated dev gate. Engine core identity changed by this addition, so any future execution request must be freshly prepared.
+- [ ] Still open in M4/M5: results remain authored inside the sandbox that ran the tested code (independent capture); authenticated receipt acceptance; seeded behavioural mutants of a real project's code (needs owner-signed runs); held-outs; masks/tolerances; rule tracing.
 - [ ] M4: frozen protected original/evaluator checks independent of candidate writers; authentic old/new capture; trusted expected collection/skip policy and parser identity; zero/all-skipped/forged JUnit refusal.
 - [ ] M4: authenticated receipt acceptance outside model-writable roots, bound to job/attempt/source/candidate/oracle/environment/command/authority. Process receipts alone remain NOT_PROVEN.
 - [ ] M4: native run/cancel/resume integration only after authority/isolation/state acceptance. Current native run/resume deliberately refuse.
