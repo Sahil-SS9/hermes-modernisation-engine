@@ -56,6 +56,8 @@ The bounded trial is **BLOCKED, NOT RUN**. In addition to missing authentic sign
 
 **Result 17 October 2026.** Owner signed; trial ran baseline first, candidate second. The selected upgrade **PASSES THE DECLARED 20-TEST API/AUTH REGRESSION SCOPE**: identical testcase set and per-case outcomes, 20/20 on both Python 3.12.15 and 3.14.8. Named difference: warnings 1 → 1237, all third-party Python-3.16 deprecations (pytest-asyncio 0.24.0, starlette), not application code. Not equivalence, not automated migration, not M4 acceptance; no milestone closed. See `RESULT-v3-20261017.txt`.
 
+**Follow-up 17 October 2026 (v4).** Owner-signed candidate-only re-run with pytest-asyncio 1.4.0 and starlette 0.52.1: 20/20 passed, identical IDs/outcomes, 0 warnings. The named difference is closed. Public walkie-talkie repo untouched; publishing 3.14 support remains an owner gate. See `RESULT-v4-20261017.txt`.
+
 ## Immediate next step and holds
 
 1. Re-verify repo, code ancestry, private recovery payload hashes and local prerequisites. Follow `docs/HANDOFF.md`.
