@@ -22,6 +22,9 @@ modernisation-engine = "hermes_modernisation.__main__:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+hermes_modernisation = ["data/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--strict-markers -ra"

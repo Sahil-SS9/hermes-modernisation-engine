@@ -1,7 +1,8 @@
-"""Fixed-recipe (NO AI) metadata upgrade behaviour through the public engine
-surface: a reviewed engine-owned recipe prepares exact metadata edits in a
-fresh disposable candidate root, with strict preimage/base validation, failed
-residue preserved, no execution/lockfile/installation, and a usable diff.
+"""Fixed-recipe (NO AI, NO resolution) metadata + reviewed-lock replay
+upgrade behaviour through the public engine surface: a reviewed engine-owned
+recipe prepares exact metadata edits and the byte-exact uv.lock replay lane
+in a fresh disposable candidate root, with strict preimage/base validation,
+failed residue preserved, no execution/installation, and a usable diff.
 
 The known-good walkie-trial candidate (mounted read-only at /benchmark in the
 approved container, when present) is used as a comparison oracle for target
@@ -18,6 +19,10 @@ from hermes_modernisation.jsonio import ContractError
 from hermes_modernisation.service import Engine
 
 RECIPE_ID = "python314-fastapi-metadata-v1"
+
+# REAL baseline uv.lock bytes captured read-only from the benchmark clone's
+# git history (baseline bdbc723...); digests pinned by the recipe itself.
+BASELINE_LOCK = Path(__file__).parent / "data" / "baseline" / "uv.lock"
 
 FIXTURE_PYPROJECT = """[build-system]
 requires = ["setuptools==83.0.0"]
@@ -53,8 +58,9 @@ jobs:
   test:
     strategy:
       matrix:
-        # POSIX suite
-        os: [ubuntu-latest]
+        # POSIX suite (mirrors the reviewed workflow shape: the python-version
+        # matrix is paired with the suite os entries in the same matrix block)
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
@@ -68,9 +74,11 @@ TARGET_LINES = (  # recorded from the owner-approved v3/v4 trial result
     '"Programming Language :: Python :: 3.14"',
     'dashboard = ["fastapi==0.133.1"]',
     '"httpx==0.28.1"',
+    '"pytest-asyncio==1.4.0",',
 )
 CI_TARGET = 'python-version: ["3.11", "3.12", "3.13", "3.14"]'
 CI_PREIMAGE = 'python-version: ["3.11", "3.12", "3.13"]'
+BENCHMARK = Path("/benchmark")  # walkie trial mount (read-only, approved gate)
 
 
 def make_source(tmp_path):
@@ -78,6 +86,7 @@ def make_source(tmp_path):
     (source / ".github" / "workflows").mkdir(parents=True)
     (source / "pyproject.toml").write_text(FIXTURE_PYPROJECT)
     (source / ".github" / "workflows" / "ci.yml").write_text(FIXTURE_CI)
+    (source / "uv.lock").write_bytes(BASELINE_LOCK.read_bytes())
     (source / "app.py").write_text(FIXTURE_APP)
     return source
 
@@ -101,7 +110,11 @@ def test_recipe_builds_disposable_candidate_from_original_metadata(tmp_path):
     source = make_source(tmp_path)
     before = snapshot(source)
     result = apply(make_engine(tmp_path), source, tmp_path / "candidate")
-    assert result["changed_paths"] == [".github/workflows/ci.yml", "pyproject.toml"]
+    assert result["changed_paths"] == [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "uv.lock",
+    ]
     assert result["approved"] is False
     assert result["execution_performed"] is False
     assert result["install_performed"] is False
@@ -126,8 +139,12 @@ def test_recipe_builds_disposable_candidate_from_original_metadata(tmp_path):
     assert "+    \"Programming Language :: Python :: 3.14\"," in diff
     assert "-    \"fastapi==0.115.6\"," in diff and '+    "fastapi==0.133.1",' in diff
     assert len(diff) <= 20000
-    # Non-contract edits are part of the recipe, not the caller.
-    assert any(refusal["path"] == "uv.lock" for refusal in result["declared_refusals"])
+    # The lock is a reviewed-artifact replay, never a caller-controlled edit
+    # or a real dependency resolution.
+    assert result["lock_lane"]["performs_dependency_resolution"] is False
+    assert any(
+        "resolution" in refusal["path"] for refusal in result["declared_refusals"]
+    )
 
 
 def test_recipe_refuses_unknown_recipe_stale_base_and_occupied_destination(tmp_path):
@@ -184,9 +201,13 @@ def test_cli_recipe_surface_reports_usable_diff(tmp_path):
         "--base-digest", snapshot(source)["digest"],
         "--dest", str(tmp_path / "candidate"),
     )
-    assert result["changed_paths"] == [".github/workflows/ci.yml", "pyproject.toml"]
+    assert result["changed_paths"] == [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "uv.lock",
+    ]
     assert 'requires-python = ">=3.11,<3.15"' in result["diff"]["pyproject.toml"]
-    assert result["declared_refusals"][0]["path"] == "uv.lock"
+    assert result["declared_refusals"][0]["path"] == "dependency resolution (fresh uv resolve)"
 
 
 def test_recipe_preserves_failed_residue_and_refuses_reuse(tmp_path, monkeypatch):
@@ -259,7 +280,7 @@ def test_recipe_refuses_non_preimage_and_symlinked_source_files(tmp_path):
 
 
 def test_recipe_cross_checks_known_walkie_metadata_without_execution(tmp_path):
-    benchmark = Path("/benchmark")
+    benchmark = BENCHMARK
     pyproject = benchmark / "pyproject.toml"
     if not pyproject.is_file():
         pytest.skip("/benchmark not mounted (host environment)")
@@ -269,14 +290,19 @@ def test_recipe_cross_checks_known_walkie_metadata_without_execution(tmp_path):
     for line in TARGET_LINES:
         assert line in real_pyproject, line
     assert CI_TARGET in (benchmark / ".github/workflows/ci.yml").read_text()
-    # Known remaining differences beyond this recipe's scope (recorded from v4):
+    # v4 follow-up dev pin and lock rows (recorded from v4) are now replayed
+    # by the recipe's lock lane; the real candidate bytes are the oracle.
     assert "pytest-asyncio==1.4.0" in real_pyproject
     lock = benchmark / "uv.lock"
-    if lock.is_file():
-        rows = lock.read_text()
-        block = rows.index('[[package]]\nname = "starlette"')
-        assert "0.52.1" in rows[block : block + 80]  # starlette lock row via v4 lane
-    # An already-upgraded tree is refused on preimage, creating nothing.
+    if not lock.is_file():
+        # A partial walkie mount must NOT let this oracle silently no-op.
+        pytest.skip(
+            "recorded skip: walkie mount shape lacks uv.lock - starlette "
+            "lock-row oracle not exercised for the partial mount"
+        )
+    rows = lock.read_text()
+    block = rows.index('[[package]]\nname = "starlette"')
+    assert "0.52.1" in rows[block : block + 80]  # starlette lock row via v4 lane
     destination = tmp_path / "bench-candidate"
     with pytest.raises(ContractError):
         engine.invoke(
@@ -358,3 +384,60 @@ def test_recipe_records_residue_on_post_copy_reconciliation_failure(
     assert b"failed-residue" in residue.read_bytes()
     with pytest.raises(ContractError, match="occupied"):
         apply(engine, source, destination)
+
+
+# --- round-3 corrections (Hermaguard r3 findings, implementer lane) -----------
+
+
+def test_dev_pin_preimage_refused_for_both_pin_states_in_dev(tmp_path):
+    # Edge r3 #3: the parsed dev-pin fence was membership-only; a tree
+    # carrying BOTH pytest-asyncio==0.24.0 and ==1.4.0 passed the fence and
+    # the replay produced a duplicate 1.4.0 pin. The fence must require the
+    # exact reviewed preimage state (each preimage pin exactly once, target
+    # pins absent) and refuse instead.
+    source = make_source(tmp_path)
+    metadata = source / "pyproject.toml"
+    metadata.write_text(
+        FIXTURE_PYPROJECT.replace(
+            '    "pytest-asyncio==0.24.0",\n',
+            '    "pytest-asyncio==0.24.0",\n    "pytest-asyncio==1.4.0",\n',
+            1,
+        )
+    )
+    destination = tmp_path / "candidate-both-states"
+    with pytest.raises(ContractError, match="[Pp]reimage"):
+        apply(make_engine(tmp_path), source, destination)
+    assert not destination.exists()
+
+
+def test_recipe_adapter_description_declares_replay_lane_and_diff_surface():
+    # r3 truthfulness finding: DESCRIPTIONS["recipe"] still claimed only a
+    # per-file unified diff while the lane now replays reviewed lock bytes.
+    # The declaration must name the replay lane and the real review surface.
+    import hermes_modernisation.adapters.hermes as adapter
+
+    description = adapter.DESCRIPTIONS["recipe"]
+    assert "uv.lock" in description
+    assert "replay" in description.lower()
+    assert "package-level" in description
+    assert "diff" in description.lower()
+
+
+def test_walkie_lock_oracle_records_explicit_skip_for_partial_mount(
+    tmp_path, monkeypatch
+):
+    # Edge r3 silent-no-op finding: when the walkie mount existed but lacked
+    # uv.lock, the starlette lock-row oracle silently no-oped (test passed
+    # with the oracle never exercised). A partial mount must record an
+    # explicit skip instead.
+    benchmark = tmp_path / "partial-benchmark"
+    (benchmark / ".github" / "workflows").mkdir(parents=True)
+    (benchmark / "pyproject.toml").write_text("\n".join(TARGET_LINES) + "\n")
+    (benchmark / ".github" / "workflows" / "ci.yml").write_text(CI_TARGET + "\n")
+    # No uv.lock anywhere under the partial mount - the shape under test.
+    import sys
+
+    monkeypatch.setattr(sys.modules[__name__], "BENCHMARK", benchmark)
+    with pytest.raises(pytest.skip.Exception, match="recorded skip"):
+        test_recipe_cross_checks_known_walkie_metadata_without_execution(tmp_path)
+    assert not (tmp_path / "bench-candidate").exists()

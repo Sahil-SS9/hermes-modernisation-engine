@@ -93,8 +93,11 @@ DESCRIPTIONS = {
     ),
     "recipe": (
         "Apply the fixed reviewed metadata recipe (NO AI, no dependency "
-        "resolution, no installation) to produce a disposable candidate root "
-        "with a per-file unified diff. Original source is never modified."
+        "resolution, no installation) to produce a disposable candidate root. "
+        "Text metadata files get a per-file unified diff; the uv.lock lane "
+        "replays owner-reviewed, hash-pinned candidate bytes, with provenance "
+        "plus a package-level delta as the declared lock review surface "
+        "instead of a line-level diff. Original source is never modified."
     ),
 }
 
