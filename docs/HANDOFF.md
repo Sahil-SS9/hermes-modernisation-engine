@@ -58,7 +58,7 @@ Full preview gate (actually executed successfully on this machine):
 
     python3 -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py checks
 
-Expected at the code baseline: 108 tests passed, zero failures/errors/skips, lint pass and native validator `ok: true`; private JSON/log receipt path printed; no remaining test container. The source tree remains read-only and unchanged. This script invokes the committed `scripts/checks.sh` inside the verified container, NOT host pytest.
+Expected at the code baseline: 108 tests passed, zero failures/errors/skips, lint pass and native validator `ok: true`; private JSON/log receipt path printed; no remaining test container. The source tree remains read-only and unchanged. This script invokes the committed `scripts/checks.sh` inside the verified container, NOT host pytest. After the 18 October 2026 slices (public evidence workflow, protocol producer, fixed-recipe metadata lane) plus correction round 2: full `all` gate 177 passed / 0 failed/error/skipped (`development-all-1792362828928180702.json`), unit lane 153 passed (`development-unit-1792362777197147952.json`), lint pass and plugin validator ok:true (`development-lint-1792362832466850699.json`, `development-validate-1792362838314682993.json`); RED witnesses are `development-unit-1792362347013821392.json` (144 collected, 4 failed — controller regressions) and `development-unit-1792362701142033942.json` (153 collected, 13 failed — each correction behaviour). A round-2 claim of a green 168-test gate was retracted as unsupported; see `docs/evidence/controller-review-correction.md`.
 
 Separate canonical host subset (not an extra 34 distinct engine tests):
 
@@ -68,7 +68,9 @@ Expected 34 selected validator tests, zero failed, exit 0, timing cache saved in
 
 ## 5. Benchmarks, host patch and authority
 
-Original repository: `/home/kensei/repos/hermes-walkie-talkie`, clean `main`, baseline `bdbc72300bb494a393992bf4b49259c06811c2b9`. Isolated clone: `/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie`, `test/modernisation-fastapi`, candidate `cc191ca18e7529097c2cb3095ca8b803957f5598`, no remote. Only pyproject/lock/CI metadata changed. No candidate behavioural run has been accepted.
+Original repository: `/home/kensei/repos/hermes-walkie-talkie`, clean `main`, baseline `bdbc72300bb494a393992bf4b49259c06811c2b9`. Isolated clone: `/home/kensei/projects/modernisation-benchmarks/hermes-walkie-talkie`, `test/modernisation-fastapi`, candidate `cc191ca18e7529097c2cb3095ca8b803957f5598`, no remote. Only pyproject/lock/CI metadata changed.
+
+Update 17 October 2026: bounded candidate behavioural runs DID take place under fresh owner-signed one-use v3/v4 grants (order enforced, replay refused). The selected upgrade passed its declared 20-test API/auth scope with identical per-case outcomes; per-case evidence remains candidate-authored JUnit (NOT_PROVEN). See `RESULT-v3-20261017.txt`, `RESULT-v4-20261017.txt` and the TODO/PLAN current sections. Update 18 October 2026: the engine core identity changed again (public evidence workflow + fixed-recipe lanes), so every previous request/grant is stale or consumed — never replay an old signature; any future real run needs a freshly prepared grant bound to the then-current engine identity.
 
 The exact candidate diff is backed up at `development/recovery/benchmark-candidate.patch`. It is NOT permission to apply to the original or public repo. For a lost machine, recreate a separate clone at the pinned base and apply/review the patch there. Confirm original tests and source logic remain byte-identical. Recreating the original commit object may require fetching it from public history; do not invent a new base when unavailable.
 

@@ -11,6 +11,9 @@ OPERATIONS = (
     "inventory",
     "plan",
     "status",
+    "record",
+    "protocol",
+    "recipe",
     "compare",
     "report",
     "run",
@@ -27,12 +30,22 @@ PROPERTIES = {
     "request_id": {"type": "string"},
     "job": {"type": "string"},
     "revision": {"type": "integer", "minimum": 0},
+    "phase": {"type": "string", "enum": ["baseline", "candidate"]},
+    "expectation": {"type": "object", "additionalProperties": True},
+    "output": {"type": "string"},
+    "source_digest": {"type": "string"},
+    "recipe": {"type": "string"},
+    "base_digest": {"type": "string"},
+    "dest": {"type": "string"},
 }
 REQUIRED = {
     "assess": ["repo", "goal", "request_id"],
     "inventory": ["job", "section", "page"],
     "plan": ["job", "revision"],
     "status": [],
+    "record": ["job", "phase", "expectation", "output", "source_digest"],
+    "protocol": [],
+    "recipe": ["repo", "recipe", "base_digest", "dest"],
     "compare": ["job"],
     "report": ["job"],
 }
@@ -49,6 +62,41 @@ def setup(parser):
     )
     parser.add_argument("--page", type=int)
     parser.add_argument("--revision", type=int)
+    parser.add_argument("--phase", choices=["baseline", "candidate"])
+    parser.add_argument("--expectation")
+    parser.add_argument("--output")
+    parser.add_argument("--source-digest")
+    parser.add_argument("--recipe")
+    parser.add_argument("--base-digest")
+    parser.add_argument("--dest")
+
+
+def arguments_for(fields):
+    expectation = fields.get("expectation")
+    if isinstance(expectation, str):
+        try:
+            fields["expectation"] = json.loads(expectation)
+        except (ValueError, TypeError, RecursionError) as error:
+            raise ContractError("Expectation must be a valid JSON object") from error
+    return {key: value for key, value in fields.items() if value is not None}
+
+
+DESCRIPTIONS = {
+    "record": (
+        "Record operator-evaluated retained run output for a job after trusted "
+        "per-case evaluation. Never runs repository code or models. Recorded "
+        "data is candidate-authored JUnit evidence, never authenticated proof."
+    ),
+    "protocol": (
+        "Read-only descriptor of the owned junit-stdout-v1 producer program "
+        "(bytes plus SHA-256). Runs nothing by itself."
+    ),
+    "recipe": (
+        "Apply the fixed reviewed metadata recipe (NO AI, no dependency "
+        "resolution, no installation) to produce a disposable candidate root "
+        "with a per-file unified diff. Original source is never modified."
+    ),
+}
 
 
 def register(ctx):
@@ -71,10 +119,7 @@ def register(ctx):
 
     def cli(arguments):
         fields = {key: getattr(arguments, key, None) for key in PROPERTIES}
-        result = invoke(
-            arguments.operation,
-            {key: value for key, value in fields.items() if value is not None},
-        )
+        result = invoke(arguments.operation, arguments_for(fields))
         print(json.dumps(result))
         if "error" in result:
             raise SystemExit(2)
@@ -93,10 +138,7 @@ def register(ctx):
             arguments = parser.parse_args(words)
             fields = {key: getattr(arguments, key, None) for key in PROPERTIES}
             return json.dumps(
-                invoke(
-                    arguments.operation,
-                    {key: value for key, value in fields.items() if value is not None},
-                )
+                invoke(arguments.operation, arguments_for(fields))
             )
         except (ContractError, ValueError) as error:
             return json.dumps({"error": "INVALID_ARGUMENTS", "message": str(error)})
@@ -141,9 +183,12 @@ def register(ctx):
                 "modernisation-engine",
                 {
                     "name": "modernise_" + action,
-                    "description": "Source-read-only "
-                    + action
-                    + ". Writes only plugin-owned job metadata. Never runs repository code or models.",
+                    "description": DESCRIPTIONS.get(
+                        action,
+                        "Source-read-only "
+                        + action
+                        + ". Writes only plugin-owned job metadata. Never runs repository code or models.",
+                    ),
                     "parameters": parameters,
                 },
                 handler,

@@ -85,6 +85,7 @@ class Store:
                 if connection.execute("PRAGMA user_version").fetchone()[0] not in (
                     1,
                     2,
+                    3,
                 ):
                     raise ContractError("Unsupported store schema")
                 yield connection
@@ -126,50 +127,54 @@ class Store:
                 connection.execute("PRAGMA synchronous=FULL")
                 connection.execute("BEGIN IMMEDIATE")
                 version = connection.execute("PRAGMA user_version").fetchone()[0]
-                if version not in (0, 1, 2):
+                if version not in (0, 1, 2, 3):
                     raise ContractError(
                         "Unsupported store schema; export/restore required"
                     )
                 if version == 1:
-                    backup = root / "jobs.pre-v2.sqlite"
-                    fd = os.open(
-                        backup,
-                        os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
-                        0o600,
-                    )
-                    os.close(fd)
-                    deadline = time.monotonic() + 5
-
-                    def progress(status, remaining, total):
-                        if time.monotonic() > deadline:
-                            raise ContractError(
-                                "Backup deadline exceeded; upgrade not performed"
-                            )
-
-                    with (
-                        closing(
-                            sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)
-                        ) as old,
-                        closing(sqlite3.connect(backup)) as saved,
-                    ):
-                        old.backup(saved, pages=128, progress=progress, sleep=0.05)
-                    fd = os.open(backup, os.O_RDONLY | os.O_NOFOLLOW)
-                    try:
-                        os.fsync(fd)
-                    finally:
-                        os.close(fd)
+                    self._backup(connection, "jobs.pre-v2.sqlite")
+                if version == 2:
+                    self._backup(connection, "jobs.pre-v3.sqlite")
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, request TEXT UNIQUE NOT NULL, input_hash TEXT NOT NULL, body BLOB NOT NULL)"
                 )
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS details (hash TEXT PRIMARY KEY, body BLOB NOT NULL)"
                 )
-                connection.execute("PRAGMA user_version=2")
+                connection.execute(
+                    "CREATE TABLE IF NOT EXISTS evaluations (job_id TEXT NOT NULL, phase TEXT NOT NULL, source_digest TEXT NOT NULL, expectation_digest TEXT NOT NULL, body BLOB NOT NULL, body_sha256 TEXT NOT NULL, UNIQUE(job_id, phase))"
+                )
+                connection.execute("PRAGMA user_version=3")
                 yield connection
         except (OSError, sqlite3.Error) as error:
             raise ContractError(
                 "Store unavailable; transaction not completed"
             ) from error
+
+    def _backup(self, connection, name):
+        root = self.root
+        backup = root / name
+        fd = os.open(
+            backup, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600
+        )
+        os.close(fd)
+        deadline = time.monotonic() + 5
+
+        def progress(status, remaining, total):
+            if time.monotonic() > deadline:
+                raise ContractError("Backup deadline exceeded; upgrade not performed")
+
+        path = root / "jobs.sqlite"
+        with (
+            closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as old,
+            closing(sqlite3.connect(backup)) as saved,
+        ):
+            old.backup(saved, pages=128, progress=progress, sleep=0.05)
+        fd = os.open(backup, os.O_RDONLY | os.O_NOFOLLOW)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
 
     def create(self, request_id, repo, goal, assessment):
         identifier(request_id)
@@ -270,3 +275,100 @@ class Store:
                 "UPDATE jobs SET body=? WHERE id=?", (dumps(job), job_id)
             )
             return job
+
+    def record_evaluation(self, job_id, phase, source_digest, expectation, body):
+        identifier(job_id)
+        # Non-object bodies (list/str/number/null) never enter the evidence
+        # table: the pairing and digest guarantees below assume object roots.
+        if type(body) is not dict:
+            raise ContractError("Evaluation body must be a JSON object")
+        with self.connection() as connection:
+            if not connection.execute(
+                "SELECT 1 FROM jobs WHERE id=?", (job_id,)
+            ).fetchone():
+                raise ContractError("Job not found")
+            if connection.execute(
+                "SELECT 1 FROM evaluations WHERE job_id=? AND phase=?",
+                (job_id, phase),
+            ).fetchone():
+                raise ContractError(f"Evidence already recorded for {phase} phase")
+            pairs = connection.execute(
+                "SELECT phase, expectation_digest FROM evaluations WHERE job_id=?",
+                (job_id,),
+            ).fetchall()
+            for other_phase, other_digest in pairs:
+                # Cross-phase mismatch must be caught at write time, inside the
+                # same BEGIN IMMEDIATE transaction, so a divergent expectation
+                # can never mix into one job's evidence pair. Nothing is written
+                # on refusal; previously recorded evidence is retained.
+                if other_digest != expectation["digest"]:
+                    raise ContractError(
+                        "Cross-phase expectation mismatch: the "
+                        f"{other_phase} phase is already paired to a different "
+                        f"expectation; refusing this {phase} write"
+                    )
+            raw = dumps(body)
+            connection.execute(
+                "INSERT INTO evaluations VALUES (?,?,?,?,?,?)",
+                (
+                    job_id,
+                    phase,
+                    source_digest,
+                    expectation["digest"],
+                    raw,
+                    hashlib.sha256(raw).hexdigest(),
+                ),
+            )
+
+    def evidence_for(self, job_id):
+        identifier(job_id)
+        # Deliberately read-only: compare/report consume evidence without
+        # writes. Legacy v1/v2 stores have no evaluations table by design
+        # (read_connection gates user_version to 1/2/3), so reading them must
+        # return the empty gap report with NO schema change, migration or byte
+        # difference. A version-3 store missing its table is corrupted, not
+        # legacy: that refusal must carry its own distinct message.
+        with self.read_connection() as connection:
+            version = connection.execute("PRAGMA user_version").fetchone()[0]
+            if version in (1, 2):
+                return []
+            if (
+                connection.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name='evaluations'"
+                ).fetchone()
+                is None
+            ):
+                raise ContractError(
+                    "Store schema corrupted: version-3 store is missing the "
+                    "evaluations table"
+                )
+            rows = connection.execute(
+                "SELECT phase, source_digest, expectation_digest, body, body_sha256 FROM evaluations WHERE job_id=? ORDER BY rowid",
+                (job_id,),
+            ).fetchall()
+        recorded = []
+        for phase, source_digest, expectation_digest, body, body_sha256 in rows:
+            if hashlib.sha256(body).hexdigest() != body_sha256:
+                raise ContractError("Stored evidence corrupted")
+            # jsonio.loads itself refuses non-object roots; re-style any stored
+            # body refusal (including a sha-consistent non-object row) as this
+            # seam's tamper error so compare/report never see a non-dict
+            # evaluation.
+            try:
+                evaluation = loads(body)
+            except ContractError as error:
+                raise ContractError("Stored evidence corrupted; " + str(error)[:300]) from error
+            if type(evaluation) is not dict:
+                # Store-level invariant: must stay true even if the loads
+                # contract ever changes (would otherwise reach comparison and
+                # crash with AttributeError).
+                raise ContractError("Stored evidence corrupted; not a JSON object")
+            recorded.append(
+                {
+                    "phase": phase,
+                    "source_digest": source_digest,
+                    "expectation_digest": expectation_digest,
+                    "evaluation": evaluation,
+                }
+            )
+        return recorded

@@ -1,6 +1,8 @@
 """Source-read-only assessment/planning service. Never grants execution."""
 
 from pathlib import Path
+from . import evidence
+from . import recipes
 from .identity import snapshot
 from .inventory import assess
 from .jsonio import ContractError, dumps
@@ -12,6 +14,9 @@ FIELDS = {
     "inventory": {"job", "section", "page"},
     "plan": {"job", "revision"},
     "status": {"job"},
+    "record": {"job", "phase", "expectation", "output", "source_digest"},
+    "protocol": set(),
+    "recipe": {"repo", "recipe", "base_digest", "dest"},
     "compare": {"job"},
     "report": {"job"},
 }
@@ -45,8 +50,11 @@ class Engine:
                     "assess",
                     "plan",
                     "status",
+                    "record",
+                    "recipe",
                     "compare-gaps",
                     "report-gaps",
+                    "protocol-descriptor",
                 ],
             }
         required = FIELDS[action]
@@ -66,9 +74,20 @@ class Engine:
             return self.store.details(
                 arguments["job"], arguments["section"], arguments["page"]
             )
+        if action == "protocol":
+            return evidence.protocol()
+        if action == "recipe":
+            return recipes.apply(
+                arguments["recipe"],
+                arguments["repo"],
+                arguments["base_digest"],
+                arguments["dest"],
+            )
         job = self.store.get(arguments["job"])
         if action == "status":
             return job
+        if action == "record":
+            return evidence.record(self.store, arguments)
         if action == "plan":
             if (
                 snapshot(Path(job["repo"]))["digest"]
@@ -96,21 +115,7 @@ class Engine:
                 "unknowns": job["assessment"]["missing_evidence"],
             }
             return self.store.save_plan(job["job_id"], arguments["revision"], plan)
-        gaps = list(job["assessment"]["missing_evidence"])
-        gaps.append(
-            "No accepted executor receipt pair is stored for this assessment job"
-        )
-        comparison = {
-            "schema_version": 1,
-            "job_id": job["job_id"],
-            "scope": job["goal"],
-            "verdict": "NOT_PROVEN",
-            "source_digest": job["assessment"]["source_digest"],
-            "execution_performed": False,
-            "missing_evidence": gaps,
-            "compared_cases": 0,
-            "approved_differences": [],
-        }
+        comparison = evidence.comparison(job, self.store.evidence_for(job["job_id"]))
         if action == "compare":
             return comparison
         return {
@@ -119,5 +124,5 @@ class Engine:
             "text": "NOT_PROVEN within requested scope: "
             + job["goal"]
             + "\n"
-            + "\n".join("- " + gap for gap in gaps),
+            + "\n".join("- " + gap for gap in comparison["missing_evidence"]),
         }

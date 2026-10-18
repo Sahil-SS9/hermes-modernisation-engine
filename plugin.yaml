@@ -7,6 +7,9 @@ provides_tools:
   - modernise_assess
   - modernise_inventory
   - modernise_plan
+  - modernise_record
+  - modernise_protocol
+  - modernise_recipe
   - modernise_compare
   - modernise_report
 capabilities: []

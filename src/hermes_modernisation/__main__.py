@@ -19,6 +19,9 @@ def main(argv=None):
             "inventory",
             "plan",
             "status",
+            "record",
+            "protocol",
+            "recipe",
             "compare",
             "report",
             "run",
@@ -34,12 +37,28 @@ def main(argv=None):
     )
     parser.add_argument("--page", type=int)
     parser.add_argument("--revision", type=int)
+    parser.add_argument("--phase", choices=["baseline", "candidate"])
+    parser.add_argument("--expectation")
+    parser.add_argument("--output")
+    parser.add_argument("--source-digest")
+    parser.add_argument("--recipe")
+    parser.add_argument("--base-digest")
+    parser.add_argument("--dest")
     args = parser.parse_args(argv)
     fields = {
         key: value
         for key, value in vars(args).items()
         if key not in ("data_dir", "operation") and value is not None
     }
+    expectation = fields.get("expectation")
+    if isinstance(expectation, str):
+        try:
+            fields["expectation"] = json.loads(expectation)
+        except (ValueError, TypeError, RecursionError) as error:
+            print(
+                json.dumps({"error": "INVALID_ARGUMENTS", "message": str(error)})
+            )
+            return 2
     try:
         result = Engine(args.data_dir).invoke(args.operation, fields)
     except (ContractError, OSError, ValueError) as error:

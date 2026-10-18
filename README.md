@@ -32,7 +32,7 @@ Assessment never imports/executes repository code, resolves package installation
 
 Distribution is `plugin.yaml` plus root `__init__.py`. The Python wheel provides the standalone core/CLI only; it does NOT also register a Hermes plugin entrypoint. Use the complete directory artifact for Hermes. Never install both competing discovery registrations.
 
-Hermes commands: `hermes modernise assess|plan|status|compare|report`. Equivalent tool names have the `modernise_` prefix. The registered `/modernise` handler uses the same service, but full gateway and interactive slash dispatch acceptance is outstanding. Job metadata resolves under the active profile's `plugin-data/modernisation-engine/private` on each call.
+Hermes commands: `hermes modernise assess|plan|status|record|protocol|recipe|compare|report`. Equivalent tool names have the `modernise_` prefix. The registered `/modernise` handler uses the same service, but full gateway and interactive slash dispatch acceptance is outstanding. Job metadata resolves under the active profile's `plugin-data/modernisation-engine/private` on each call.
 
 Sandbox host compatibility is proven only on PR #138686 head `4539b09a730d6a97548b4d4102d10990033ead36` PLUS the separately identified local validator handle patch. Neither fix is claimed merged or installed. Public version metadata is insufficient to establish that floor. See `docs/validator-compatibility-repair.md` and the current development checkpoint.
 
