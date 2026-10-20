@@ -53,6 +53,15 @@ class ExternalAuthority:
         nonce, now = self.verify(grant, operation)
         return self._record(operation, nonce, now)
 
+    def verify_control(self, grant, decision):
+        from .control import validate_decision
+        validate_decision(decision)
+        return self._verify(grant, decision, "decision")
+
+    def claim_control(self, grant, decision):
+        nonce, now = self.verify_control(grant, decision)
+        return self._record(decision, nonce, now)
+
     def verify_recorded(self, grant, payload, payload_field="operation"):
         """Read-only verification at the recorded claim time, not today's expiry.
 

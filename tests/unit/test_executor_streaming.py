@@ -69,3 +69,30 @@ def test_stdin_and_stdout_are_both_bounded_without_pipe_deadlock(monkeypatch):
     raw, timed_out, truncated = Executor._collect("fixture", 3, 262144, input_data=payload)
     assert not timed_out and not truncated
     assert raw == b"o" * 131072 + hashlib.sha256(payload).hexdigest().encode() + b"\n"
+
+
+def test_owner_cancellation_interrupts_a_real_child_and_preserves_partial_output(monkeypatch):
+    import time
+    import pytest
+    from hermes_modernisation.executor import CaptureFailure
+
+    popen = subprocess.Popen
+    children = []
+    checks = []
+
+    def launch(*args, **kwargs):
+        child = popen([sys.executable, "-B", "-c", "import time; print('started',flush=True); time.sleep(10)"], **kwargs)
+        children.append(child)
+        return child
+
+    def cancelled():
+        checks.append(True)
+        return len(checks) >= 3
+
+    monkeypatch.setattr(subprocess, "Popen", launch)
+    started = time.monotonic()
+    with pytest.raises(CaptureFailure, match="cancel") as error:
+        Executor._collect("fixture", 10, 1024, cancelled=cancelled)
+    assert error.value.partial_output == b"started\n"
+    assert time.monotonic() - started < 3
+    assert children and children[0].poll() is not None

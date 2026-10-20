@@ -40,6 +40,7 @@ class Executor:
         phase="candidate",
         input_data=None,
         checkpoint=None,
+        cancelled=None,
     ):
         if phase not in ("baseline", "candidate"):
             raise ContractError("Unsupported execution phase")
@@ -54,6 +55,9 @@ class Executor:
             raise ContractError("Trusted checkpoint callback must be callable")
         self.input_data = input_data
         self._checkpoint_callback = checkpoint
+        if cancelled is not None and not callable(cancelled):
+            raise ContractError("Trusted cancellation callback must be callable")
+        self.cancelled = cancelled
 
     def environment(self, operation):
         input_sha = hashlib.sha256(self.input_data).hexdigest() if self.input_data is not None else None
@@ -195,10 +199,12 @@ class Executor:
                 raise AuthorityDenied("Grant expired before start")
             self._checkpoint("START_REQUESTED", {"container_id": container})
             try:
-                if self.input_data is None:
-                    output, timed_out, truncated = self._collect(container, operation["timeout_seconds"], operation["output_limit_bytes"])
-                else:
-                    output, timed_out, truncated = self._collect(container, operation["timeout_seconds"], operation["output_limit_bytes"], input_data=self.input_data)
+                options = {}
+                if self.cancelled is not None:
+                    options["cancelled"] = self.cancelled
+                if self.input_data is not None:
+                    options["input_data"] = self.input_data
+                output, timed_out, truncated = self._collect(container, operation["timeout_seconds"], operation["output_limit_bytes"], **options)
             except CaptureFailure as error:
                 self._write_bytes(attempt / "partial-output.bin", error.partial_output)
                 raise
@@ -287,7 +293,7 @@ class Executor:
             os.fsync(stream.fileno())
 
     @staticmethod
-    def _collect(container, timeout, limit, *, input_data=None):
+    def _collect(container, timeout, limit, *, input_data=None, cancelled=None):
         if input_data is not None and (type(input_data) is not bytes or len(input_data) > MAX_BYTES):
             raise ContractError("Protected input must be bounded immutable bytes")
         process = subprocess.Popen(
@@ -312,6 +318,8 @@ class Executor:
                 elif process.stdin is not None:
                     process.stdin.close()
                 while selector.get_map():
+                    if cancelled is not None and cancelled():
+                        raise CaptureFailure("Owner cancellation requested; capture incomplete", bytes(data))
                     remaining = deadline - time.monotonic()
                     if remaining <= 0:
                         timed_out = True

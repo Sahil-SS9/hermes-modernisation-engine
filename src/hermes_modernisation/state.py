@@ -140,6 +140,9 @@ def claim(store, job_id, attempt_id, worker, *, now=None, lease_seconds=900):
             raise ContractError("Job already has an active claimed attempt")
         if attempt["state"] != "PREPARED":
             raise ContractError("Attempt requires recovery or is already terminal; no replay")
+        eligible = {"BASELINE_AUTHORITY_REQUIRED"} if attempt["phase"] == "baseline" else {"CANDIDATE_BUILT", "CANDIDATE_AUTHORITY_REQUIRED"}
+        if job["state"] not in eligible:
+            raise ContractError("Job state requires explicit recovery before another attempt can claim ownership")
         if attempt["operation"]["oracle_digest"] != job.get("behaviour_contract", {}).get("digest"):
             raise ContractError("Prepared attempt is stale after protected contract change")
         if type(job.get("fence_epoch", 0)) is not int or job.get("fence_epoch", 0) < 0:

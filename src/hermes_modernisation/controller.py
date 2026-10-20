@@ -23,6 +23,16 @@ def prepared_attempt(store, job, attempt_id):
 
 
 def run(store, job, attempt_id, grant, policy):
+    from .runtime_lock import locked
+    # Refuse forged requests before even creating runtime ownership metadata.
+    reviews.accepted(store, job, "contract", policy)
+    attempt = prepared_attempt(store, job, attempt_id)
+    policy.authority().verify(grant, attempt["operation"])
+    with locked(policy, job["job_id"]):
+        return _run(store, store.get(job["job_id"]), attempt_id, grant, policy)
+
+
+def _run(store, job, attempt_id, grant, policy):
     reviews.accepted(store, job, "contract", policy)
     attempt = prepared_attempt(store, job, attempt_id)
     if attempt["state"] != "PREPARED":
@@ -68,21 +78,37 @@ def run(store, job, attempt_id, grant, policy):
     executor.prepare(operation, source, oracle)
     lease = store.claim_attempt(job["job_id"], attempt_id, "foreground_controller", lease_seconds=operation["timeout_seconds"] + 120)
 
+    from .control import cancelled
+
+    def is_cancelled():
+        return cancelled(store, job["job_id"], attempt_id)
+
     def checkpoint(label, details):
+        if is_cancelled():
+            raise ContractError("Owner cancellation requested before runtime checkpoint")
         store.checkpoint_attempt(job["job_id"], attempt_id, lease, label, details)
 
     executor._checkpoint_callback = checkpoint
+    executor.cancelled = is_cancelled
     try:
         captured = capture(executor, grant, operation, source, oracle, contract)
         return observations.complete(store, job["job_id"], attempt_id, lease, captured, grant)
-    except BaseException:
+    except BaseException as error:
         # Partial files and claimed authority stay retained. Never retry the side effect.
+        performed = None
         try:
-            store.stop_attempt(job["job_id"], attempt_id, lease, "INTERRUPTED", "Collection/acceptance interrupted; inspect retained runtime state and obtain explicit recovery, no replay")
+            saved = prepared_attempt(store, store.get(job["job_id"]), attempt_id)
+            labels = [entry["label"] for entry in saved["checkpoints"]]
+            performed = True if "COLLECTED" in labels else None if "START_REQUESTED" in labels else False
+            outcome = "CANCELLED" if is_cancelled() else "INTERRUPTED"
+            store.stop_attempt(job["job_id"], attempt_id, lease, outcome, "Collection/acceptance interrupted; inspect retained runtime state and obtain explicit recovery, no replay")
         except ContractError:
             # A revoked/expired lease is intentionally not allowed to overwrite newer state.
             pass
-        raise
+        if not isinstance(error, Exception):
+            raise
+        from .errors import ExecutionInterrupted
+        raise ExecutionInterrupted(str(error)[:1200], attempt_id, performed) from error
 
 
 def resume(store, job, attempt_id, policy):

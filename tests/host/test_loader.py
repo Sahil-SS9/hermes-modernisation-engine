@@ -225,6 +225,9 @@ def test_real_native_review_cli_and_dispatch_use_the_trusted_operator_setting(tm
     grant = {"body": body, "signature": base64.b64encode(key.sign(canonical(body))).decode()}
     accepted = call("review", "--job", jid, "--grant", json.dumps(grant))
     assert accepted["contract_review"]["authenticated"] is True
+    prepared = call("prepare", "--job", jid, "--phase", "baseline", "--actor", "fixture_owner", "--request-id", "native_control", "--timeout-seconds", "20", "--output-limit-bytes", "65536")
+    control = call("control_request", "--job", jid, "--attempt", prepared["attempt_id"], "--purpose", "recover", "--actor", "fixture_owner")
+    assert control["decision"]["kind"] == "ControlDecision" and not control["permission_granted"]
     code = """import json,shlex
 from hermes_cli.plugins import discover_plugins,get_plugin_manager,get_plugin_command_handler
 from tools.registry import registry
@@ -235,12 +238,18 @@ forged=json.loads(registry.dispatch('modernise_review',{'job':args['job'],'grant
 assert forged['error']=='INVALID_REQUEST' and not forged['execution_performed'],forged
 request=json.loads(registry.dispatch('modernise_review_request',{'job':args['job'],'purpose':'contract','actor':'fixture_owner'},scope=manager.scope_key))
 assert not request['permission_granted'],request
+prepared=json.loads(registry.dispatch('modernise_prepare',{'job':args['job'],'phase':'baseline','actor':'fixture_owner','request_id':'native_control','timeout_seconds':20,'output_limit_bytes':65536},scope=manager.scope_key))
+control=json.loads(registry.dispatch('modernise_control_request',{'job':args['job'],'attempt':prepared['attempt_id'],'purpose':'recover','actor':'fixture_owner'},scope=manager.scope_key))
+assert control['decision']['kind']=='ControlDecision' and not control['permission_granted'],control
 slash=get_plugin_command_handler('modernise')
+for action in ('cancel','recover'):
+    refused=json.loads(slash(action+' --job '+args['job']+' --attempt '+prepared['attempt_id']+' --grant '+shlex.quote(json.dumps({'approved':True}))))
+    assert refused['error']=='INVALID_REQUEST' and not refused['execution_performed'],refused
 replayed=json.loads(slash('review --job '+args['job']+' --grant '+shlex.quote(json.dumps(args['grant']))))
 assert replayed['error']=='INVALID_REQUEST' and not replayed['execution_performed'],replayed
 assert json.loads(slash('status --job '+args['job']))['contract_review']['authenticated'] is True
 assert manager.unload('modernisation-engine')
-for name in ('review','review_request','proposal','build','run','resume'):
+for name in ('review','review_request','proposal','build','run','resume','control_request','cancel','recover'):
     assert registry.get_entry('modernise_'+name,scope=manager.scope_key) is None,name
 print('NATIVE_CONFIGURED_REVIEW_CLI_TOOL_SLASH_OK')
 """.replace("PAYLOAD", repr(json.dumps({"job": jid, "grant": grant})))

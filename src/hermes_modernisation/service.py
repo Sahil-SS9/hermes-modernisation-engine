@@ -26,6 +26,9 @@ FIELDS = {
     "resume": {"job", "attempt"},
     "proposal": {"job", "revision", "proposal"},
     "build": {"job"},
+    "control_request": {"job", "attempt", "purpose", "actor"},
+    "cancel": {"job", "attempt", "grant"},
+    "recover": {"job", "attempt", "grant"},
     "recipe": {"repo", "recipe", "base_digest", "dest"},
     "compare": {"job"},
     "report": {"job"},
@@ -110,6 +113,15 @@ class Engine:
                 arguments["contract"], job["repo"], job["assessment"]["source_digest"]
             )
             return self.store.save_contract(job["job_id"], arguments["revision"], contract)
+        if action == "control_request":
+            from .control import request
+            return request(self.store, job, arguments["attempt"], arguments["purpose"], arguments["actor"], self.profile)
+        if action in {"cancel", "recover"}:
+            from .operator import OperatorPolicy
+            from . import control
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            function = control.cancel if action == "cancel" else control.recover
+            return function(self.store, job, arguments["attempt"], arguments["grant"], policy)
         if action == "proposal":
             from .candidates import save_proposal
             return save_proposal(self.store, job, arguments["revision"], arguments["proposal"])

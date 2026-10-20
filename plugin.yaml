@@ -19,6 +19,9 @@ provides_tools:
   - modernise_build
   - modernise_run
   - modernise_resume
+  - modernise_control_request
+  - modernise_cancel
+  - modernise_recover
   - modernise_recipe
   - modernise_compare
   - modernise_report

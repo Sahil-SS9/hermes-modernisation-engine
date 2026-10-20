@@ -151,3 +151,13 @@ def test_contract_change_invalidates_a_prepared_attempt_before_claim(tmp_path):
         engine.store.claim_attempt(job["job_id"], attempt["attempt_id"], "worker", now=100, lease_seconds=60)
     assert engine.invoke("attempts", {"job": job["job_id"]})["attempts"][0]["state"] == "PREPARED"
 
+
+def test_an_interrupted_job_cannot_claim_a_different_prepared_attempt_without_recovery(tmp_path):
+    engine, job, args = prepared_fixture(tmp_path)
+    first = engine.invoke("prepare", args)
+    second = engine.invoke("prepare", {**args, "request_id": "second_attempt"})
+    lease = engine.store.claim_attempt(job["job_id"], first["attempt_id"], "worker", now=100, lease_seconds=60)
+    engine.store.stop_attempt(job["job_id"], first["attempt_id"], lease, "INTERRUPTED", "uncertain runtime", now=101)
+    with pytest.raises(ContractError, match="recovery"):
+        engine.store.claim_attempt(job["job_id"], second["attempt_id"], "other_worker", now=102, lease_seconds=60)
+

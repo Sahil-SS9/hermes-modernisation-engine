@@ -11,6 +11,9 @@ from ..interface import (
 )
 
 DESCRIPTIONS = {
+    "control_request": "Prepare an unsigned exact owner cancel/recovery decision for a stored attempt. No Docker access, permission or program replay.",
+    "cancel": "Persist a separately signed owner cooperative-stop request. Never steals the live worker runtime lock; uncertain/lost work needs explicit recovery.",
+    "recover": "With a fresh exact signed owner control grant and no live runtime owner, retire only the stored attempt container, verify absence and fence old workers. Never replays code or adopts partial evidence; fresh execution needs a new attempt/grant.",
     "review_request": "Prepare an unsigned exact owner review decision for the current private contract/proposal. Does not approve or execute anything.",
     "review": "Accept only an authentic externally signed exact owner review against trusted enrolled public keys. Review does not permit process execution; caller text is never authority.",
     "proposal": "Register a bounded literal source proposal after a protected baseline. No execution or approval; paths and source preimages are checked.",
@@ -57,13 +60,8 @@ def register(ctx):
                 action, arguments
             )
         except (ContractError, OSError, ValueError, PermissionError) as error:
-            return {
-                "error": "EXECUTION_UNAVAILABLE"
-                if action in ("run", "resume", "approve")
-                else "INVALID_REQUEST",
-                "message": str(error),
-                "execution_performed": False,
-            }
+            from ..errors import result as error_result
+            return error_result(error, action)
 
     def cli(arguments):
         fields = {key: getattr(arguments, key, None) for key in PROPERTIES}

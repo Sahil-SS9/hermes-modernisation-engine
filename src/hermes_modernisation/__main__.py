@@ -26,7 +26,8 @@ def main(argv=None):
     try:
         result = Engine(args.data_dir, profile=args.profile, operator_config=args.operator_config).invoke(args.operation, arguments)
     except (ContractError, OSError, ValueError, PermissionError) as error:
-        print(json.dumps({"error": "EXECUTION_UNAVAILABLE" if args.operation in ("run", "resume") else "INVALID_REQUEST", "message": str(error), "execution_performed": False}))
+        from .errors import result as error_result
+        print(json.dumps(error_result(error, args.operation)))
         return 2
     print(json.dumps(result))
     return 0
