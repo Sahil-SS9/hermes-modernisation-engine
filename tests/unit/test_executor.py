@@ -166,3 +166,11 @@ def test_simulated_runtime_receipt_and_safe_cleanup_with_real_fixture_signature(
             e.authority.claim(grant, op)
     cleanup = [argv for argv in calls if argv[:3] == ["docker", "rm", "-f"]]
     assert len(cleanup) == 1 and not cleanup[0][-1].startswith("--")
+
+
+def test_protected_input_bytes_are_bound_by_the_signed_environment(tmp_path):
+    e, op, _, _ = setup(tmp_path)
+    e.input_data = b'{"cases":[{"input":7}]}'
+    env = e.environment(op)
+    assert env.get("input_sha256") == hashlib.sha256(e.input_data).hexdigest()
+    assert env["collector"] == "bounded-json-response-v1"

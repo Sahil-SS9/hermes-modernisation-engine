@@ -9,7 +9,16 @@ provides_tools:
   - modernise_plan
   - modernise_record
   - modernise_protocol
+  - modernise_response_protocol
   - modernise_contract
+  - modernise_prepare
+  - modernise_attempts
+  - modernise_review_request
+  - modernise_review
+  - modernise_proposal
+  - modernise_build
+  - modernise_run
+  - modernise_resume
   - modernise_recipe
   - modernise_compare
   - modernise_report

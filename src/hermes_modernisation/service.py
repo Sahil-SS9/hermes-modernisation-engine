@@ -16,7 +16,16 @@ FIELDS = {
     "status": {"job"},
     "record": {"job", "phase", "expectation", "output", "source_digest"},
     "protocol": set(),
+    "response_protocol": set(),
     "contract": {"job", "revision", "contract"},
+    "prepare": {"job", "phase", "actor", "request_id", "timeout_seconds", "output_limit_bytes"},
+    "attempts": {"job"},
+    "review_request": {"job", "purpose", "actor"},
+    "review": {"job", "grant"},
+    "run": {"job", "attempt", "grant"},
+    "resume": {"job", "attempt"},
+    "proposal": {"job", "revision", "proposal"},
+    "build": {"job"},
     "recipe": {"repo", "recipe", "base_digest", "dest"},
     "compare": {"job"},
     "report": {"job"},
@@ -24,13 +33,16 @@ FIELDS = {
 
 
 class Engine:
-    def __init__(self, root):
+    def __init__(self, root, *, profile="default", operator_config=None):
+        from .jsonio import identifier
         self.store = Store(root)
+        self.profile = identifier(profile)
+        self.operator_config = operator_config
 
     def invoke(self, action, arguments):
-        if action in ("run", "resume", "approve"):
+        if action == "approve" or (action in ("run", "resume") and self.operator_config is None):
             raise ContractError(
-                "EXECUTION_UNAVAILABLE: complete trusted executor acceptance required; text is not authority"
+                "EXECUTION_UNAVAILABLE: trusted operator configuration and exact signed authority required; text is not authority"
             )
         if (
             action not in FIELDS
@@ -57,6 +69,8 @@ class Engine:
                     "report-gaps",
                     "protocol-descriptor",
                     "unreviewed-protected-contract",
+                    "unsigned-operation-preparation",
+                    "attempt-journal",
                 ],
             }
         required = FIELDS[action]
@@ -78,6 +92,9 @@ class Engine:
             )
         if action == "protocol":
             return evidence.protocol()
+        if action == "response_protocol":
+            from .baseline import protocol
+            return protocol()
         if action == "recipe":
             return recipes.apply(
                 arguments["recipe"],
@@ -93,6 +110,32 @@ class Engine:
                 arguments["contract"], job["repo"], job["assessment"]["source_digest"]
             )
             return self.store.save_contract(job["job_id"], arguments["revision"], contract)
+        if action == "proposal":
+            from .candidates import save_proposal
+            return save_proposal(self.store, job, arguments["revision"], arguments["proposal"])
+        if action in {"run", "resume", "build"}:
+            from .operator import OperatorPolicy
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            if action == "build":
+                from .candidates import build
+                return build(self.store, job, policy)
+            from . import controller
+            if action == "run":
+                return controller.run(self.store, job, arguments["attempt"], arguments["grant"], policy)
+            return controller.resume(self.store, job, arguments["attempt"], policy)
+        if action == "review_request":
+            from .reviews import request
+            return request(self.store, job, arguments["purpose"], arguments["actor"], self.profile)
+        if action == "review":
+            from .operator import OperatorPolicy
+            from .reviews import accept
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            return accept(self.store, job, arguments["grant"], policy)
+        if action == "attempts":
+            return {"schema_version": 1, "job_id": job["job_id"], "attempts": self.store.attempts_for(job["job_id"])}
+        if action == "prepare":
+            from .runtime import prepare_request
+            return prepare_request(self.store, job, arguments, profile=self.profile)
         if action == "status":
             return job
         if action == "record":
@@ -124,7 +167,13 @@ class Engine:
                 "unknowns": job["assessment"]["missing_evidence"],
             }
             return self.store.save_plan(job["job_id"], arguments["revision"], plan)
-        comparison = evidence.comparison(job, self.store.evidence_for(job["job_id"]))
+        if job.get("baseline_ref") or job.get("candidate_observation_ref"):
+            from .operator import OperatorPolicy
+            from .observations import comparison as observed_comparison
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            comparison = observed_comparison(self.store, job, policy)
+        else:
+            comparison = evidence.comparison(job, self.store.evidence_for(job["job_id"]))
         if action == "compare":
             return comparison
         return {

@@ -20,3 +20,9 @@ Read `evidence/trial-v5-20261019/README.md`. Producing executable commit is `c34
 Read `HANDOFF.md`, `TODO.md`, original `PLAN.md`, compatibility/threat/provenance records and current implementation plan. Check current branch, status, exact local/remote HEAD and private visibility. Compare from the producing commit; after new feature commits, inspect and verify the documented production delta instead of expecting docs-only changes. Verify recovery hashes and required pinned runtime images. Do not restore/reset unrelated dirt, remove failed evidence, modify live Hermes or touch other projects. Skill Foundry's pin/work is unrelated.
 
 Existing approved fixed gate: `/home/kensei/projects/modernisation-benchmarks/control/run-development.py` using the pinned rootless image, read-only source/reference/benchmark mounts, no network and resource caps. Never substitute host pytest/live Hermes for this gate. Save real RED/GREEN receipts and exact collection counts. Use direct implementation, no workers/agent CLIs.
+
+## Current continuation checkpoint
+
+`evidence/remaining-build-20261020/configured-capture.json` binds the implemented source/test bytes to the 260/0/0/0 full gate, lint and validator. The public configured Engine fixture journey actually captured old/new JSON responses (15 each), retained and reverified authenticated observations, reserved/built its own candidate and recomputed compare/report without launches. Native review CLI/tool/registered-slash and standalone parsing are exercised; this is NOT full native/gateway execution or a real owner-approved project trial. Outer proof remains NOT_PROVEN pending adequacy/mutation acceptance.
+
+Continue explicit cancellation/runtime retirement and fault-injected recovery first. Then finish every other open row in the original implementation register. Parent points 2/3 are still open; point 4 remains HOLD. No live installation/configuration or real-owner/private-key operation occurred.

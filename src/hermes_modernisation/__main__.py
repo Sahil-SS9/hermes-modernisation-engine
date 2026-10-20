@@ -1,77 +1,32 @@
-"""Standalone source assessment CLI; host data root must be explicit."""
+"""Standalone CLI; explicit operator configuration, no credentials or fallback."""
 
 import argparse
 import json
 from pathlib import Path
+
+from .interface import PROPERTIES, arguments_for, setup
 from .service import Engine
 from .jsonio import ContractError
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(
-        description="Modernisation Engine source-read-only preview"
-    )
+    parser = argparse.ArgumentParser(description="Modernisation Engine bounded private workflow")
     parser.add_argument("--data-dir", type=Path, required=True)
-    parser.add_argument(
-        "operation",
-        choices=[
-            "assess",
-            "inventory",
-            "plan",
-            "status",
-            "record",
-            "protocol",
-            "recipe",
-            "compare",
-            "report",
-            "run",
-            "resume",
-        ],
-    )
-    parser.add_argument("--repo")
-    parser.add_argument("--goal")
-    parser.add_argument("--request-id")
-    parser.add_argument("--job")
-    parser.add_argument(
-        "--section", choices=["symbols", "dependencies", "rules", "files"]
-    )
-    parser.add_argument("--page", type=int)
-    parser.add_argument("--revision", type=int)
-    parser.add_argument("--phase", choices=["baseline", "candidate"])
-    parser.add_argument("--expectation")
-    parser.add_argument("--output")
-    parser.add_argument("--source-digest")
-    parser.add_argument("--recipe")
-    parser.add_argument("--base-digest")
-    parser.add_argument("--dest")
+    # CLI composition inputs, deliberately absent from model/tool argument schemas.
+    parser.add_argument("--operator-config", type=Path)
+    parser.add_argument("--profile", default="default")
+    setup(parser)
     args = parser.parse_args(argv)
-    fields = {
-        key: value
-        for key, value in vars(args).items()
-        if key not in ("data_dir", "operation") and value is not None
-    }
-    expectation = fields.get("expectation")
-    if isinstance(expectation, str):
-        try:
-            fields["expectation"] = json.loads(expectation)
-        except (ValueError, TypeError, RecursionError) as error:
-            print(
-                json.dumps({"error": "INVALID_ARGUMENTS", "message": str(error)})
-            )
-            return 2
+    fields = {key: getattr(args, key, None) for key in PROPERTIES}
     try:
-        result = Engine(args.data_dir).invoke(args.operation, fields)
-    except (ContractError, OSError, ValueError) as error:
-        print(
-            json.dumps(
-                {
-                    "error": "EXECUTION_UNAVAILABLE"
-                    if args.operation in ("run", "resume")
-                    else "INVALID_REQUEST",
-                    "message": str(error),
-                }
-            )
-        )
+        arguments = arguments_for(fields)
+    except ContractError as error:
+        print(json.dumps({"error": "INVALID_ARGUMENTS", "message": str(error), "execution_performed": False}))
+        return 2
+    try:
+        result = Engine(args.data_dir, profile=args.profile, operator_config=args.operator_config).invoke(args.operation, arguments)
+    except (ContractError, OSError, ValueError, PermissionError) as error:
+        print(json.dumps({"error": "EXECUTION_UNAVAILABLE" if args.operation in ("run", "resume") else "INVALID_REQUEST", "message": str(error), "execution_performed": False}))
         return 2
     print(json.dumps(result))
     return 0

@@ -4,88 +4,22 @@ import argparse
 import json
 import shlex
 from ..service import Engine
-from ..jsonio import ContractError, loads
+from ..jsonio import ContractError
 
-OPERATIONS = (
-    "assess",
-    "inventory",
-    "plan",
-    "status",
-    "record",
-    "protocol",
-    "contract",
-    "recipe",
-    "compare",
-    "report",
-    "run",
-    "resume",
+from ..interface import (
+    OPERATIONS as OPERATIONS, PROPERTIES, REQUIRED, setup, arguments_for,
 )
-PROPERTIES = {
-    "section": {
-        "type": "string",
-        "enum": ["symbols", "dependencies", "rules", "files"],
-    },
-    "page": {"type": "integer", "minimum": 0},
-    "repo": {"type": "string"},
-    "goal": {"type": "string"},
-    "request_id": {"type": "string"},
-    "job": {"type": "string"},
-    "revision": {"type": "integer", "minimum": 0},
-    "phase": {"type": "string", "enum": ["baseline", "candidate"]},
-    "expectation": {"type": "object", "additionalProperties": True},
-    "contract": {"type": "object", "additionalProperties": True},
-    "output": {"type": "string"},
-    "source_digest": {"type": "string"},
-    "recipe": {"type": "string"},
-    "base_digest": {"type": "string"},
-    "dest": {"type": "string"},
-}
-REQUIRED = {
-    "assess": ["repo", "goal", "request_id"],
-    "inventory": ["job", "section", "page"],
-    "plan": ["job", "revision"],
-    "status": [],
-    "record": ["job", "phase", "expectation", "output", "source_digest"],
-    "protocol": [],
-    "contract": ["job", "revision", "contract"],
-    "recipe": ["repo", "recipe", "base_digest", "dest"],
-    "compare": ["job"],
-    "report": ["job"],
-}
-
-
-def setup(parser):
-    parser.add_argument("operation", choices=OPERATIONS, nargs="?", default="status")
-    parser.add_argument("--repo")
-    parser.add_argument("--goal")
-    parser.add_argument("--request-id")
-    parser.add_argument("--job")
-    parser.add_argument(
-        "--section", choices=["symbols", "dependencies", "rules", "files"]
-    )
-    parser.add_argument("--page", type=int)
-    parser.add_argument("--revision", type=int)
-    parser.add_argument("--phase", choices=["baseline", "candidate"])
-    parser.add_argument("--expectation")
-    parser.add_argument("--contract")
-    parser.add_argument("--output")
-    parser.add_argument("--source-digest")
-    parser.add_argument("--recipe")
-    parser.add_argument("--base-digest")
-    parser.add_argument("--dest")
-
-
-def arguments_for(fields):
-    for key in ("expectation", "contract"):
-        if isinstance(fields.get(key), str):
-            try:
-                fields[key] = loads(fields[key])
-            except ContractError as error:
-                raise ContractError(key.title() + " must be a bounded duplicate-free JSON object") from error
-    return {key: value for key, value in fields.items() if value is not None}
-
 
 DESCRIPTIONS = {
+    "review_request": "Prepare an unsigned exact owner review decision for the current private contract/proposal. Does not approve or execute anything.",
+    "review": "Accept only an authentic externally signed exact owner review against trusted enrolled public keys. Review does not permit process execution; caller text is never authority.",
+    "proposal": "Register a bounded literal source proposal after a protected baseline. No execution or approval; paths and source preimages are checked.",
+    "build": "Materialise the separately owner-reviewed proposal at an engine-reserved candidate path. No programs, installs or models run; source stays unchanged.",
+    "run": "Execute one exact stored attempt only with current trusted configuration, signed one-use operation authority and protected review prerequisites. Network off, fixed rootless limits, no implicit retry or merge.",
+    "resume": "Revalidate an already completed stored execution only. Pending, interrupted or uncertain execution requires explicit recovery; never blindly replays programs.",
+    "response_protocol": "Describe input-only JSON process requests and actual JSON responses. No expected values, execution, model calls or proof are produced by this descriptor.",
+    "prepare": "Persist an UNSIGNED exact execution request. No permission, process, model or automatic replay. An actor label is not approval.",
+    "attempts": "Read private job attempt metadata, without worker capabilities, execution or writes.",
     "contract": (
         "Register an unreviewed protected JSON-response contract and exact source citations. "
         "Expected values stay in private job storage, outside candidate mounts. "
@@ -117,10 +51,12 @@ def register(ctx):
             # Resolve profile scope on EVERY call, never at module import.
             from plugins.plugin_storage import plugin_data_dir
 
-            return Engine(plugin_data_dir("modernisation-engine") / "private").invoke(
+            getter = getattr(ctx, "get_config", None)
+            operator_config = getter("operator_config", None) if callable(getter) else None
+            return Engine(plugin_data_dir("modernisation-engine") / "private", operator_config=operator_config).invoke(
                 action, arguments
             )
-        except (ContractError, OSError, ValueError) as error:
+        except (ContractError, OSError, ValueError, PermissionError) as error:
             return {
                 "error": "EXECUTION_UNAVAILABLE"
                 if action in ("run", "resume", "approve")
@@ -146,7 +82,9 @@ def register(ctx):
     def slash(raw_args):
         try:
             words = shlex.split(raw_args or "status")
-            if words and words[0] in ("run", "resume", "approve"):
+            getter = getattr(ctx, "get_config", None)
+            configured = getter("operator_config", None) if callable(getter) else None
+            if words and (words[0] == "approve" or (words[0] in ("run", "resume") and configured is None)):
                 return json.dumps(invoke(words[0], {}))
             parser = Parser(add_help=False)
             setup(parser)

@@ -1,8 +1,10 @@
 # Resume here — Modernisation Engine
 
-## ACTIVE BUILD — protected contract slice completed; remaining points 2–3 open
+## ACTIVE BUILD — configured protected checking works on owned fixtures; points 2–3 still open
 
-Private checkpoint 05742bd is saved. Slice 2a-1 adds strict unreviewed behavioural contracts, protected private storage and real native CLI/tool/registered-slash wiring. Current verified slice has 225 tests passed with zero failures/errors/skips, lint and validator green; source-bound receipt is `docs/evidence/remaining-build-20261020/contracts.json`. It does NOT implement the protected process checker, signed review, candidate ownership, attempt fencing/recovery or the full workflow. Continue those, do not stop after the schema slice. Native run/resume still refuse. The original M0–M8/MT01–18 obligations remain tracked in `docs/plans/2026-10-20-remaining-build.md`.
+Current source-bound checkpoint: `docs/evidence/remaining-build-20261020/configured-capture.json` (260 tests, zero failures/errors/skips; lint/validator green). The configured public Engine now performs assess/contract/signed review/baseline/proposal/migration review/engine-owned build/candidate/compare/report. A real rootless owned-fixture journey passed 15 protected responses per phase; original unchanged, both containers removed/read back, compare/report launched nothing. No expected values enter candidate mounts. Stored observations are re-derived against private artifacts, exact consumed authority and engine/source/contract bindings; imported JUnit remains reported-only. Native CLI/tool/registered-slash review acceptance/forgery/replay controls and shared standalone CLI parsing are exercised.
+
+Do NOT mark the parent points complete: explicit cancellation/retirement and exhaustive crash recovery, full native/gateway execution journey, complete strict schemas, broader adapters/resolution, offline model/budget/batch work, rule adequacy and signed narrow differences remain open. Completed-only resume revalidates; uncertain attempts refuse replay. Fixture keys are not Sahil approval. Live execution remains unconfigured, no live install/settings/credential/provider changes occurred, and point 4 stays HOLD. Continue from `docs/plans/2026-10-20-remaining-build.md`; preserve all original M0–M8/MT01–18 requirements.
 
 The section below records the earlier docs-only checkpoint; the current feature delta is now executable and separately verified. Historical v5 commands/signatures remain spent.
 

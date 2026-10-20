@@ -15,9 +15,18 @@ import time
 from pathlib import Path
 from .approvals import AuthorityDenied, ExternalAuthority, validate_operation
 from .identity import snapshot, read_source
-from .jsonio import ContractError, dumps, loads
+from .jsonio import ContractError, dumps, loads, MAX_BYTES
+from .runtime import environment_spec
 from .sandbox import SandboxSpec, docker_argv
 from .store import identifier
+
+
+class CaptureFailure(ContractError):
+    """Failed transport with bounded retained output, never accepted evidence."""
+
+    def __init__(self, message, partial_output):
+        super().__init__(message)
+        self.partial_output = partial_output
 
 
 class Executor:
@@ -29,6 +38,8 @@ class Executor:
         *,
         profile="default",
         phase="candidate",
+        input_data=None,
+        checkpoint=None,
     ):
         if phase not in ("baseline", "candidate"):
             raise ContractError("Unsupported execution phase")
@@ -37,20 +48,20 @@ class Executor:
         self.image = image
         self.profile = identifier(profile)
         self.phase = phase
+        if input_data is not None and (type(input_data) is not bytes or len(input_data) > MAX_BYTES):
+            raise ContractError("Protected input must be bounded immutable bytes")
+        if checkpoint is not None and not callable(checkpoint):
+            raise ContractError("Trusted checkpoint callback must be callable")
+        self.input_data = input_data
+        self._checkpoint_callback = checkpoint
 
     def environment(self, operation):
-        return {
-            "schema_version": 1,
-            "image": self.image,
-            "argv": operation["argv"],
-            "oracle_digest": operation["oracle_digest"],
-            "network": "none",
-            "readonly_source": True,
-            "collector": "bounded-process-v1",
-            "source_identity": "files-and-dirs-v2",
-            "phase": self.phase,
-            "engine_core_digest": snapshot(Path(__file__).parent)["digest"],
-        }
+        input_sha = hashlib.sha256(self.input_data).hexdigest() if self.input_data is not None else None
+        return environment_spec(operation, self.image, self.phase, input_sha)
+
+    def _checkpoint(self, label, details):
+        if self._checkpoint_callback is not None:
+            self._checkpoint_callback(label, details)
 
     def prepare(self, operation, source, oracle):
         validate_operation(operation)
@@ -153,7 +164,10 @@ class Executor:
             ]
             + args[3:]
         )  # Strip only the fixed Docker run/--rm prefix, never signed payload arguments.
+        if self.input_data is not None:
+            create[3:3] = ["--interactive", "--attach", "stdin"]
         nonce = self.authority.claim(grant, operation)
+        self._checkpoint("AUTHORITY_CLAIMED", {"nonce_sha256": hashlib.sha256(nonce.encode()).hexdigest()})
         self._write(
             attempt / "attempt.json",
             {
@@ -179,9 +193,15 @@ class Executor:
             )
             if time.time() >= grant["body"]["expires_at"]:
                 raise AuthorityDenied("Grant expired before start")
-            output, timed_out, truncated = self._collect(
-                container, operation["timeout_seconds"], operation["output_limit_bytes"]
-            )
+            self._checkpoint("START_REQUESTED", {"container_id": container})
+            try:
+                if self.input_data is None:
+                    output, timed_out, truncated = self._collect(container, operation["timeout_seconds"], operation["output_limit_bytes"])
+                else:
+                    output, timed_out, truncated = self._collect(container, operation["timeout_seconds"], operation["output_limit_bytes"], input_data=self.input_data)
+            except CaptureFailure as error:
+                self._write_bytes(attempt / "partial-output.bin", error.partial_output)
+                raise
             if timed_out or truncated:
                 subprocess.run(
                     ["docker", "kill", container], capture_output=True, timeout=15
@@ -215,6 +235,9 @@ class Executor:
                 "timed_out": timed_out,
                 "truncated": truncated,
                 "output_bytes": len(output),
+                "input_sha256": hashlib.sha256(self.input_data).hexdigest() if self.input_data is not None else None,
+                "input_bytes": len(self.input_data) if self.input_data is not None else 0,
+                "input_complete": (not timed_out and not truncated) if self.input_data is not None else None,
                 "output_sha256": hashlib.sha256(output).hexdigest(),
                 "duration_seconds": round(time.monotonic() - started, 6),
                 "container_removed": False,
@@ -225,6 +248,7 @@ class Executor:
                     "rule adequacy and mutation controls",
                 ],
             }
+            self._checkpoint("COLLECTED", {"process_exit_code": state["ExitCode"], "output_sha256": receipt["output_sha256"], "timed_out": timed_out, "truncated": truncated})
         finally:
             target = container or name
             subprocess.run(
@@ -243,9 +267,11 @@ class Executor:
                 raise ContractError(
                     "Container cleanup unverified; quarantine attempt, no resume"
                 )
+            self._write(attempt / "cleanup.json", {"container_id": container, "container_name": name, "removed": True, "capture_complete": receipt is not None})
             if receipt is not None:
                 receipt["container_removed"] = True
                 self._write(attempt / "receipt.json", receipt)
+                self._checkpoint("CLEANUP_VERIFIED", {"container_id": container, "removed": True})
         return receipt
 
     @staticmethod
@@ -261,26 +287,52 @@ class Executor:
             os.fsync(stream.fileno())
 
     @staticmethod
-    def _collect(container, timeout, limit):
+    def _collect(container, timeout, limit, *, input_data=None):
+        if input_data is not None and (type(input_data) is not bytes or len(input_data) > MAX_BYTES):
+            raise ContractError("Protected input must be bounded immutable bytes")
         process = subprocess.Popen(
-            ["docker", "start", "-a", container],
+            ["docker", "start", "-a", *(["-i"] if input_data is not None else []), container],
+            stdin=subprocess.PIPE if input_data is not None else subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
+            bufsize=0,
         )
         data = bytearray()
+        offset = 0
         deadline = time.monotonic() + timeout
         timed_out = False
         truncated = False
         try:
             with selectors.DefaultSelector() as selector:
-                selector.register(process.stdout, selectors.EVENT_READ)
+                os.set_blocking(process.stdout.fileno(), False)
+                selector.register(process.stdout, selectors.EVENT_READ, "read")
+                if input_data:
+                    os.set_blocking(process.stdin.fileno(), False)
+                    selector.register(process.stdin, selectors.EVENT_WRITE, "write")
+                elif process.stdin is not None:
+                    process.stdin.close()
                 while selector.get_map():
                     remaining = deadline - time.monotonic()
                     if remaining <= 0:
                         timed_out = True
                         break
                     for key, _ in selector.select(min(remaining, 0.2)):
-                        chunk = os.read(key.fileobj.fileno(), 65536)
+                        if key.data == "write":
+                            try:
+                                written = os.write(key.fileobj.fileno(), input_data[offset:offset + 65536])
+                            except BlockingIOError:
+                                continue
+                            except BrokenPipeError as error:
+                                raise CaptureFailure("Input transport closed before complete delivery", bytes(data)) from error
+                            offset += written
+                            if offset == len(input_data):
+                                selector.unregister(key.fileobj)
+                                process.stdin.close()
+                            continue
+                        try:
+                            chunk = os.read(key.fileobj.fileno(), 65536)
+                        except BlockingIOError:
+                            continue
                         if not chunk:
                             selector.unregister(key.fileobj)
                             continue
@@ -299,5 +351,7 @@ class Executor:
             if process.poll() is None:
                 process.kill()
                 process.wait(timeout=5)
+            if process.stdin is not None and not process.stdin.closed:
+                process.stdin.close()
             process.stdout.close()
         return bytes(data), timed_out, truncated

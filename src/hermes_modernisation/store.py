@@ -79,6 +79,7 @@ class Store:
                     1,
                     2,
                     3,
+                    4,
                 ):
                     raise ContractError("Unsupported store schema")
                 yield connection
@@ -118,16 +119,32 @@ class Store:
                 os.close(fd)
             with closing(sqlite3.connect(path, timeout=10)) as connection, connection:
                 connection.execute("PRAGMA synchronous=FULL")
+                connection.execute("PRAGMA foreign_keys=ON")
                 connection.execute("BEGIN IMMEDIATE")
                 version = connection.execute("PRAGMA user_version").fetchone()[0]
-                if version not in (0, 1, 2, 3):
+                if version not in (0, 1, 2, 3, 4):
                     raise ContractError(
                         "Unsupported store schema; export/restore required"
                     )
+                existing_tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+                required_tables = {"jobs"} if version else set()
+                if version >= 2:
+                    required_tables.add("details")
+                if version >= 3:
+                    required_tables.add("evaluations")
+                if version == 4:
+                    from .state import TABLES
+                    required_tables.update(TABLES)
+                    if not connection.execute("SELECT 1 FROM sqlite_master WHERE type='index' AND name='one_active_attempt_per_job'").fetchone():
+                        raise ContractError("Store schema corrupted: attempt fencing index missing")
+                if not required_tables <= existing_tables or (version == 0 and existing_tables):
+                    raise ContractError("Store schema corrupted; no implicit repair")
                 if version == 1:
                     self._backup(connection, "jobs.pre-v2.sqlite")
                 if version == 2:
                     self._backup(connection, "jobs.pre-v3.sqlite")
+                if version == 3:
+                    self._backup(connection, "jobs.pre-v4.sqlite")
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, request TEXT UNIQUE NOT NULL, input_hash TEXT NOT NULL, body BLOB NOT NULL)"
                 )
@@ -137,8 +154,10 @@ class Store:
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS evaluations (job_id TEXT NOT NULL, phase TEXT NOT NULL, source_digest TEXT NOT NULL, expectation_digest TEXT NOT NULL, body BLOB NOT NULL, body_sha256 TEXT NOT NULL, UNIQUE(job_id, phase))"
                 )
-                if version != 3:
-                    connection.execute("PRAGMA user_version=3")
+                from .state import install_schema
+                install_schema(connection)
+                if version != 4:
+                    connection.execute("PRAGMA user_version=4")
                 yield connection
         except (OSError, sqlite3.Error) as error:
             raise ContractError(
@@ -269,6 +288,22 @@ class Store:
                 "UPDATE jobs SET body=? WHERE id=?", (dumps(job), job_id)
             )
             return job
+
+    def attempts_for(self, job_id):
+        from .state import attempts_for
+        return attempts_for(self, job_id)
+
+    def claim_attempt(self, job_id, attempt_id, worker, *, now=None, lease_seconds=900):
+        from .state import claim
+        return claim(self, job_id, attempt_id, worker, now=now, lease_seconds=lease_seconds)
+
+    def checkpoint_attempt(self, job_id, attempt_id, lease, label, details, *, now=None):
+        from .state import checkpoint
+        return checkpoint(self, job_id, attempt_id, lease, label, details, now=now)
+
+    def stop_attempt(self, job_id, attempt_id, lease, outcome, reason, *, now=None):
+        from .state import stop
+        return stop(self, job_id, attempt_id, lease, outcome, reason, now=now)
 
     def save_contract(self, job_id, revision, contract):
         """Atomically retain unreviewed oracle bytes and their job-bound reference."""

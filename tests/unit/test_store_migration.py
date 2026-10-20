@@ -38,7 +38,7 @@ def test_v1_store_upgrades_without_dropping_original_job(tmp_path):
             "SELECT body FROM jobs WHERE id=?", ("original",)
         ).fetchone()[0] == dumps(original)
     with sqlite3.connect(path) as connection:
-        assert connection.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 4
         assert connection.execute(
             "SELECT name FROM sqlite_master WHERE name='details'"
         ).fetchone()
@@ -70,7 +70,7 @@ def test_v2_store_upgrades_with_backup_and_no_loss(tmp_path):
         assert connection.execute("SELECT body FROM jobs").fetchone()[0] == dumps(job)
         assert connection.execute("SELECT body FROM details").fetchone()[0] == b"shard"
     with sqlite3.connect(path) as connection:
-        assert connection.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 4
         assert connection.execute("SELECT body FROM jobs").fetchone()[0] == dumps(job)
         assert connection.execute("SELECT body FROM details").fetchone()[0] == b"shard"
         assert connection.execute(

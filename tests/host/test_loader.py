@@ -176,6 +176,11 @@ b=json.loads(slash(command))
 assert b==a,(a,b)
 malformed=json.loads(slash('contract --job '+args['job']+' --revision 1 --contract '+shlex.quote('{"schema_version":1,"schema_version":2}')))
 assert malformed['error']=='INVALID_ARGUMENTS',malformed
+request={'job':args['job'],'phase':'baseline','actor':'fixture_owner','request_id':'native_prepare','timeout_seconds':20,'output_limit_bytes':65536}
+draft=json.loads(registry.dispatch('modernise_prepare',request,scope=m.scope_key))
+assert draft.get('state')=='PREPARED' and not draft['permission_granted'],draft
+listed=json.loads(slash('attempts --job '+args['job']))
+assert listed['attempts']==[draft],listed
 assert m.unload('modernisation-engine')
 assert registry.get_entry('modernise_contract',scope=m.scope_key) is None
 print('NATIVE_CONTRACT_CLI_TOOL_SLASH_OK')
@@ -183,3 +188,62 @@ print('NATIVE_CONTRACT_CLI_TOOL_SLASH_OK')
     result = subprocess.run(["python", "-B", "-c", code], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "NATIVE_CONTRACT_CLI_TOOL_SLASH_OK" in result.stdout
+    prepared = subprocess.run(command + ["prepare", "--job", jid, "--phase", "baseline", "--actor", "fixture_owner", "--request-id", "native_prepare", "--timeout-seconds", "20", "--output-limit-bytes", "65536"], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert prepared.returncode == 0, prepared.stdout + prepared.stderr
+    planned = json.loads(prepared.stdout)
+    assert planned["state"] == "PREPARED" and not planned["permission_granted"]
+    listed = subprocess.run(command + ["attempts", "--job", jid], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert listed.returncode == 0, listed.stdout + listed.stderr
+    assert json.loads(listed.stdout)["attempts"] == [planned]
+
+
+def test_real_native_review_cli_and_dispatch_use_the_trusted_operator_setting(tmp_path):
+    import base64
+    import importlib.util
+    import time
+    import uuid
+
+    from hermes_modernisation.approvals import canonical
+
+    spec = importlib.util.spec_from_file_location("configured_review_fixture", ROOT / "tests/unit/test_review_requests.py")
+    fixture = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fixture)
+    _, _, contract, key, _, config = fixture.configured_fixture(tmp_path)
+    home, environment = installed_home(tmp_path)
+    (home / "config.yaml").write_text("plugins:\n  enabled: [modernisation-engine]\n  entries:\n    modernisation-engine:\n      settings:\n        operator_config: " + str(config) + "\n")
+
+    def call(*args):
+        result = subprocess.run(["/opt/hermes/.venv/bin/hermes", "modernise", *args], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+        assert result.returncode == 0, result.stdout + result.stderr
+        return json.loads(result.stdout)
+
+    jid = call("assess", "--repo", str(tmp_path / "legacy"), "--goal", "Native review fixture", "--request-id", "native_review")["job_id"]
+    call("contract", "--job", jid, "--revision", "0", "--contract", json.dumps(contract))
+    draft = call("review_request", "--job", jid, "--purpose", "contract", "--actor", "fixture_owner")
+    assert draft["permission_granted"] is False
+    body = {"schema_version": 1, "decision": draft["decision"], "nonce": "fixture_" + uuid.uuid4().hex, "expires_at": time.time() + 300, "max_uses": 1}
+    grant = {"body": body, "signature": base64.b64encode(key.sign(canonical(body))).decode()}
+    accepted = call("review", "--job", jid, "--grant", json.dumps(grant))
+    assert accepted["contract_review"]["authenticated"] is True
+    code = """import json,shlex
+from hermes_cli.plugins import discover_plugins,get_plugin_manager,get_plugin_command_handler
+from tools.registry import registry
+from plugins.plugin_storage import plugin_data_dir
+discover_plugins(); manager=get_plugin_manager()
+args=json.loads(PAYLOAD)
+forged=json.loads(registry.dispatch('modernise_review',{'job':args['job'],'grant':{'approved':True}},scope=manager.scope_key))
+assert forged['error']=='INVALID_REQUEST' and not forged['execution_performed'],forged
+request=json.loads(registry.dispatch('modernise_review_request',{'job':args['job'],'purpose':'contract','actor':'fixture_owner'},scope=manager.scope_key))
+assert not request['permission_granted'],request
+slash=get_plugin_command_handler('modernise')
+replayed=json.loads(slash('review --job '+args['job']+' --grant '+shlex.quote(json.dumps(args['grant']))))
+assert replayed['error']=='INVALID_REQUEST' and not replayed['execution_performed'],replayed
+assert json.loads(slash('status --job '+args['job']))['contract_review']['authenticated'] is True
+assert manager.unload('modernisation-engine')
+for name in ('review','review_request','proposal','build','run','resume'):
+    assert registry.get_entry('modernise_'+name,scope=manager.scope_key) is None,name
+print('NATIVE_CONFIGURED_REVIEW_CLI_TOOL_SLASH_OK')
+""".replace("PAYLOAD", repr(json.dumps({"job": jid, "grant": grant})))
+    result = subprocess.run(["python", "-B", "-c", code], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "NATIVE_CONFIGURED_REVIEW_CLI_TOOL_SLASH_OK" in result.stdout

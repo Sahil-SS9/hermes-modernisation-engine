@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "kind": "PrivateDevelopmentCheckpoint",
+  "scope": "Owned configured Engine JSON-response vertical slice; not complete points 2/3 or release qualification",
+  "base_commit": "47785ece1a413bc2e1581b1d651cceaff5d72817",
+  "source_state": "pre-commit dirty working snapshot; exact source/test manifests below",
+  "source_manifest": [
+    {
+      "path": "__init__.py",
+      "sha256": "94d0683c9599f565f10aa75075de7587c0c685bdfa086e7c593fb26707211e2e"
+    },
+    {
+      "path": "development/verify_configured_workflow.py",
+      "sha256": "a0ccd912a682bc10afb91bcb5eb46b127b877dab15f284c565e1f216cfb72fce"
+    },
+    {
+      "path": "development/verify_protected_capture.py",
+      "sha256": "f46ec4418efe96824011eebfd558266380707f4c178e51a410df3bdf3067e0d1"
+    },
+    {
+      "path": "plugin.yaml",
+      "sha256": "f96b626299498d50133c21a4346e69018e6e6f87e123419117a74e95ecfb46e7"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "27700a69cc21256801dfdd1d12e2a616e7096c9de7264a78bdc2c15ce963d0a8"
+    },
+    {
+      "path": "schemas/behaviour-contract-v1.json",
+      "sha256": "b3bdac3aa030d7dac1ea6c9bc26c23955eff12b1f9441fd412cf429e8ffc1514"
+    },
+    {
+      "path": "src/hermes_modernisation/__init__.py",
+      "sha256": "d021c00ffd7cb8486b6c566965019ce21b3a157bfe28dba855a072bcf035fade"
+    },
+    {
+      "path": "src/hermes_modernisation/__main__.py",
+      "sha256": "a40a5e568645cc7aa8bc45bd2c1ef3c6829bd017e39b20f852d4c28a375e2940"
+    },
+    {
+      "path": "src/hermes_modernisation/adapters/hermes.py",
+      "sha256": "746ae1c59a4e34af9f1fc7e085bffc9ca045010563585991efd2bf0de6741820"
+    },
+    {
+      "path": "src/hermes_modernisation/approvals.py",
+      "sha256": "d71c0e1da4b4c1f6da7acb8270847c6acacb2963ec1c02336c2c5b26b1167066"
+    },
+    {
+      "path": "src/hermes_modernisation/baseline.py",
+      "sha256": "6dcdbcb3d75547131f2393d1ee2f7eddcacbfc9561ce646ce144c37a2bf156d6"
+    },
+    {
+      "path": "src/hermes_modernisation/candidates.py",
+      "sha256": "f7838aa6a8de2a101e67211746ffebca34e47a48a8ae94a1848f1a33d1029606"
+    },
+    {
+      "path": "src/hermes_modernisation/compare.py",
+      "sha256": "68d1f1ae3cf72d867eb3e56479212eaccf1c9e41873a399172a5351222285dac"
+    },
+    {
+      "path": "src/hermes_modernisation/contracts.py",
+      "sha256": "9f9dcf63bc9c7213a26870915171830b210269fcba702396f3f1f3501bdeee61"
+    },
+    {
+      "path": "src/hermes_modernisation/controller.py",
+      "sha256": "f2e80dab55cf8cb6898a5c72377e6ad04467eb83c9b6125dfc69541ef9a2f072"
+    },
+    {
+      "path": "src/hermes_modernisation/data/uv.lock.v4-replay",
+      "sha256": "a12493e00ea9c28d204dadbe52a3edd6a63f14b23f390a361591dfebafe49b25"
+    },
+    {
+      "path": "src/hermes_modernisation/evaluator.py",
+      "sha256": "f985f8a8eba6f57b18bf5d3976927378415931bbe23a95aac394441818b322fd"
+    },
+    {
+      "path": "src/hermes_modernisation/evidence.py",
+      "sha256": "c68342559d3ce62e151b560b85220e34c3144d674bedf1c7383dfde0c807a872"
+    },
+    {
+      "path": "src/hermes_modernisation/executor.py",
+      "sha256": "4abbacaff44e8ede86eacdb19acabf63d14092fe9d40014a63e035e0e9b82b89"
+    },
+    {
+      "path": "src/hermes_modernisation/identity.py",
+      "sha256": "45c40c470c790327a3a4feb9fa8a0f2e498436c07833a9ecf193c6134fdbbeeb"
+    },
+    {
+      "path": "src/hermes_modernisation/interface.py",
+      "sha256": "5f0b6e020e1498897121170047e063c918e4517ee4106bec35e0538e4b350a43"
+    },
+    {
+      "path": "src/hermes_modernisation/inventory.py",
+      "sha256": "44a9d96bb619f3c28dc98b095e8ca0ad7c2ed1ac00708c527ac56c54909ca435"
+    },
+    {
+      "path": "src/hermes_modernisation/jsonio.py",
+      "sha256": "f268ff01edaba26ed0898172d7479054c95c63fe2f22645a26ad8caa4a7c4c14"
+    },
+    {
+      "path": "src/hermes_modernisation/observations.py",
+      "sha256": "4cc1c61ed9df5491a6cd806f813066ee9fa130d483fd39f28a41efda73c8aa3d"
+    },
+    {
+      "path": "src/hermes_modernisation/operations.py",
+      "sha256": "c71043a75690e476c96e1b2abdbe3ddbf35d2a8c968db5cb1f889220b1a76685"
+    },
+    {
+      "path": "src/hermes_modernisation/operator.py",
+      "sha256": "02e1e139f300a59908acc990350ad4fbcc96ec7c20068811b60e198ba3538061"
+    },
+    {
+      "path": "src/hermes_modernisation/proof.py",
+      "sha256": "6c02d09f99e61fef3b9e8ddd4798cd786994163ef32cef8cbf40650300689260"
+    },
+    {
+      "path": "src/hermes_modernisation/proposals.py",
+      "sha256": "43820345bafeb426e24dac684b205ece0f24ffcbaecc38e7729ca18b4dafab85"
+    },
+    {
+      "path": "src/hermes_modernisation/recipes.py",
+      "sha256": "2ec9dd01fc163707919d42a6c55662d6c45b2ef5e459ddb852eeac5266f42edd"
+    },
+    {
+      "path": "src/hermes_modernisation/report.py",
+      "sha256": "0186b690f0f667821df8d81750fbc2331f5f94f0dbed6ebeaf82f7a6dc01c976"
+    },
+    {
+      "path": "src/hermes_modernisation/reviews.py",
+      "sha256": "03990263529c08d082d91dfa86d8f58b95f28b61330cf7565500cd7ebeb7807f"
+    },
+    {
+      "path": "src/hermes_modernisation/runner.py",
+      "sha256": "862c7f092cc7586e4a95a781d95689ed9e98f8a9c34d0afdf894c00cdeca3dbf"
+    },
+    {
+      "path": "src/hermes_modernisation/runtime.py",
+      "sha256": "36b9b0f75446b7e23c221bd2b8207e216166f6df4a3465153053aabad9b19129"
+    },
+    {
+      "path": "src/hermes_modernisation/sandbox.py",
+      "sha256": "46c1c2530af4ed019db0af25665e0339ba518036e9b1518830dc8bb55aaeb97b"
+    },
+    {
+      "path": "src/hermes_modernisation/service.py",
+      "sha256": "e4b0941448954dbcea4ef05e65f7fe44c501dea30d49f99851ed712e339e07bb"
+    },
+    {
+      "path": "src/hermes_modernisation/state.py",
+      "sha256": "e1ac9c13f25d1408428b5f3329a08bf4c50e9921509c3cc4d0fc7c780fb443d2"
+    },
+    {
+      "path": "src/hermes_modernisation/store.py",
+      "sha256": "6a4447564aa6c763dbebb8f2688d621d3ccfed71b013a3a7e1281950710d9dd6"
+    },
+    {
+      "path": "tests/host/test_loader.py",
+      "sha256": "cc359b6658006fea41273c52b3e0c70147578cf44728aa2e11f1c434b6efdab5"
+    },
+    {
+      "path": "tests/host/test_sdk_cli_namespace.py",
+      "sha256": "bd68df9361141bb3c1aa1e68fab3c81ba533b734a52f0fd026c4ca5121224edb"
+    },
+    {
+      "path": "tests/host/test_validator.py",
+      "sha256": "36be10d5db391e5fc9f703cdaf5f2bbc2d4242785589644587cdbbd10960f203"
+    },
+    {
+      "path": "tests/integration/test_benchmark_metadata.py",
+      "sha256": "259cac5c91da375451c46c0be00f8b15d7bdaedb56733bef696e706e464cf0ed"
+    },
+    {
+      "path": "tests/integration/test_reference_contract.py",
+      "sha256": "57a37ab736e2aa298c719a7e533115552fca7d876207da79fbba7e38be7c6f65"
+    },
+    {
+      "path": "tests/platform/test_native_isolation.py",
+      "sha256": "f7eb4dc0efa63b903caca19ba16d51008c012bdc29570cc15b0fef6da63f4b4c"
+    },
+    {
+      "path": "tests/unit/data/baseline/.github-workflows-ci.yml",
+      "sha256": "ebf3db4baea312a8bf98deea203c6520ba5f242e78948f8a62f3be8b24f2c7fb"
+    },
+    {
+      "path": "tests/unit/data/baseline/pyproject.toml",
+      "sha256": "427173b5c439c94a62e25c32b7b2365f831e2637d74fbd5e1a251f9da6bb50ce"
+    },
+    {
+      "path": "tests/unit/data/baseline/uv.lock",
+      "sha256": "a28285e4787ac1a478a3fc1942b55b4c631678c201566276a3b73d23154b2396"
+    },
+    {
+      "path": "tests/unit/test_attempt_state.py",
+      "sha256": "b280f6078285c58d5a72b4c2e56f5027669b625f4431beea5e94f9499e4ff2ea"
+    },
+    {
+      "path": "tests/unit/test_authority.py",
+      "sha256": "5af08713327e6827a7453c8001ef4c89ce321765ee37c58a48a63b20ef3740ab"
+    },
+    {
+      "path": "tests/unit/test_behaviour_contract.py",
+      "sha256": "2439515291041893518ce6f75a62f69dc4cf6deb17febb96158207970bacf24f"
+    },
+    {
+      "path": "tests/unit/test_compare.py",
+      "sha256": "5a1cbd7fe9cec3e27ab43fa1fcf7b21f50f57202792e49e96f746a1fcdeb2a52"
+    },
+    {
+      "path": "tests/unit/test_configured_workflow.py",
+      "sha256": "26922abd62c6f264ed5d6cba8053765dd272e259886fc094d96e5d07289d3936"
+    },
+    {
+      "path": "tests/unit/test_evaluator.py",
+      "sha256": "924f39f0e2091b4c29412f3ba217d123e412db5fa601ea8f68c43c5c597bc7fd"
+    },
+    {
+      "path": "tests/unit/test_evidence_workflow.py",
+      "sha256": "a8aa7568e2e9d9c082b3d67b4c2c98efb33ad5754762d04c6742e76ff1662820"
+    },
+    {
+      "path": "tests/unit/test_executor.py",
+      "sha256": "6699495fc1b9da08571adc350ed13bfc8fad28bd439119abbc34648872b789f5"
+    },
+    {
+      "path": "tests/unit/test_executor_streaming.py",
+      "sha256": "ef9e28086ee9438fcc5753b430de5013510636ba58d44e8f8bf493119e51faf4"
+    },
+    {
+      "path": "tests/unit/test_identity.py",
+      "sha256": "83be33529809a9e8556d6c72401a0a9a2c98ac749e7eac492afbd319d377c2b3"
+    },
+    {
+      "path": "tests/unit/test_inventory.py",
+      "sha256": "1a3734c72a14fcc5551d6b734075c0d6168e8ef19cf013be85ebaf2e0f4b4394"
+    },
+    {
+      "path": "tests/unit/test_inventory_sharding.py",
+      "sha256": "10acae01c5495616f04b36d85c1083f4c4debc6b368e7d2a297f340ba51262f4"
+    },
+    {
+      "path": "tests/unit/test_jsonio.py",
+      "sha256": "e2f68f0ac2ace49e256d03b99827e23e26b122e487de0d92c305617bc97369da"
+    },
+    {
+      "path": "tests/unit/test_lock_recipe.py",
+      "sha256": "1f8a97ea94bb5a503cf59f3a5294b919f4c9cfd1aaa940aad489b55525dae084"
+    },
+    {
+      "path": "tests/unit/test_metadata_recipe.py",
+      "sha256": "7b38b224701814f6779af5286ce83510b1f8f6aef0d1a56264377f02dfe1c6b5"
+    },
+    {
+      "path": "tests/unit/test_producer_workflow.py",
+      "sha256": "0c44600cd8ba560c1d77c57abdbed11c3f6e7f66d60f64184aa86535b5e28a99"
+    },
+    {
+      "path": "tests/unit/test_proof.py",
+      "sha256": "0ca2e4ba326b046cb754abdb6df8cac99af6ee96a0d982785ca358b61b0c4256"
+    },
+    {
+      "path": "tests/unit/test_proposals.py",
+      "sha256": "a127b55099756758d4b6768e9c174006c6acfdb0c0c01224d2e97d1eeada3ae2"
+    },
+    {
+      "path": "tests/unit/test_readonly_store.py",
+      "sha256": "228901ce267de7f1785fc45d5bbd2dbff390b6572a9294094e65be0d97fc21c4"
+    },
+    {
+      "path": "tests/unit/test_report.py",
+      "sha256": "803e31085e22fd4bda56435dc6105af0fe08b05e1919b4ae62368395925cccaa"
+    },
+    {
+      "path": "tests/unit/test_response_protocol.py",
+      "sha256": "453b2e4f5ee44d861f68868895ec6077faa7ca2aef10960082d083cf26b30790"
+    },
+    {
+      "path": "tests/unit/test_review_regressions.py",
+      "sha256": "d3823e2b18a92d934bfc0fbbb36e343e7a537becd2f9e4f843c72dd99c551c6c"
+    },
+    {
+      "path": "tests/unit/test_review_requests.py",
+      "sha256": "a8d5f6dc4eed7ea3117c51cb010047e991a93608f3c416bcb20120ee44b024f6"
+    },
+    {
+      "path": "tests/unit/test_sandbox_policy.py",
+      "sha256": "9c6d31985bae414327aad03fb76822b5757644ddf4bf3b8784160ff07a5345de"
+    },
+    {
+      "path": "tests/unit/test_service.py",
+      "sha256": "9729d38a96c75581cb28813141f184b6c124983d2738395f28914679f73778c7"
+    },
+    {
+      "path": "tests/unit/test_standalone_cli.py",
+      "sha256": "1b16ba49811a27548edbd23d377e2bdc12fd81e619ca9ed2dd34c7b8122a7083"
+    },
+    {
+      "path": "tests/unit/test_store.py",
+      "sha256": "9a81d122c31c34b6bd16fd016c1e618663c001bf1cf5ab9e28ad5ca79583c1e6"
+    },
+    {
+      "path": "tests/unit/test_store_migration.py",
+      "sha256": "8f98963b695c8a4022af6274c592e2573a530565968e3ef8c0f51ed0e4f761d3"
+    }
+  ],
+  "gate_receipts": [
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-all-1792531063120519614.json",
+      "sha256": "9ffaf8c41253b1d6f418ba54d0234294273c710144b3dd82a5a6018c9d8fbc63",
+      "exit_code": 0,
+      "counts": {
+        "tests": 260,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "container_removed": true
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-lint-1792531063836254314.json",
+      "sha256": "72fe7811012764281639e61f11445bfe7fda4b8c5cdd38cb418d5f9eb0b36af3",
+      "exit_code": 0,
+      "counts": null,
+      "container_removed": true
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-validate-1792531070322848438.json",
+      "sha256": "14ca3d9d97e37263356f2d0515f3e39b435eee74b2ed6d59e29fdd8ee334e508",
+      "exit_code": 0,
+      "counts": null,
+      "container_removed": true
+    }
+  ],
+  "witnessed_reds": [
+    "development-unit-1792499353922811534.json",
+    "development-all-1792500399811254267.json",
+    "development-unit-1792501272173843622.json",
+    "development-unit-1792530026672955125.json",
+    "development-unit-1792530089907329219.json",
+    "development-unit-1792530426172153484.json",
+    "development-all-1792530780987627911.json",
+    "development-unit-1792530915796003094.json"
+  ],
+  "configured_fixture": {
+    "path": "/home/kensei/projects/modernisation-benchmarks/control/protected-v1/workflow-0d17435c32724310ba0571f72728d96c/result.json",
+    "sha256": "3d98d34e421ba7400cc9555f9ee22f8341b3c9f26b31487bc9080621a7220df3",
+    "engine_core_digest": "c36fbbee9742d8c1f3636fa28261d4d2ee0865e90368b32008ec83fd3e301ebe",
+    "baseline_passed": 15,
+    "candidate_passed": 15,
+    "observed_comparison_grade": "independently-observed-json-process-response",
+    "outer_verdict": "NOT_PROVEN",
+    "source_unchanged": true,
+    "container_cleanup_readback_count": 2,
+    "compare_report_process_launches": 0,
+    "fixture_authority_only": true,
+    "real_owner_approval_used": false,
+    "native_full_workflow_proven": false
+  },
+  "remaining": [
+    "explicit cancellation/recovery and exhaustive crash/fencing acceptance",
+    "full strict job/rule/receipt/report schemas",
+    "complete native interactive/gateway execution journey and supported-host/platform matrix",
+    "broader upgrade/dependency-resolution and framework/module adapters",
+    "bounded offline optional model proposals/budgets/disjoint batches",
+    "signed narrow normalisation/differences and rule adequacy/mutation acceptance",
+    "complete original M0\u2013M8/MT01\u201318 reconciliation"
+  ],
+  "point4": "HOLD",
+  "live_install_or_config_changes": false,
+  "paid_or_model_egress": false,
+  "new_real_project_execution": false
+}
