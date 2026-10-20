@@ -50,9 +50,34 @@ def partition_assessment(assessment):
     return summary, blobs
 
 
+def decode_job(connection, raw, job_id, profile=None):
+    """Decode current headers against their sealed private contract, without source I/O."""
+    from .models import bind_contract, validate_job
+
+    value = validate_job(loads(raw), job_id, profile)
+    reference = value.get("behaviour_contract")
+    if value.get("kind") == "MigrationJob" and reference is not None:
+        row = connection.execute("SELECT body FROM details WHERE hash=?", (reference["digest"],)).fetchone()
+        if row is None or hashlib.sha256(row[0]).hexdigest() != reference["digest"]:
+            raise ContractError("Protected contract metadata missing or corrupted")
+        contract = loads(row[0])
+        expected = {"kind": "MigrationJob"}
+        try:
+            bind_contract(expected, contract)
+        except (KeyError, TypeError) as error:
+            raise ContractError("Protected contract metadata structure corrupted") from error
+        keys = ("track", "adapter_version", "supported_behaviours", "input_split")
+        if dumps({key: value[key] for key in keys}) != dumps({key: expected[key] for key in keys}):
+            raise ContractError("Migration metadata contradicts the sealed protected contract")
+    return value
+
+
 class Store:
-    def __init__(self, root):
+    def __init__(self, root, *, profile=None):
         self.root = Path(root)
+        self.profile = profile
+        if profile is not None:
+            identifier(profile)
 
     @contextmanager
     def read_connection(self):
@@ -189,7 +214,7 @@ class Store:
         finally:
             os.close(fd)
 
-    def create(self, request_id, repo, goal, assessment):
+    def create(self, request_id, repo, goal, assessment, *, migration=False):
         identifier(request_id)
         if type(goal) is not str or not 1 <= len(goal) <= 4000:
             raise ContractError("Goal required, maximum 4000 characters")
@@ -197,6 +222,10 @@ class Store:
             raise ContractError("Absolute source path required")
         summary, blobs = partition_assessment(assessment)
         payload = {"repo": repo, "goal": goal, "assessment": summary}
+        if type(migration) is not bool:
+            raise ContractError("Explicit current/legacy job construction required")
+        if migration:
+            payload.update(kind="MigrationJob", profile=self.profile or "default")
         fingerprint = hashlib.sha256(dumps(payload)).hexdigest()
         with self.connection() as connection:
             row = connection.execute(
@@ -219,6 +248,10 @@ class Store:
                 "execution_receipts": [],
                 "execution_available": False,
             }
+            if migration:
+                from .models import metadata, validate_job
+                job.update(kind="MigrationJob", **metadata(self.profile or "default"))
+                validate_job(job, job["job_id"], self.profile)
             for digest, body in blobs.items():
                 connection.execute(
                     "INSERT OR IGNORE INTO details VALUES (?,?)", (digest, body)
@@ -237,7 +270,7 @@ class Store:
             ).fetchone()
             if row is None:
                 raise ContractError("Job not found in current profile")
-            return loads(row[0])
+            return decode_job(connection, row[0], job_id, self.profile)
 
     def details(self, job_id, section, page):
         if (
@@ -332,6 +365,9 @@ class Store:
                 raise ContractError("Protected contract storage is corrupted")
             connection.execute("INSERT OR IGNORE INTO details VALUES (?,?)", (summary["digest"], raw))
             job.update(revision=revision + 1, state="BASELINE_AUTHORITY_REQUIRED", behaviour_contract=summary)
+            from .models import bind_contract, validate_job
+            bind_contract(job, contract)
+            validate_job(job, job_id, self.profile)
             connection.execute("UPDATE jobs SET body=? WHERE id=?", (dumps(job), job_id))
             return job
 

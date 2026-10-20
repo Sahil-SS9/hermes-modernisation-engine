@@ -1,0 +1,547 @@
+{
+  "schema_version": 1,
+  "kind": "PrivateSealedMigrationJobHeaderCheckpoint",
+  "base_commit": "490276000b3cd9070229278ea01383fda00131f7",
+  "scope": "Current MigrationJob v1 header/profile/row identity and exact metadata pairing with sealed private contract bytes; not complete M1 evidence models",
+  "source_state": "pre-commit exact working source/test/schema snapshot",
+  "source_manifest": [
+    {
+      "path": "__init__.py",
+      "sha256": "94d0683c9599f565f10aa75075de7587c0c685bdfa086e7c593fb26707211e2e"
+    },
+    {
+      "path": "development/verify_build_recovery.py",
+      "sha256": "b014473c6eed555fb18031383644dcddbd3128e02630108ab306f30fff29c709"
+    },
+    {
+      "path": "development/verify_configured_workflow.py",
+      "sha256": "a0ccd912a682bc10afb91bcb5eb46b127b877dab15f284c565e1f216cfb72fce"
+    },
+    {
+      "path": "development/verify_runtime_recovery.py",
+      "sha256": "34122a17090121345b3436c26a41d91ae8bf5ea4a2821e64513a52935ea18845"
+    },
+    {
+      "path": "plugin.yaml",
+      "sha256": "6a491648cbac9c8826e806c550d0ff87eca9daff58e63dc7935d1a8a685fdd69"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "27700a69cc21256801dfdd1d12e2a616e7096c9de7264a78bdc2c15ce963d0a8"
+    },
+    {
+      "path": "schemas/behaviour-contract-v1.json",
+      "sha256": "b3bdac3aa030d7dac1ea6c9bc26c23955eff12b1f9441fd412cf429e8ffc1514"
+    },
+    {
+      "path": "schemas/migration-job-v1.json",
+      "sha256": "285ef414bd02821f52e5347020d3ff7c633573c1614574cf59864a0faa296ad0"
+    },
+    {
+      "path": "src/hermes_modernisation/__init__.py",
+      "sha256": "d021c00ffd7cb8486b6c566965019ce21b3a157bfe28dba855a072bcf035fade"
+    },
+    {
+      "path": "src/hermes_modernisation/__main__.py",
+      "sha256": "c9e866317376cc2b81ba109149442a5a8d0c01ee727eb466bc7f5a0a04126d8e"
+    },
+    {
+      "path": "src/hermes_modernisation/adapters/hermes.py",
+      "sha256": "9f441cf8ce6cc6267da547e9199b092241bf0672cf7983519a82113a38cb2a4e"
+    },
+    {
+      "path": "src/hermes_modernisation/approvals.py",
+      "sha256": "f65afb9198664224731492a4078095f97925f40d1c51c90e821213f686c53c8a"
+    },
+    {
+      "path": "src/hermes_modernisation/baseline.py",
+      "sha256": "6dcdbcb3d75547131f2393d1ee2f7eddcacbfc9561ce646ce144c37a2bf156d6"
+    },
+    {
+      "path": "src/hermes_modernisation/build_recovery.py",
+      "sha256": "49575fa4af04ad506a60a8222776bdd92e9b21ac6bf1722ceb3dd91ed48b6e41"
+    },
+    {
+      "path": "src/hermes_modernisation/candidates.py",
+      "sha256": "497599da3eedf725775ee5fe0c882941ecf46e34102e0e66a277114a5335ebe4"
+    },
+    {
+      "path": "src/hermes_modernisation/compare.py",
+      "sha256": "68d1f1ae3cf72d867eb3e56479212eaccf1c9e41873a399172a5351222285dac"
+    },
+    {
+      "path": "src/hermes_modernisation/contracts.py",
+      "sha256": "9f9dcf63bc9c7213a26870915171830b210269fcba702396f3f1f3501bdeee61"
+    },
+    {
+      "path": "src/hermes_modernisation/control.py",
+      "sha256": "d91776d5cf056a9a113a0b8d2cf9de6af3a07ccd3f152e27d68543fc55f415da"
+    },
+    {
+      "path": "src/hermes_modernisation/controller.py",
+      "sha256": "08976906bc803f883524d7c06117af28af0b6cf97a11e69db4bf13ef532a1714"
+    },
+    {
+      "path": "src/hermes_modernisation/data/uv.lock.v4-replay",
+      "sha256": "a12493e00ea9c28d204dadbe52a3edd6a63f14b23f390a361591dfebafe49b25"
+    },
+    {
+      "path": "src/hermes_modernisation/errors.py",
+      "sha256": "1e250ce745b4b591a2d0fa4dd7f7eef3eab00a8998f259e6bd2d6acfa68381b5"
+    },
+    {
+      "path": "src/hermes_modernisation/evaluator.py",
+      "sha256": "f985f8a8eba6f57b18bf5d3976927378415931bbe23a95aac394441818b322fd"
+    },
+    {
+      "path": "src/hermes_modernisation/evidence.py",
+      "sha256": "c68342559d3ce62e151b560b85220e34c3144d674bedf1c7383dfde0c807a872"
+    },
+    {
+      "path": "src/hermes_modernisation/executor.py",
+      "sha256": "768f1cb0322b70f641f490191f91386c8c5a8c7a82347ede1b4e12790a7f68b6"
+    },
+    {
+      "path": "src/hermes_modernisation/identity.py",
+      "sha256": "45c40c470c790327a3a4feb9fa8a0f2e498436c07833a9ecf193c6134fdbbeeb"
+    },
+    {
+      "path": "src/hermes_modernisation/interface.py",
+      "sha256": "f79abfd237f0138c5983b8764bf2343cf9db80f296cdc5a13bb6462b8facad44"
+    },
+    {
+      "path": "src/hermes_modernisation/inventory.py",
+      "sha256": "44a9d96bb619f3c28dc98b095e8ca0ad7c2ed1ac00708c527ac56c54909ca435"
+    },
+    {
+      "path": "src/hermes_modernisation/jsonio.py",
+      "sha256": "f268ff01edaba26ed0898172d7479054c95c63fe2f22645a26ad8caa4a7c4c14"
+    },
+    {
+      "path": "src/hermes_modernisation/models.py",
+      "sha256": "919ba921e0ce3e895de4c7920e4d5630378fe2314d87173a78fe30267557e9fb"
+    },
+    {
+      "path": "src/hermes_modernisation/observations.py",
+      "sha256": "4cc1c61ed9df5491a6cd806f813066ee9fa130d483fd39f28a41efda73c8aa3d"
+    },
+    {
+      "path": "src/hermes_modernisation/operations.py",
+      "sha256": "c71043a75690e476c96e1b2abdbe3ddbf35d2a8c968db5cb1f889220b1a76685"
+    },
+    {
+      "path": "src/hermes_modernisation/operator.py",
+      "sha256": "02e1e139f300a59908acc990350ad4fbcc96ec7c20068811b60e198ba3538061"
+    },
+    {
+      "path": "src/hermes_modernisation/proof.py",
+      "sha256": "6c02d09f99e61fef3b9e8ddd4798cd786994163ef32cef8cbf40650300689260"
+    },
+    {
+      "path": "src/hermes_modernisation/proposals.py",
+      "sha256": "43820345bafeb426e24dac684b205ece0f24ffcbaecc38e7729ca18b4dafab85"
+    },
+    {
+      "path": "src/hermes_modernisation/recipes.py",
+      "sha256": "2ec9dd01fc163707919d42a6c55662d6c45b2ef5e459ddb852eeac5266f42edd"
+    },
+    {
+      "path": "src/hermes_modernisation/report.py",
+      "sha256": "0186b690f0f667821df8d81750fbc2331f5f94f0dbed6ebeaf82f7a6dc01c976"
+    },
+    {
+      "path": "src/hermes_modernisation/reviews.py",
+      "sha256": "03990263529c08d082d91dfa86d8f58b95f28b61330cf7565500cd7ebeb7807f"
+    },
+    {
+      "path": "src/hermes_modernisation/runner.py",
+      "sha256": "862c7f092cc7586e4a95a781d95689ed9e98f8a9c34d0afdf894c00cdeca3dbf"
+    },
+    {
+      "path": "src/hermes_modernisation/runtime.py",
+      "sha256": "36b9b0f75446b7e23c221bd2b8207e216166f6df4a3465153053aabad9b19129"
+    },
+    {
+      "path": "src/hermes_modernisation/runtime_lock.py",
+      "sha256": "041263244bf95af988a60a7daf3f64a8439ca8fa3cd91a4b1ec393b1312c1275"
+    },
+    {
+      "path": "src/hermes_modernisation/sandbox.py",
+      "sha256": "46c1c2530af4ed019db0af25665e0339ba518036e9b1518830dc8bb55aaeb97b"
+    },
+    {
+      "path": "src/hermes_modernisation/service.py",
+      "sha256": "38b4744e56407cc0580c5dcc4bcb33be409d93e3bea2be25202b2fc8cbd13e47"
+    },
+    {
+      "path": "src/hermes_modernisation/state.py",
+      "sha256": "d068b097f6c6e348ffcd308bd13afd8641ac5cb4b766431b5f0526c098a7ecd5"
+    },
+    {
+      "path": "src/hermes_modernisation/store.py",
+      "sha256": "a110b4f963a7efd6be08b83930b0faa3fb6a247fa626befdf34ce4af68396de9"
+    },
+    {
+      "path": "tests/host/test_loader.py",
+      "sha256": "104778d91453958b5b037120d15f2b6428e40eae1930c12fbfa535671d95b5a0"
+    },
+    {
+      "path": "tests/host/test_sdk_cli_namespace.py",
+      "sha256": "bd68df9361141bb3c1aa1e68fab3c81ba533b734a52f0fd026c4ca5121224edb"
+    },
+    {
+      "path": "tests/host/test_validator.py",
+      "sha256": "36be10d5db391e5fc9f703cdaf5f2bbc2d4242785589644587cdbbd10960f203"
+    },
+    {
+      "path": "tests/integration/test_benchmark_metadata.py",
+      "sha256": "259cac5c91da375451c46c0be00f8b15d7bdaedb56733bef696e706e464cf0ed"
+    },
+    {
+      "path": "tests/integration/test_reference_contract.py",
+      "sha256": "57a37ab736e2aa298c719a7e533115552fca7d876207da79fbba7e38be7c6f65"
+    },
+    {
+      "path": "tests/platform/test_native_isolation.py",
+      "sha256": "f7eb4dc0efa63b903caca19ba16d51008c012bdc29570cc15b0fef6da63f4b4c"
+    },
+    {
+      "path": "tests/unit/data/baseline/.github-workflows-ci.yml",
+      "sha256": "ebf3db4baea312a8bf98deea203c6520ba5f242e78948f8a62f3be8b24f2c7fb"
+    },
+    {
+      "path": "tests/unit/data/baseline/pyproject.toml",
+      "sha256": "427173b5c439c94a62e25c32b7b2365f831e2637d74fbd5e1a251f9da6bb50ce"
+    },
+    {
+      "path": "tests/unit/data/baseline/uv.lock",
+      "sha256": "a28285e4787ac1a478a3fc1942b55b4c631678c201566276a3b73d23154b2396"
+    },
+    {
+      "path": "tests/unit/test_attempt_state.py",
+      "sha256": "42df2b7c29447af620724dd48460f8fe14035b7230c86ed42724c9fdbcbbde60"
+    },
+    {
+      "path": "tests/unit/test_authority.py",
+      "sha256": "5af08713327e6827a7453c8001ef4c89ce321765ee37c58a48a63b20ef3740ab"
+    },
+    {
+      "path": "tests/unit/test_behaviour_contract.py",
+      "sha256": "2439515291041893518ce6f75a62f69dc4cf6deb17febb96158207970bacf24f"
+    },
+    {
+      "path": "tests/unit/test_compare.py",
+      "sha256": "5a1cbd7fe9cec3e27ab43fa1fcf7b21f50f57202792e49e96f746a1fcdeb2a52"
+    },
+    {
+      "path": "tests/unit/test_configured_workflow.py",
+      "sha256": "26922abd62c6f264ed5d6cba8053765dd272e259886fc094d96e5d07289d3936"
+    },
+    {
+      "path": "tests/unit/test_control_requests.py",
+      "sha256": "16bd8f55b83a1a176f7369ee0968dad35f4cb2c69aa06211ea398f154d4aa382"
+    },
+    {
+      "path": "tests/unit/test_evaluator.py",
+      "sha256": "924f39f0e2091b4c29412f3ba217d123e412db5fa601ea8f68c43c5c597bc7fd"
+    },
+    {
+      "path": "tests/unit/test_evidence_workflow.py",
+      "sha256": "a8aa7568e2e9d9c082b3d67b4c2c98efb33ad5754762d04c6742e76ff1662820"
+    },
+    {
+      "path": "tests/unit/test_executor.py",
+      "sha256": "6699495fc1b9da08571adc350ed13bfc8fad28bd439119abbc34648872b789f5"
+    },
+    {
+      "path": "tests/unit/test_executor_streaming.py",
+      "sha256": "37f336ca7ed78d9864d76623aa5e159e0253ac7f5ab581f8bf0c744e692a7ece"
+    },
+    {
+      "path": "tests/unit/test_identity.py",
+      "sha256": "83be33529809a9e8556d6c72401a0a9a2c98ac749e7eac492afbd319d377c2b3"
+    },
+    {
+      "path": "tests/unit/test_inventory.py",
+      "sha256": "1a3734c72a14fcc5551d6b734075c0d6168e8ef19cf013be85ebaf2e0f4b4394"
+    },
+    {
+      "path": "tests/unit/test_inventory_sharding.py",
+      "sha256": "10acae01c5495616f04b36d85c1083f4c4debc6b368e7d2a297f340ba51262f4"
+    },
+    {
+      "path": "tests/unit/test_jsonio.py",
+      "sha256": "e2f68f0ac2ace49e256d03b99827e23e26b122e487de0d92c305617bc97369da"
+    },
+    {
+      "path": "tests/unit/test_lock_recipe.py",
+      "sha256": "1f8a97ea94bb5a503cf59f3a5294b919f4c9cfd1aaa940aad489b55525dae084"
+    },
+    {
+      "path": "tests/unit/test_metadata_recipe.py",
+      "sha256": "7b38b224701814f6779af5286ce83510b1f8f6aef0d1a56264377f02dfe1c6b5"
+    },
+    {
+      "path": "tests/unit/test_migration_job_contract.py",
+      "sha256": "923b9e253b2cac13c4d09be90d0784ba1beefab3dd8c3a34836bea26e8b90318"
+    },
+    {
+      "path": "tests/unit/test_producer_workflow.py",
+      "sha256": "0c44600cd8ba560c1d77c57abdbed11c3f6e7f66d60f64184aa86535b5e28a99"
+    },
+    {
+      "path": "tests/unit/test_proof.py",
+      "sha256": "0ca2e4ba326b046cb754abdb6df8cac99af6ee96a0d982785ca358b61b0c4256"
+    },
+    {
+      "path": "tests/unit/test_proposals.py",
+      "sha256": "a127b55099756758d4b6768e9c174006c6acfdb0c0c01224d2e97d1eeada3ae2"
+    },
+    {
+      "path": "tests/unit/test_readonly_store.py",
+      "sha256": "228901ce267de7f1785fc45d5bbd2dbff390b6572a9294094e65be0d97fc21c4"
+    },
+    {
+      "path": "tests/unit/test_report.py",
+      "sha256": "803e31085e22fd4bda56435dc6105af0fe08b05e1919b4ae62368395925cccaa"
+    },
+    {
+      "path": "tests/unit/test_response_protocol.py",
+      "sha256": "453b2e4f5ee44d861f68868895ec6077faa7ca2aef10960082d083cf26b30790"
+    },
+    {
+      "path": "tests/unit/test_review_regressions.py",
+      "sha256": "d3823e2b18a92d934bfc0fbbb36e343e7a537becd2f9e4f843c72dd99c551c6c"
+    },
+    {
+      "path": "tests/unit/test_review_requests.py",
+      "sha256": "a8d5f6dc4eed7ea3117c51cb010047e991a93608f3c416bcb20120ee44b024f6"
+    },
+    {
+      "path": "tests/unit/test_sandbox_policy.py",
+      "sha256": "9c6d31985bae414327aad03fb76822b5757644ddf4bf3b8784160ff07a5345de"
+    },
+    {
+      "path": "tests/unit/test_service.py",
+      "sha256": "9729d38a96c75581cb28813141f184b6c124983d2738395f28914679f73778c7"
+    },
+    {
+      "path": "tests/unit/test_standalone_cli.py",
+      "sha256": "fe00a19ad6e7a7bd74a9b860f63399825cd16e2faceabfd1585122b26c0bdb09"
+    },
+    {
+      "path": "tests/unit/test_store.py",
+      "sha256": "9a81d122c31c34b6bd16fd016c1e618663c001bf1cf5ab9e28ad5ca79583c1e6"
+    },
+    {
+      "path": "tests/unit/test_store_migration.py",
+      "sha256": "8f98963b695c8a4022af6274c592e2573a530565968e3ef8c0f51ed0e4f761d3"
+    }
+  ],
+  "gate_receipts": [
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-all-1792535155103982181.json",
+      "sha256": "62e866043c2651d81adc20537633d9a5d9290ba0fac27587cf70cc3d33a5ffdc",
+      "counts": {
+        "tests": 285,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "exit_code": 0,
+      "container_removed": true
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-lint-1792535155973455732.json",
+      "sha256": "0a7a87ef75fad1a63e3c020244deb4dfaf6790c5dbee52c5832171597cc09182",
+      "counts": null,
+      "exit_code": 0,
+      "container_removed": true
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-validate-1792535163347030865.json",
+      "sha256": "8b7fc9134c3b692005d34ac98362a9a6867b333c088ad865990cb4caf2dc9cb6",
+      "counts": null,
+      "exit_code": 0,
+      "container_removed": true
+    }
+  ],
+  "boundary_probes": [
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/protected-v1/workflow-b1e0fb2a46b94c21b9697ab3b897d6c1/result.json",
+      "sha256": "8af51db1b323097bcfe02b785c6d79fa3e60937e06fa99bec6d395574e6d0b36",
+      "engine_core_digest": "f51aed9acb46c04a4b627aa691df5a435ecb2e360caf181ca32d0a01040879c3",
+      "status": "CONFIGURED_ENGINE_FIXTURE_JOURNEY_PASSED",
+      "fixture_authority_only": true,
+      "baseline_passed": 15,
+      "candidate_passed": 15,
+      "compare_report_process_launches": 0,
+      "outer_verdict": "NOT_PROVEN"
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/protected-v1/recovery-863165575836496cb87b93bb78ad2415/result.json",
+      "sha256": "c27d340ee7e38836a15a8f10f7ba65b723e95d14f7b39158a195c2d71b5c6ced",
+      "engine_core_digest": "f51aed9acb46c04a4b627aa691df5a435ecb2e360caf181ca32d0a01040879c3",
+      "status": "FIXTURE_CRASH_AND_CANCELLATION_RECOVERY_PASSED",
+      "fixture_authority_only": true,
+      "cases": [
+        {
+          "attempt_id": "6fc579da4af947328e76d2544620bceb",
+          "child_exit": 72,
+          "fault": "OWNERSHIP_CLAIMED",
+          "old_run_refused": true,
+          "operation_authority_claimed": false,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [],
+          "prior_state": "RUNNING",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        },
+        {
+          "attempt_id": "4556ebc12b1e4c42bb69ee805fc04939",
+          "child_exit": 72,
+          "fault": "AUTHORITY_CLAIMED",
+          "old_run_refused": true,
+          "operation_authority_claimed": true,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [
+            "AUTHORITY_CLAIMED"
+          ],
+          "prior_state": "CLAIMED",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        },
+        {
+          "attempt_id": "376e30748c11458aa3e06a79e2f018cc",
+          "child_exit": 72,
+          "fault": "START_REQUESTED",
+          "old_run_refused": true,
+          "operation_authority_claimed": true,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [
+            "AUTHORITY_CLAIMED",
+            "START_REQUESTED"
+          ],
+          "prior_state": "CLAIMED",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        },
+        {
+          "attempt_id": "72f0001748454f4a99f66a07ae17a068",
+          "child_exit": 72,
+          "fault": "COLLECTED",
+          "old_run_refused": true,
+          "operation_authority_claimed": true,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [
+            "AUTHORITY_CLAIMED",
+            "START_REQUESTED",
+            "COLLECTED"
+          ],
+          "prior_state": "COLLECTED",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        },
+        {
+          "attempt_id": "1c2d6b063e4449efb8375c5aa40ce261",
+          "child_exit": 72,
+          "fault": "CLEANUP_VERIFIED",
+          "old_run_refused": true,
+          "operation_authority_claimed": true,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [
+            "AUTHORITY_CLAIMED",
+            "START_REQUESTED",
+            "COLLECTED",
+            "CLEANUP_VERIFIED"
+          ],
+          "prior_state": "COLLECTED",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        },
+        {
+          "attempt_id": "60d949e7731e458f8caf1f250348af2a",
+          "child_exit": 31,
+          "fault": "COOPERATIVE_CANCEL",
+          "old_run_refused": true,
+          "operation_authority_claimed": true,
+          "partial_evidence_adopted": false,
+          "prior_checkpoints": [
+            "AUTHORITY_CLAIMED",
+            "START_REQUESTED"
+          ],
+          "prior_state": "CANCELLED",
+          "retired": true,
+          "runtime_removed_readback": true,
+          "source_unchanged": true
+        }
+      ]
+    },
+    {
+      "path": "/home/kensei/projects/modernisation-benchmarks/control/protected-v1/build-recovery-958a73251dd84ebd908958f1195efc59/result.json",
+      "sha256": "ff2d04b12b3733cb4a2ff171defa060e62bd5b7195c114b996b0d408f41fc442",
+      "engine_core_digest": "f51aed9acb46c04a4b627aa691df5a435ecb2e360caf181ca32d0a01040879c3",
+      "status": "FIXTURE_BUILD_RESERVATION_RECOVERY_PASSED",
+      "fixture_authority_only": true,
+      "cases": [
+        {
+          "baseline_passed": 12,
+          "candidate_executed": false,
+          "child_exit": 73,
+          "failed_path_preserved": true,
+          "fault": "BEFORE_COPY",
+          "fresh_candidate_id": "2c7f5ac0f5f94803ae2ada5a89f67547",
+          "fresh_review_required_and_exercised": true,
+          "job_id": "497619f0d3964363b28e6a37c3c30b16",
+          "new_namespace": true,
+          "quarantined_candidate_id": "9e3e1c473d4447e99c6d6906b4cf33c7",
+          "source_unchanged": true
+        },
+        {
+          "baseline_passed": 12,
+          "candidate_executed": false,
+          "child_exit": 73,
+          "failed_path_preserved": true,
+          "fault": "DURING_COPY",
+          "fresh_candidate_id": "02cbb4eb9b1f41c98f53c56cfdde737f",
+          "fresh_review_required_and_exercised": true,
+          "job_id": "3e9f36e481b24edabde2ad5e86256a21",
+          "new_namespace": true,
+          "quarantined_candidate_id": "fa2b6293d1964ce7b4a888140e317732",
+          "source_unchanged": true
+        },
+        {
+          "baseline_passed": 12,
+          "candidate_executed": false,
+          "child_exit": 73,
+          "failed_path_preserved": true,
+          "fault": "AFTER_COPY",
+          "fresh_candidate_id": "515b2cb193514285a41a3697fa254d38",
+          "fresh_review_required_and_exercised": true,
+          "job_id": "7a01b9ddc8ff4abd864f6d9da0cc630b",
+          "new_namespace": true,
+          "quarantined_candidate_id": "7013eeb944354e0f8ca2175b17328f18",
+          "source_unchanged": true
+        }
+      ]
+    }
+  ],
+  "historical_header_snapshot": "job-header.json (284-case pre-seed-correction snapshot, not current producing bytes)",
+  "additional_witnessed_red": "development-unit-1792534973123040665.json: 258 passed/1 failed/0 errors/0 skips, altered seed with unchanged fresh/total counts was accepted",
+  "correction": "Central private job decoder verifies the content-addressed contract bytes and re-derives all adapter/track/scope/input-split metadata on ordinary reads and controller state reads; no repository code/source I/O or schema writes on those reads",
+  "legacy_policy": "Sparse AssessmentJob v1 bodies remain unchanged/readable. Only fresh public assessments create MigrationJob v1; legacy jobs cannot enter current execution. No SQLite table/schema-version rewrite was needed.",
+  "not_claimed": [
+    "complete BusinessRule/ExecutionReceipt/Comparison/ProofReport contracts",
+    "model budgets or orchestration from disabled metadata",
+    "complete state/profile/concurrency/native/gateway/platform qualification",
+    "general resolver/upgrade adapters, signed narrow differences or rule adequacy/mutation-qualified proof"
+  ],
+  "parent_points_2_3": "NOT COMPLETE",
+  "point4": "HOLD",
+  "live_install_config_provider_or_real_owner_changes": false
+}

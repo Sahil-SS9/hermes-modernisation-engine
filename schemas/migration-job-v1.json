@@ -1,0 +1,306 @@
+{
+  "$comment": "Core bounded JSON validation additionally rejects numeric/bool coercion. Execution/review/contract references are authenticated and revalidated separately; this header schema does not establish their provenance or complete M1 evidence models.",
+  "$id": "urn:hermes-modernisation:migration-job:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adapter_version": {
+      "enum": [
+        null,
+        "json-batch-v1"
+      ]
+    },
+    "allowed_output_roots": {
+      "items": {
+        "format": "absolute-path",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "type": "array"
+    },
+    "assessment": {
+      "properties": {
+        "source_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_digest"
+      ],
+      "type": "object"
+    },
+    "baseline_ref": {
+      "type": "object"
+    },
+    "behaviour_contract": {
+      "type": "object"
+    },
+    "budget": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_cost": {
+          "type": "null"
+        },
+        "model_calls_limit": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "model_calls_used": {
+          "const": 0,
+          "type": "integer"
+        },
+        "model_tokens_limit": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "model_tokens_used": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "output_bytes_limit": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "wall_seconds_limit": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "actual_cost",
+        "model_calls_limit",
+        "model_calls_used",
+        "model_tokens_limit",
+        "model_tokens_used",
+        "output_bytes_limit",
+        "wall_seconds_limit"
+      ],
+      "type": "object"
+    },
+    "build_recovery_ref": {
+      "type": "object"
+    },
+    "cancel_ref": {
+      "type": "object"
+    },
+    "candidate_observation_ref": {
+      "type": "object"
+    },
+    "candidate_ref": {
+      "type": "object"
+    },
+    "candidate_reservation": {
+      "type": "object"
+    },
+    "contract_review": {
+      "type": "object"
+    },
+    "execution_available": {
+      "type": "boolean"
+    },
+    "execution_receipts": {
+      "items": {
+        "type": "object"
+      },
+      "maxItems": 1000,
+      "type": "array"
+    },
+    "failure_reason": {
+      "maxLength": 4000,
+      "type": "string"
+    },
+    "fence_epoch": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "goal": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "input_split": {
+      "additionalProperties": false,
+      "properties": {
+        "boundary": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "concurrency": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "fresh": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "malformed": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "metamorphic": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "property": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "seed": {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "state": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seed",
+        "fresh",
+        "boundary",
+        "malformed",
+        "state",
+        "property",
+        "metamorphic",
+        "concurrency"
+      ],
+      "type": "object"
+    },
+    "job_id": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "MigrationJob"
+    },
+    "migration_review": {
+      "type": "object"
+    },
+    "model_policy": {
+      "const": {
+        "egress_allowed": false,
+        "enabled": false,
+        "model": null,
+        "provider": null
+      },
+      "type": "object"
+    },
+    "plan": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "profile": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "proposal_ref": {
+      "type": "object"
+    },
+    "recovery_ref": {
+      "type": "object"
+    },
+    "repo": {
+      "format": "absolute-path",
+      "minLength": 1,
+      "type": "string"
+    },
+    "revision": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "state": {
+      "enum": [
+        "ASSESSED",
+        "AUTHORITY_REQUIRED",
+        "BASELINED",
+        "BASELINE_AUTHORITY_GRANTED",
+        "BASELINE_AUTHORITY_REQUIRED",
+        "BASELINE_RUNNING",
+        "BLOCKED_PREREQUISITE",
+        "BUDGET_STOPPED",
+        "CANCELLED",
+        "CANDIDATE_AUTHORITY_REQUIRED",
+        "CANDIDATE_BUILDING",
+        "CANDIDATE_BUILT",
+        "CANDIDATE_RUNNING",
+        "CREATED",
+        "EXECUTION_UNAVAILABLE",
+        "FAILED",
+        "HANDOFF_READY",
+        "INTERRUPTED",
+        "MIGRATION_APPROVED",
+        "PLAN_REVIEW_REQUIRED",
+        "RECOVERY_REQUIRED",
+        "VERIFIED"
+      ],
+      "type": "string"
+    },
+    "supported_behaviours": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 100,
+      "type": "array"
+    },
+    "track": {
+      "enum": [
+        null,
+        "uplift",
+        "transform",
+        "reimagine"
+      ]
+    }
+  },
+  "required": [
+    "adapter_version",
+    "allowed_output_roots",
+    "assessment",
+    "budget",
+    "execution_available",
+    "execution_receipts",
+    "goal",
+    "input_split",
+    "job_id",
+    "kind",
+    "model_policy",
+    "plan",
+    "profile",
+    "repo",
+    "revision",
+    "schema_version",
+    "state",
+    "supported_behaviours",
+    "track"
+  ],
+  "title": "MigrationJob v1 header",
+  "type": "object"
+}

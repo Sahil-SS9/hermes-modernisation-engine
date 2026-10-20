@@ -44,10 +44,8 @@ def _job(connection, job_id):
     row = connection.execute("SELECT body FROM jobs WHERE id=?", (job_id,)).fetchone()
     if row is None:
         raise ContractError("Job not found in current profile")
-    value = loads(row[0])
-    if value.get("job_id") != job_id:
-        raise ContractError("Stored job identity corrupted")
-    return value
+    from .store import decode_job
+    return decode_job(connection, row[0], job_id)
 
 
 def _attempt(connection, job_id, attempt_id):
@@ -77,6 +75,8 @@ def public_attempt(value):
 
 
 def _save(connection, job, attempt):
+    from .models import validate_job
+    validate_job(job, job["job_id"])
     connection.execute("UPDATE attempts SET state=?,fence=?,body=? WHERE id=? AND job_id=?", (attempt["state"], attempt["fence"], dumps(attempt), attempt["attempt_id"], job["job_id"]))
     job["revision"] += 1
     connection.execute("UPDATE jobs SET body=? WHERE id=?", (dumps(job), job["job_id"]))

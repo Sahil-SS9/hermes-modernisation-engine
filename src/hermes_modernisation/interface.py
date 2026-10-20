@@ -10,6 +10,7 @@ OPERATIONS = (
     "record",
     "protocol",
     "response_protocol",
+    "schema",
     "contract",
     "prepare",
     "attempts",
@@ -34,6 +35,7 @@ PROPERTIES = {
     },
     "page": {"type": "integer", "minimum": 0},
     "actor": {"type": "string"},
+    "name": {"type": "string", "enum": ["migration-job-v1"]},
     "attempt": {"type": "string"},
     "purpose": {"type": "string", "enum": ["contract", "migration", "cancel", "recover", "recover_build"]},
     "grant": {"type": "object", "additionalProperties": True},
@@ -62,6 +64,7 @@ REQUIRED = {
     "record": ["job", "phase", "expectation", "output", "source_digest"],
     "protocol": [],
     "response_protocol": [],
+    "schema": ["name"],
     "contract": ["job", "revision", "contract"],
     "prepare": ["job", "phase", "actor", "request_id", "timeout_seconds", "output_limit_bytes"],
     "attempts": ["job"],
@@ -93,6 +96,7 @@ def setup(parser):
     parser.add_argument("--page", type=int)
     parser.add_argument("--revision", type=int)
     parser.add_argument("--actor")
+    parser.add_argument("--name", choices=["migration-job-v1"])
     parser.add_argument("--attempt")
     parser.add_argument("--purpose", choices=["contract", "migration", "cancel", "recover", "recover_build"])
     parser.add_argument("--grant")

@@ -10,6 +10,7 @@ provides_tools:
   - modernise_record
   - modernise_protocol
   - modernise_response_protocol
+  - modernise_schema
   - modernise_contract
   - modernise_prepare
   - modernise_attempts

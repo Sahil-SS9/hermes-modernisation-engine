@@ -43,4 +43,6 @@ Runtime cancellation/retirement slice is verified at five actual process-loss ch
 
 Build-reservation recovery is now exercised at three actual before/during/after-copy controller exits: quarantine preserves failed paths, invalidates old migration review and requires a fresh reviewed build in another namespace. Native refusal/registration and all 270 cases, lint/validator pass; `../evidence/remaining-build-20261020/build-recovery.json`.
 
-Next active slice: the remaining complete schema/state/profile/fault matrix; then proof/adapter/orchestration/native obligations in the table. Full native/gateway execution is NOT proved by the core Engine journey or review-only host tests. Parent 2a/2/3 remain open. Trusted workspace stays outside profile credential directories; do not loosen the fixed sandbox policy.
+MigrationJob header/profile/row identity and sealed-contract-derived metadata now have witnessed RED/GREEN, native schema descriptors, unchanged legacy reads and a 285/0/0/0 gate. Exact current source: `../evidence/remaining-build-20261020/job-header-sealed.json`. This header does NOT close the remaining rule/execution/comparison/report contracts.
+
+Next active slice: remaining complete evidence/rule/report schemas and state/profile/fault matrix; then proof/adapter/orchestration/native obligations in the table. Full native/gateway execution is NOT proved by the core Engine journey or review-only host tests. Parent 2a/2/3 remain open. Trusted workspace stays outside profile credential directories; do not loosen the fixed sandbox policy.

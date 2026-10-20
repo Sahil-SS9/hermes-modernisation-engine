@@ -17,6 +17,7 @@ FIELDS = {
     "record": {"job", "phase", "expectation", "output", "source_digest"},
     "protocol": set(),
     "response_protocol": set(),
+    "schema": {"name"},
     "contract": {"job", "revision", "contract"},
     "prepare": {"job", "phase", "actor", "request_id", "timeout_seconds", "output_limit_bytes"},
     "attempts": {"job"},
@@ -39,8 +40,8 @@ FIELDS = {
 class Engine:
     def __init__(self, root, *, profile="default", operator_config=None):
         from .jsonio import identifier
-        self.store = Store(root)
         self.profile = identifier(profile)
+        self.store = Store(root, profile=self.profile)
         self.operator_config = operator_config
 
     def invoke(self, action, arguments):
@@ -80,6 +81,13 @@ class Engine:
         required = FIELDS[action]
         if set(arguments) != required:
             raise ContractError("Required arguments missing")
+        if action == "schema":
+            import hashlib
+            from .models import job_schema
+            if arguments["name"] != "migration-job-v1":
+                raise ContractError("Unsupported schema name/version")
+            schema = job_schema()
+            return {"schema_version": 1, "kind": "SchemaDescriptor", "name": arguments["name"], "schema": schema, "sha256": hashlib.sha256(dumps(schema)).hexdigest(), "permission_granted": False, "execution_performed": False}
         if action == "assess":
             repo = Path(arguments["repo"])
             data_root = self.store.root.resolve()
@@ -88,7 +96,7 @@ class Engine:
                 raise ContractError("Source and private job storage must not overlap")
             report = assess(repo)
             return self.store.create(
-                arguments["request_id"], str(repo), arguments["goal"], report
+                arguments["request_id"], str(repo), arguments["goal"], report, migration=True
             )
         if action == "inventory":
             return self.store.details(

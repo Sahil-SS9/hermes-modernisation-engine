@@ -46,6 +46,9 @@ def test_native_cli_status_is_honest_and_run_denied(tmp_path):
     assert result["implementation_status"] == "READ_ONLY_PREVIEW"
     assert result["execution_available"] is False
     assert result["missing_evidence"]
+    described = subprocess.run(command + ["schema", "--name", "migration-job-v1"], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert described.returncode == 0, described.stdout + described.stderr
+    assert json.loads(described.stdout)["schema"]["properties"]["kind"]["const"] == "MigrationJob"
     denied = subprocess.run(
         command + ["run", "--job", "forged"],
         cwd=home,
@@ -126,6 +129,9 @@ result=json.loads(registry.dispatch('modernise_status',{},scope=m.scope_key))
 assert result['implementation_status']=='READ_ONLY_PREVIEW'
 slash=get_plugin_command_handler('modernise')
 assert json.loads(slash('status'))['execution_available'] is False
+descriptor=json.loads(registry.dispatch('modernise_schema',{'name':'migration-job-v1'},scope=m.scope_key))
+assert descriptor['kind']=='SchemaDescriptor' and not descriptor['execution_performed'],descriptor
+assert json.loads(slash('schema --name migration-job-v1'))==descriptor
 assert json.loads(slash('run --job forged --approved'))['error']=='EXECUTION_UNAVAILABLE'
 m.discover_and_load(force=True)
 assert json.loads(registry.dispatch('modernise_status',{},scope=m.scope_key))['execution_available'] is False
@@ -249,7 +255,7 @@ replayed=json.loads(slash('review --job '+args['job']+' --grant '+shlex.quote(js
 assert replayed['error']=='INVALID_REQUEST' and not replayed['execution_performed'],replayed
 assert json.loads(slash('status --job '+args['job']))['contract_review']['authenticated'] is True
 assert manager.unload('modernisation-engine')
-for name in ('review','review_request','proposal','build','run','resume','control_request','cancel','recover','recover_build'):
+for name in ('review','review_request','proposal','build','run','resume','control_request','cancel','recover','recover_build','schema'):
     assert registry.get_entry('modernise_'+name,scope=manager.scope_key) is None,name
 print('NATIVE_CONFIGURED_REVIEW_CLI_TOOL_SLASH_OK')
 """.replace("PAYLOAD", repr(json.dumps({"job": jid, "grant": grant})))

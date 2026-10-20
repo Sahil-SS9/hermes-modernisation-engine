@@ -25,6 +25,8 @@ def prepared_attempt(store, job, attempt_id):
 def run(store, job, attempt_id, grant, policy):
     from .runtime_lock import locked
     # Refuse forged requests before even creating runtime ownership metadata.
+    if job.get("kind") != "MigrationJob":
+        raise ContractError("Legacy assessment requires a fresh current MigrationJob before execution")
     reviews.accepted(store, job, "contract", policy)
     attempt = prepared_attempt(store, job, attempt_id)
     policy.authority().verify(grant, attempt["operation"])
@@ -33,6 +35,8 @@ def run(store, job, attempt_id, grant, policy):
 
 
 def _run(store, job, attempt_id, grant, policy):
+    if job.get("kind") != "MigrationJob":
+        raise ContractError("Legacy assessment requires a fresh current MigrationJob before execution")
     reviews.accepted(store, job, "contract", policy)
     attempt = prepared_attempt(store, job, attempt_id)
     if attempt["state"] != "PREPARED":

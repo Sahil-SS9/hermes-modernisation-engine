@@ -2,20 +2,22 @@
 
 This is NOT the finished migration engine and is NOT ready for live installation.
 
-## Parked checkpoint — start here
+## Active private build — start here
 
 Private backup: https://github.com/Sahil-SS9/hermes-modernisation-engine (branch `build/phase0`). No live installation or public release is authorised.
 
 - [Resume handoff](docs/HANDOFF.md): state verification, safe commands, local prerequisites and pickup order.
 - [Updated plan](docs/PLAN.md): current position plus the original requirements preserved verbatim.
 - [Completed work and TODO](docs/TODO.md): checked-off delivered components and every remaining milestone.
-- [Evidence checkpoint](docs/evidence/checkpoint-2026-10-15.json): producing code, verified scopes and recovery fingerprints.
+- [Current source-bound evidence](docs/evidence/remaining-build-20261020/job-header-sealed.json): exact tested source, current fixture results and remaining limits. Older checkpoint files are historical, not current totals.
 
-The implementation baseline is `b914c6d118584a45736611c93bb772905108acd6`. Current preview tests: 108 passed, zero failures/errors/skips; lint and native validation passed on the explicitly patched sandbox host. This is not full-engine or independent-release acceptance. Fresh exact owner signatures are required for the real regression runs; other prerequisite coding tasks can proceed independently when resumed.
+Current isolated gate: 285 passed, zero failures/errors/skips; lint and warning-free native validation pass on the explicitly pinned/patched sandbox host. A configured owned-fixture journey really captured 15 old/new responses per phase; five runtime crash checkpoints, cooperative cancellation and three candidate-build crash seams were exercised separately. These are fixture-authority checks, not a new real-owner project run or release qualification. The historical v5 real regression is complete/spent; do not repeat its signing or execution commands. Points 2–3 remain open and point 4 final review/release is on hold.
 
 Implemented: source-only bounded assessment, lexical Python inventory with exact citations, conservative rule candidates, source fingerprints, durable profile-owned assessment jobs and content-addressed inventory pages, idempotent creation, stale-revision checks, source-replacement proposal validation and separate-candidate materialisation primitives, deterministic data comparison with conservative partial proof policy, review-only plans, explicit missing-evidence JSON/text/offline-HTML reporting, real Hermes CLI/tool/registered-slash-handler surfaces and external owner-signature primitives. An operator-only executor primitive has real synthetic-container tests for success, streaming output cap, timeout/descendant cleanup and replay refusal. Those are fixture-authority controls, not real owner migration acceptance.
 
-Not implemented/enabled: general baseline/candidate executor, patch/model orchestration, protected oracle lifecycle, authenticated receipt ingestion, behavioural equivalence proof, complete MigrationJob schema/state/fencing, owner-approved normalisation/tolerances, framework/module migration fixtures, benchmark/value experiments, independent implementation review and release gates. `run` and `resume` refuse; no command can manufacture approval. The signed baseline in private development evidence is a separately scoped external-adapter demonstration, not a claim that this package contains that complete execution service.
+The current isolated build also connects separate signed contract/migration review, exact one-use operation grants, protected input-only process collection, engine-reserved candidates, authenticated private observation recomputation and explicit cancellation/runtime/build recovery. Without trusted operator configuration and current exact authority, run still refuses. Resume revalidates completed work only; uncertain work needs explicit signed retirement and a fresh attempt, never blind replay. Current MigrationJob v1 headers are strict and profile/row/contract-bound; sparse legacy assessment records remain readable without being silently upgraded. No operation can manufacture owner approval.
+
+Still open: complete rule/execution/comparison/report schemas and state/profile/concurrency acceptance; broader upgrade/dependency-resolution/framework/module adapters; optional model orchestration, real budgets and batches; signed narrow differences, rule adequacy/mutation-qualified proof; full native/gateway execution and supported-release/platform qualification. Zero/disabled budget metadata is not a working model-budget lane. No full-engine completion, whole-system equivalence or independent release acceptance is claimed.
 
 ## Standalone source assessment
 
@@ -32,7 +34,7 @@ Assessment never imports/executes repository code, resolves package installation
 
 Distribution is `plugin.yaml` plus root `__init__.py`. The Python wheel provides the standalone core/CLI only; it does NOT also register a Hermes plugin entrypoint. Use the complete directory artifact for Hermes. Never install both competing discovery registrations.
 
-Hermes commands: `hermes modernise assess|plan|status|record|protocol|recipe|compare|report`. Equivalent tool names have the `modernise_` prefix. The registered `/modernise` handler uses the same service, but full gateway and interactive slash dispatch acceptance is outstanding. Job metadata resolves under the active profile's `plugin-data/modernisation-engine/private` on each call.
+Hermes commands include `assess`, `inventory`, `plan`, `status`, `contract`, `schema`, `review_request`, `review`, `prepare`, `attempts`, `proposal`, `build`, `run`, `resume`, `control_request`, `cancel`, `recover`, `recover_build`, `record`, `protocol`, `response_protocol`, `recipe`, `compare` and `report` under `hermes modernise`. Equivalent tool names have the `modernise_` prefix. The registered `/modernise` handler uses the same service, but full gateway and interactive slash dispatch acceptance is outstanding. Job metadata resolves under the active profile's `plugin-data/modernisation-engine/private` on each call.
 
 Sandbox host compatibility is proven only on PR #138686 head `4539b09a730d6a97548b4d4102d10990033ead36` PLUS the separately identified local validator handle patch. Neither fix is claimed merged or installed. Public version metadata is insufficient to establish that floor. See `docs/validator-compatibility-repair.md` and the current development checkpoint.
 
@@ -40,4 +42,4 @@ Sandbox host compatibility is proven only on PR #138686 head `4539b09a730d6a9754
 
 All untrusted repository-code workloads and package-build workloads run in disposable, resource-limited, network-disabled rootless containers. The trusted external operator control plane runs on the host to control rootless Docker; it is never mounted into a candidate. Image preparation alone may retrieve pinned development dependencies. No real credentials, host home or Docker socket are mounted. Source and engine references remain read-only; build output is extracted from disposable storage by the trusted operator. Docker shares the host kernel; this is not a VM, and a compromised trusted host/operator is outside the claim.
 
-The engine and external host validator patch are local-only. No merge, public push, live install, deployment, telemetry or scheduled auto-rewrite. BUILD/INSTALL/DEPLOY/PUBLISH are separate owner approvals. No public licence or supported release promise is made by this unreleased preview.
+The engine is a development build backed up privately; the external host validator patch has not been taken up live or claimed merged upstream. No merge, public push, live install, deployment, telemetry or scheduled auto-rewrite. BUILD/INSTALL/DEPLOY/PUBLISH are separate owner approvals. No public licence or supported release promise is made by this unreleased preview.
