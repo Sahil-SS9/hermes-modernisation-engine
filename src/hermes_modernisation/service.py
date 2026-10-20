@@ -84,9 +84,13 @@ class Engine:
         if action == "schema":
             import hashlib
             from .models import job_schema
-            if arguments["name"] != "migration-job-v1":
+            if arguments["name"] == "migration-job-v1":
+                schema = job_schema()
+            elif arguments["name"] == "business-rule-v1":
+                from .rules import rule_schema
+                schema = rule_schema()
+            else:
                 raise ContractError("Unsupported schema name/version")
-            schema = job_schema()
             return {"schema_version": 1, "kind": "SchemaDescriptor", "name": arguments["name"], "schema": schema, "sha256": hashlib.sha256(dumps(schema)).hexdigest(), "permission_granted": False, "execution_performed": False}
         if action == "assess":
             repo = Path(arguments["repo"])

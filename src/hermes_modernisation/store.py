@@ -290,10 +290,15 @@ class Store:
             ).fetchone()
             if row is None or hashlib.sha256(row[0]).hexdigest() != digest:
                 raise ContractError("Missing or corrupted inventory shard")
+            value = loads(row[0])["items"]
+            if section == "rules" and job["assessment"].get("rule_schema") == "business-rule-v1":
+                from .rules import validate_rule
+
+                value = [validate_rule(item, job["assessment"]["source_digest"]) for item in value]
             return {
                 "section": section,
                 "page": page,
-                "items": loads(row[0])["items"],
+                "items": value,
                 "has_more": page + 1 < len(pages),
                 "sha256": digest,
             }

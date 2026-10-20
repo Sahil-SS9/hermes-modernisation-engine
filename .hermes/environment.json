@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "recipe": {
+    "name": "Modernisation Engine — approved isolated verification",
+    "kind": "python",
+    "bootstrap": [],
+    "build": [],
+    "test": [
+      "/home/kensei/projects/modernisation-benchmarks/control/operator-env/bin/python -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py all",
+      "/home/kensei/projects/modernisation-benchmarks/control/operator-env/bin/python -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py lint",
+      "/home/kensei/projects/modernisation-benchmarks/control/operator-env/bin/python -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py validate"
+    ],
+    "start": null,
+    "port": null,
+    "readinessPath": "/",
+    "evidence": [
+      "Operator-approved project-local recipe; uses the existing test runner without changing it.",
+      "Requires the pre-existing private control directory, operator environment, reference/benchmark mounts and pinned offline rootless image.",
+      "The existing runner enforces network=none, read-only source/reference/benchmark mounts and fixed process/memory/CPU limits.",
+      "No dependency bootstrap, image preparation, host pytest, application startup, source/test edits or guard changes.",
+      "Receipt/log paths are emitted by each runner invocation; this is verification of the configured development suite, not release acceptance."
+    ]
+  }
+}

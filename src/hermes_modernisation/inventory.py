@@ -5,6 +5,7 @@ import hashlib
 from pathlib import Path
 from .identity import snapshot, read_source
 from .jsonio import ContractError
+from .rules import candidate, SCHEMA_NAME
 
 
 LANGUAGES = {
@@ -23,6 +24,7 @@ LANGUAGES = {
 def assess(repo):
     repo = Path(repo)
     manifest = snapshot(repo)
+    source_digest = manifest["digest"]
     symbols = []
     dependencies = []
     rules = []
@@ -77,19 +79,7 @@ def assess(repo):
                 )
             elif isinstance(node, ast.Assert):
                 rules.append(
-                    {
-                        "id": "rule-"
-                        + hashlib.sha256(
-                            (path + ":" + str(node.lineno)).encode()
-                        ).hexdigest()[:16],
-                        "path": path,
-                        "line": node.lineno,
-                        "source_sha256": record["sha256"],
-                        "kind": "assertion-location-candidate",
-                        "coverage_status": "unverified",
-                        "owner_reviewed": False,
-                        "assertion_adequacy": "unknown",
-                    }
+                    candidate(path, node.lineno, node.end_lineno or node.lineno, record["sha256"], source_digest)
                 )
     if snapshot(repo)["digest"] != manifest["digest"]:
         raise ContractError("Source changed during assessment")
@@ -97,6 +87,7 @@ def assess(repo):
         "schema_version": 1,
         "kind": "Assessment",
         "source_digest": manifest["digest"],
+        "rule_schema": SCHEMA_NAME,
         "file_count": manifest["file_count"],
         "total_bytes": manifest["total_bytes"],
         "source_manifest": manifest,

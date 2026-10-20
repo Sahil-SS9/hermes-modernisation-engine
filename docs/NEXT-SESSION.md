@@ -2,6 +2,8 @@
 
 Owner instruction, 20 October 2026: work through points 1–3 directly, confirm their acceptance, and STOP before point 4's separate final review/release phase. BUILD and private checkpoint/push are authorised; this is not blanket real-project execution, paid/model egress, INSTALL, DEPLOY or PUBLISH approval.
 
+Pickup update, 20 October 2026 (session local-60f68b8b): `.hermes/environment.json` registers the unchanged approved rootless development gate as the project's official Hermes verify recipe; native `hermes verify` runs all/lint/validate and records a genuine full pass in the evidence ledger (receipts `control/evidence/development-{all-1792538871636503700,lint-1792538872193948258,validate-1792538879311285218}.json` — this closes only repo-local verify recognition, unrelated out-of-tree helpers excluded). Then the BusinessRule v1 candidate header slice landed: strict versioned rule objects, sealed-page read revalidation, legacy boundary and data-only `business-rule-v1` schema through Engine/native CLI/tool/slash; full gate 306/0/0/0, lint, warning-free validator (`business-rule-contract.json` + `business-rule-source-manifest.json`). Continue with the remaining 2a schemas/matrix below; point 4 remains HOLD.
+
 ## Order and acceptance
 
 1. Save the checkpoint: current TODO/handoff, honest v5 projection, historical controller source/probes, verified hashes, private commit/push readback. Preserve `PLAN.md`'s original-design body byte-for-byte.

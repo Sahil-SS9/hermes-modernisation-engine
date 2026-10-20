@@ -1,0 +1,28 @@
+{
+  "checkpoint": "remaining-build-20261020",
+  "slice": "BusinessRule v1 strict lexical candidate contract (slice 2a, M1/M3 rule-header seam)",
+  "status": "ENGINE_GREEN_LOCAL_ONLY",
+  "boundary": [
+    "Verified against the exact changed source bytes listed in source_manifest; app source is no longer only a4689c1c2097d5ebfaab7f28a6f5558aecfe61a9 — this slice changed executable code with its own sealed manifest.",
+    "This closes ONLY the BusinessRule candidate header contract on the public inventory read path, the shared native CLI/tool/slash schema surface and the read-source-bound store recheck; it does NOT close parent point 2a, the full BusinessRule review/executed state machine, ExecutionReceipt/Comparison/ProofReport v1, MT08 acceptance (owner-reviewed rules, adequacy semantics), or any point 3 register row.",
+    "Rules remain candidate-only: review_state unreviewed, owner_reviewed false, assertion_adequacy unknown, coverage_status unverified, case_ids/assertion_ids empty with explicit unknowns. No review authority, oracle linkage or executed coverage is created by a lexical page.",
+    "No live installation/configuration, model egress, real-project execution, release action or public write occurred. Point 4 remains HOLD."
+  ],
+  "design": {
+    "header": "Every current lexical rule is a strict versioned BusinessRule v1 object with source_digest binding, stable citation-derived id, one exact source citation (path/line span/sha256), bounded text and non-empty unknowns.",
+    "recheck": "Store.details revalidates every rule row against rules.validate_rule whenever the job's assessment declares rule_schema=business-rule-v1; tampered/rehashed pages on the public read path refuse without byte change (the read path no longer trusts the page bytes alone, closing the rehashed-blob bypass that the old kind/coverage fields permitted).",
+    "legacy_boundary": "Assessments without rule_schema (historical lexical rows) remain readable byte-for-byte and cannot be executed as current rules — same boundary as sparse legacy AssessmentJob rows.",
+    "schema_surface": "Public schema action now serves business-rule-v1 beside migration-job-v1 through Engine, native CLI (--name choice), registered tool and registered slash; the descriptor matches schemas/business-rule-v1.json by digest, is data-only, and grants/execute nothing."
+  },
+  "witnessed": {
+    "RED": "development-unit-1792539280099659629.json (all) / development-unit-1792539155327273898.json (unit): 279/306 collected with 19/20 new-contract failures — self-certified coverage fields unvalidated, tamper bypass not refused, no business-rule schema surface, old lexical shape still stored.",
+    "GREEN": [
+      "development-unit-1792539429412966151.json — 279 collected, 279 passed, 0 failed, 0 errors, 0 skipped",
+      "development-all-1792539493947891014.json — 306 collected (unit + host + integration + platform), 306 passed, 0 failed, 0 errors, 0 skipped; includes the actual native CLI/tool/slash business-rule contract smoke in the fixed rootless gate"
+    ],
+    "lint": "development-lint-1792539495556752190.json — pass",
+    "validator": "development-validate-1792539502889312728.json — ok true, warnings empty, security scan safe, no core override"
+  },
+  "evidence_root": "/home/kensei/projects/modernisation-benchmarks/control/evidence/",
+  "runner": "Unchanged approved fixed rootless gate (run-development.py all/lint/validate), network=none, read-only source/reference/benchmark mounts, uid 65534; receipts record container_removed true."
+}

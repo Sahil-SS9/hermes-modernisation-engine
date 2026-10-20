@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hermes-modernisation:business-rule:v1",
+  "title": "BusinessRule v1 lexical candidate",
+  "$comment": "Candidate-only contract; no owner review, oracle linkage or executed coverage is inferred. Core validation also rejects bool/integer coercion, unsafe paths and contradictory source/citation/id fields. Legacy unversioned inventory rows remain legacy and are never executed as a current rule.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "source_digest", "path", "line", "source_sha256", "source_refs", "text", "case_ids", "assertion_ids", "unknowns", "kind", "origin", "review_state", "owner_reviewed", "coverage_status", "assertion_adequacy"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "kind": {"const": "BusinessRule"},
+    "origin": {"const": "assertion-location-candidate"},
+    "review_state": {"const": "unreviewed"},
+    "owner_reviewed": {"const": false},
+    "coverage_status": {"const": "unverified"},
+    "assertion_adequacy": {"const": "unknown"},
+    "id": {"type": "string", "pattern": "^rule-[a-f0-9]{16}$"},
+    "source_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "path": {"type": "string", "minLength": 1, "format": "relative-source-path"},
+    "line": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+    "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_refs": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["path", "line_start", "line_end", "sha256"], "additionalProperties": false, "properties": {"path": {"type": "string", "minLength": 1, "format": "relative-source-path"}, "line_start": {"type": "integer", "minimum": 1, "maximum": 2147483647}, "line_end": {"type": "integer", "minimum": 1, "maximum": 2147483647}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "case_ids": {"type": "array", "const": []},
+    "assertion_ids": {"type": "array", "const": []},
+    "unknowns": {"type": "array", "minItems": 1, "maxItems": 20, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}}
+  }
+}

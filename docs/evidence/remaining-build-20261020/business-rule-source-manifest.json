@@ -1,0 +1,15 @@
+{
+  "producing_state": "see business-rule-contract.json; commits this slice",
+  "source_sha256": {
+    ".hermes/environment.json": "34400a2452d4941f860678cbc55d6d16ff20bc58ab8231edc80940092b95e8d0",
+    "docs/evidence/remaining-build-20261020/business-rule-contract.json": "b28a2ae330a78cda6cd6559b02dadbd88f513dccafc8630b2c6fd8d4dec199fd",
+    "schemas/business-rule-v1.json": "beb5521de40fb34e25a95bb0a0b79f7511c0213cced20fb2e55b9e81c17e0cb8",
+    "src/hermes_modernisation/interface.py": "4149afee6fde08cebac784df2780cf19e22ec5b68f0979107cd6630d7b8c9fc4",
+    "src/hermes_modernisation/inventory.py": "f3bcacd3f757a5bc2c675fe6faf1bcaf7a595218c48a6dde0c4908cba0bd93cf",
+    "src/hermes_modernisation/rules.py": "c84933aef3495193b80388fecf3bdeb7d8cc422b0ca5936451bc4e2f76c49566",
+    "src/hermes_modernisation/service.py": "5db5219d9c5ffe91afe3127e464115f460ee85826d57a3bbb1ffba9658404ec7",
+    "src/hermes_modernisation/store.py": "242f59efe95ec60a07ecab1f5eb3c245e48af7fafb9d16535f5d0dab55d50136",
+    "tests/host/test_business_rules.py": "59bddd896a060eb3760cb0a0fb7d0a2fa4fbf96d5cdae9611bfb3380edf2da36",
+    "tests/unit/test_business_rule_contract.py": "767af198e15e52ebc50525ce940f2c68bc2ad0af649c5dfb08c97c86d5f079b4"
+  }
+}
