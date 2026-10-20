@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# One owner approval package: two one-use run grants plus a package attestation.
+# This script signs only. It never runs the project, Docker, or the trial runner.
+set -euo pipefail
+
+MANIFEST_PATH="__MANIFEST_PATH__"
+RUNNER_PATH="__RUNNER_PATH__"
+PREPARER_PATH="__PREPARER_PATH__"
+EXPECTATION_PATH="__EXPECTATION_PATH__"
+EXPECTED_MANIFEST_SHA="__MANIFEST_SHA__"
+EXPECTED_RUNNER_SHA="__RUNNER_SHA__"
+EXPECTED_PREPARER_SHA="__PREPARER_SHA__"
+EXPECTED_EXPECTATION_SHA="__EXPECTATION_SHA__"
+EXPIRES_EPOCH=__EXPIRES_EPOCH__
+EXPIRES_ISO="__EXPIRES_ISO__"
+SIGN_DIR="__SIGN_DIR__"
+OUT="$SIGN_DIR/trial-v5-signatures.txt"
+AGENT_USER="__AGENT_USER__"
+NAMES=(baseline candidate)
+REQUEST_SHA256S=("__B_SHA__" "__C_SHA__")
+REQUEST_B64=("__B_B64__" "__C_B64__")
+ENROLLED_PEM='__ENROLLED_PEM__'
+
+refuse() { printf 'REFUSED: %s\n' "$*" >&2; exit 1; }
+[ "$(id -un)" != "$AGENT_USER" ] || refuse "run this as the owner, not the agent account ($AGENT_USER)."
+[ "$(id -u)" -ne 0 ] || refuse "do not run this as root."
+[ "$(date +%s)" -lt "$EXPIRES_EPOCH" ] || refuse "approval window expired at $EXPIRES_ISO."
+[ ! -e "$OUT" ] && [ ! -L "$OUT" ] || refuse "signatures already exist at $OUT."
+[ ! -L "$SIGN_DIR" ] || refuse "signature directory must not be a symlink."
+
+check_file() {
+  [ -f "$1" ] && [ ! -L "$1" ] || refuse "$3 is missing or symlinked."
+  local actual
+  actual=$(sha256sum "$1" | cut -d' ' -f1)
+  [ "$actual" = "$2" ] || refuse "$3 changed after preparation."
+}
+check_file "$MANIFEST_PATH" "$EXPECTED_MANIFEST_SHA" "approval manifest"
+check_file "$RUNNER_PATH" "$EXPECTED_RUNNER_SHA" "trial runner"
+check_file "$PREPARER_PATH" "$EXPECTED_PREPARER_SHA" "trial preparer"
+check_file "$EXPECTATION_PATH" "$EXPECTED_EXPECTATION_SHA" "expected test cases"
+MANIFEST_SHA=$EXPECTED_MANIFEST_SHA
+RUNNER_SHA=$EXPECTED_RUNNER_SHA
+PREPARER_SHA=$EXPECTED_PREPARER_SHA
+EXPECTATION_SHA=$EXPECTED_EXPECTATION_SHA
+SIGNER_SHA=$(sha256sum "$0" | cut -d' ' -f1)
+
+TMP=$(mktemp -d "${TMPDIR:-/tmp}/trial-v5-sign.XXXXXX")
+cleanup() {
+  local name
+  for name in enrolled.pem key.pub baseline.request.json candidate.request.json baseline.sig candidate.sig package.payload package.sig signatures.txt; do
+    rm -f -- "$TMP/$name"
+  done
+  rmdir -- "$TMP"
+}
+trap cleanup EXIT
+printf '%s\n' "$ENROLLED_PEM" > "$TMP/enrolled.pem"
+for i in 0 1; do
+  name=${NAMES[$i]}
+  printf '%s' "${REQUEST_B64[$i]}" | base64 -d > "$TMP/$name.request.json"
+  check_file "$TMP/$name.request.json" "${REQUEST_SHA256S[$i]}" "$name embedded request"
+  check_file "$(dirname "$MANIFEST_PATH")/$name.request.json" "${REQUEST_SHA256S[$i]}" "$name prepared request"
+done
+
+cat <<'SUMMARY'
+__SUMMARY__
+SUMMARY
+read -r -p "Type YES to approve this package for the two one-use test runs: " ANSWER
+[ "$ANSWER" = "YES" ] || refuse "not approved; no signature was written."
+
+DEFAULT_KEY=""
+if [ -f "$HOME/owner.key" ]; then DEFAULT_KEY="$HOME/owner.key"; fi
+if [ -n "$DEFAULT_KEY" ]; then
+  read -r -p "Path to your Ed25519 private key [$DEFAULT_KEY]: " KEY
+  KEY=${KEY:-$DEFAULT_KEY}
+else
+  read -r -p "Path to your Ed25519 private key: " KEY
+fi
+[ -f "$KEY" ] || refuse "owner key file not found."
+openssl pkey -in "$KEY" -pubout -out "$TMP/key.pub" || refuse "could not read the owner key."
+ENROLLED_FP=$(openssl pkey -pubin -in "$TMP/enrolled.pem" -outform DER | sha256sum | cut -d' ' -f1)
+KEY_FP=$(openssl pkey -pubin -in "$TMP/key.pub" -outform DER | sha256sum | cut -d' ' -f1)
+[ "$KEY_FP" = "$ENROLLED_FP" ] || refuse "key does not match the enrolled owner identity."
+
+# Repeat the pins after interaction; do not sign if inputs changed while waiting.
+[ "$(date +%s)" -lt "$EXPIRES_EPOCH" ] || refuse "approval window expired while waiting."
+check_file "$MANIFEST_PATH" "$EXPECTED_MANIFEST_SHA" "approval manifest"
+check_file "$RUNNER_PATH" "$EXPECTED_RUNNER_SHA" "trial runner"
+check_file "$PREPARER_PATH" "$EXPECTED_PREPARER_SHA" "trial preparer"
+check_file "$EXPECTATION_PATH" "$EXPECTED_EXPECTATION_SHA" "expected test cases"
+[ "$(sha256sum "$0" | cut -d' ' -f1)" = "$SIGNER_SHA" ] || refuse "signer changed while waiting."
+
+SIGS=()
+for i in 0 1; do
+  name=${NAMES[$i]}
+  check_file "$(dirname "$MANIFEST_PATH")/$name.request.json" "${REQUEST_SHA256S[$i]}" "$name prepared request"
+  openssl pkeyutl -sign -inkey "$KEY" -rawin -in "$TMP/$name.request.json" -out "$TMP/$name.sig" || refuse "$name signing failed."
+  openssl pkeyutl -verify -pubin -inkey "$TMP/enrolled.pem" -rawin -in "$TMP/$name.request.json" -sigfile "$TMP/$name.sig" >/dev/null || refuse "$name signature did not verify."
+  SIGS+=("$(base64 -w0 "$TMP/$name.sig")")
+done
+
+# Independently versioned signed bytes. The verifier reconstructs this EXACT body
+# from the actual files before using either grant. Unsigned hash tags are mirrors.
+printf 'trial-v5-package-v1\nmanifest_sha256=%s\nrunner_sha256=%s\npreparer_sha256=%s\nexpectation_sha256=%s\nsigner_sha256=%s\nbaseline_request_sha256=%s\ncandidate_request_sha256=%s\nexpires_at_epoch=%s\n' \
+  "$MANIFEST_SHA" "$RUNNER_SHA" "$PREPARER_SHA" "$EXPECTATION_SHA" "$SIGNER_SHA" \
+  "${REQUEST_SHA256S[0]}" "${REQUEST_SHA256S[1]}" "$EXPIRES_EPOCH" > "$TMP/package.payload"
+openssl pkeyutl -sign -inkey "$KEY" -rawin -in "$TMP/package.payload" -out "$TMP/package.sig" || refuse "package signing failed."
+openssl pkeyutl -verify -pubin -inkey "$TMP/enrolled.pem" -rawin -in "$TMP/package.payload" -sigfile "$TMP/package.sig" >/dev/null || refuse "package signature did not verify."
+{
+  echo 'trial-v5 signatures'
+  echo "manifest_sha256=$MANIFEST_SHA"
+  echo "runner_sha256=$RUNNER_SHA"
+  echo "expires_at_epoch=$EXPIRES_EPOCH"
+  echo "baseline=${SIGS[0]}"
+  echo "candidate=${SIGS[1]}"
+  echo "package_payload_base64=$(base64 -w0 "$TMP/package.payload")"
+  echo "package_signature_base64=$(base64 -w0 "$TMP/package.sig")"
+} > "$TMP/signatures.txt"
+mkdir -p "$SIGN_DIR"
+chmod 755 "$SIGN_DIR"
+# noclobber atomically refuses an existing output instead of check-then-cp.
+if ! (set -o noclobber; umask 022; cat "$TMP/signatures.txt" > "$OUT"); then
+  refuse "could not create a NEW signature file; no existing file was overwritten."
+fi
+chmod 644 "$OUT"
+printf 'Approved. Saved %s\nTell KENSEI: done.\n' "$OUT"

@@ -1,0 +1,237 @@
+{
+  "both_original_repositories_clean_and_pinned": true,
+  "claim_rows": 2,
+  "comparison_inner": "SAME_SELECTED_SCOPE",
+  "container_removal_verified_by_actual_ids": true,
+  "duplicate_claims": 0,
+  "identical_expected_case_set": true,
+  "limitations": [
+    "selected 20 cases only",
+    "candidate-authored reports, not protected independent capture",
+    "no full-engine completion, installation, deployment or publication claim"
+  ],
+  "no_project_code_executed_by_this_verifier": true,
+  "original_evidence": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/owner-executor-v5/trial-v5-evidence-1792396212791001882",
+  "owner_package_and_both_signatures_reverified": true,
+  "project_executions": 2,
+  "proof_verdict": "NOT_PROVEN",
+  "rootless_runtime": true,
+  "state": "REAL_TRIAL_PASSED_SELECTED_SCOPE",
+  "verification_packet": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/requests/trial-v5-controller-1792373558572346245/evidence/controller-verification-1792396670485280647",
+  "phases": {
+    "baseline": {
+      "additional_console_notice_lines": [],
+      "case_ids": [
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_auth_module_error_rejects"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_injectable_without_import_dependency"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_missing_auth_module_rejects"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_real_delegate_decides"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_events_websocket"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_events_websocket_unauthorized_closes"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_group_members"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_groups_empty_and_create"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_health"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_inactive_manager_503"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_inbox_and_requests_empty"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_manager_import_failure_503"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_metrics"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_no_session_inbox_requests"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peer_policy"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peer_send_message"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peers"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peers_summary"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_request_detail_and_respond"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_unknown_broadcast_404"
+        ]
+      ],
+      "container_id": "c31feb52c3f671403c4e51d9ac38dcee97fcf963a868f6bd5a15b45558f0a9b3",
+      "container_removed_confirmed": true,
+      "duration_seconds": 11.51218,
+      "errors": 0,
+      "failures": 0,
+      "output_sha256": "99d7e4ca28361f425e2ec8c9587df20d85cc003655dd7bb0de3987d41df0ad43",
+      "passed": 20,
+      "process_exit": 0,
+      "pytest_header": [
+        "platform linux -- Python 3.12.15, pytest-8.4.2, pluggy-1.6.0",
+        "rootdir: /source",
+        "configfile: pyproject.toml",
+        "plugins: hypothesis-6.135.3, asyncio-0.24.0, cov-6.2.1, anyio-4.14.2"
+      ],
+      "skipped": 0,
+      "source_digest": "c6072f8d300a4523d6d35e79520e03e6c86dc439e884cd7f50c7b0581edceafd",
+      "tests": 20,
+      "warnings_in_evaluation": 0
+    },
+    "candidate": {
+      "additional_console_notice_lines": [],
+      "case_ids": [
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_auth_module_error_rejects"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_injectable_without_import_dependency"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_missing_auth_module_rejects"
+        ],
+        [
+          "tests.security.test_ws_auth_fails_closed.TestWsAuthFailsClosed",
+          "test_real_delegate_decides"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_events_websocket"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_events_websocket_unauthorized_closes"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_group_members"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_groups_empty_and_create"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_health"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_inactive_manager_503"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_inbox_and_requests_empty"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_manager_import_failure_503"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_metrics"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_no_session_inbox_requests"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peer_policy"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peer_send_message"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peers"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_peers_summary"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_request_detail_and_respond"
+        ],
+        [
+          "tests.unit.test_dashboard_api",
+          "test_unknown_broadcast_404"
+        ]
+      ],
+      "container_id": "e1651e6494b6edbc06baeddd384a04733b4891a75da1c873ae3d8b78e21b902f",
+      "container_removed_confirmed": true,
+      "duration_seconds": 12.180237,
+      "errors": 0,
+      "failures": 0,
+      "output_sha256": "49933d1cf9b3c782ac120bd45327bfab646bec13d99ce44c97eb612454f5e3e2",
+      "passed": 20,
+      "process_exit": 0,
+      "pytest_header": [
+        "platform linux -- Python 3.14.8, pytest-8.4.2, pluggy-1.6.0",
+        "rootdir: /source",
+        "configfile: pyproject.toml",
+        "plugins: asyncio-1.4.0, hypothesis-6.135.3, cov-6.2.1, anyio-4.14.2"
+      ],
+      "skipped": 0,
+      "source_digest": "126b6f118773d85ea2001f75afcb6f1eb7da7c01d16fe09a20ae8c81e2136fee",
+      "tests": 20,
+      "warnings_in_evaluation": 0
+    }
+  },
+  "schema_version": 1,
+  "record_kind": "sanitised-projection-not-raw-execution-receipts",
+  "source_record_sha256": "0176e241bc2df339b389f88dfc5812d5cdf4608e075e768949c1f54002e5de9a",
+  "producing_engine_commit": "c343e0bbb26f613571dd03602321b74b08b4ecf2",
+  "redactions": [
+    "authority claim nonces",
+    "authority claim timestamps"
+  ]
+}

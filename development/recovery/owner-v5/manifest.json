@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "kind": "historical-operator-source-snapshot-not-runtime-installation",
+  "copied_at_utc": "2026-10-20T11:39:12.651351+00:00",
+  "private_keys_signatures_ledgers_live_packages_included": false,
+  "files": [
+    {
+      "path": "prepare-trial-v5.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/prepare-trial-v5.py",
+      "sha256": "90539947fba129428a9e081cf13179b603811a0d0c2238fae505c37afe675a90"
+    },
+    {
+      "path": "run-trial-v5.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/run-trial-v5.py",
+      "sha256": "8124822968a70a6851a192d7f9594d45371a8e3dda540b2a8141c60b0b997155"
+    },
+    {
+      "path": "seal-reviewed-trial-v5.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/seal-reviewed-trial-v5.py",
+      "sha256": "6e9bc5a7b2074c81361a044be76d4a966ed824c9f5b446c263b2c2d7b749c043"
+    },
+    {
+      "path": "templates/sign-owner-trial-v5.sh.tmpl",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/templates/sign-owner-trial-v5.sh.tmpl",
+      "sha256": "99d1406503706ac075b315b505ce942951c1a1a7632323d245c9ffe734b22ba5"
+    },
+    {
+      "path": "EXPECTED-CASES-V4.json",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/EXPECTED-CASES-V4.json",
+      "sha256": "e63330dd940a00cb399dfa8d7b0c27238c9df6f28d64a1da7eb6359c1c7e1353"
+    },
+    {
+      "path": "docker/baseline.Dockerfile",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/docker/baseline.Dockerfile",
+      "sha256": "8cdeba157935ebc705b8f4e9356e1a8582d3f9dd4f71d747ad2c574dc58c0c82"
+    },
+    {
+      "path": "docker/candidate.Dockerfile",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/docker/candidate.Dockerfile",
+      "sha256": "fed6cb95e9693311c093d5c0b8981b225152c4ff87c91be8f66b7961ec5343ad"
+    },
+    {
+      "path": "controller-probes/test_auto_key_launcher.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/test_auto_key_launcher.py",
+      "sha256": "ad75271cb671d077eb6a4d79fa94eb530224347554e9084fb84e1d30dcb49a20"
+    },
+    {
+      "path": "controller-probes/test_preparation_guards.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/test_preparation_guards.py",
+      "sha256": "e5101c858d63b50d0f3e66c8cdef58c909c7a4ea8fcfc2b37e8c186d973fedd6"
+    },
+    {
+      "path": "controller-probes/test_trial_flow.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/test_trial_flow.py",
+      "sha256": "c1f844376cc00ecd8bb1c74da3279c97525e4d27ba2679bf0c4a1382d66ccae3"
+    },
+    {
+      "path": "controller-probes/verify_completed_trial.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/verify_completed_trial.py",
+      "sha256": "10058bee2c0a6ce026fdac99c34c8c7a423c6b9ec85a475d78e328418ec2f703"
+    },
+    {
+      "path": "controller-probes/inspect_preclaim_namespace.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/inspect_preclaim_namespace.py",
+      "sha256": "3bf01cf5bf3aa219055a53b8ec40b55ed5f14e45d53145aa577b9e0dfdf50d33"
+    },
+    {
+      "path": "controller-probes/test_package_binding.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/test_package_binding.py",
+      "sha256": "4d8ef129c5d07a88f5fd3d697372eedee1cfcc9d6cd8113c5b871f385e422848"
+    },
+    {
+      "path": "controller-probes/backup_completed_trial.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/backup_completed_trial.py",
+      "sha256": "9ebcd06479dc4eaacfa2c2664ad3659cfd2dd557659deba2b6678b089b0284b3"
+    },
+    {
+      "path": "controller-probes/test_actual_signer.py",
+      "source": "/home/kensei/projects/modernisation-benchmarks/control/trial-v5/controller-probes/test_actual_signer.py",
+      "sha256": "0933134b83a202070bc30a8d05c133672dcf966b366b515ed2a9175dc8aaef31"
+    },
+    {
+      "path": "sign-modernisation-v5-auto.sh",
+      "source": "/home/kensei/handoff/agent-plugin-plans/approvals/sign-modernisation-v5-auto.sh",
+      "sha256": "4b6bb878d415ae8535ebef61ed83df3555cbd6742d4c19e79ab79490302d53b9"
+    }
+  ]
+}

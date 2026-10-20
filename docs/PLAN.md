@@ -1,7 +1,9 @@
-<!-- CURRENT POSITION: 2026-10-15 PRIVATE CHECKPOINT -->
-# Current position — 15 October 2026
+<!-- CURRENT POSITION: 2026-10-20 PRIVATE BUILD CHECKPOINT -->
+# Current position — 20 October 2026
 
-Status: PARTIAL BUILD / PARKED. The engine is an engineering preview, NOT a completed migration system.
+Status: PARTIAL BUILD / ACTIVE points 1–3. The engine is NOT a completed migration system. The signed real v5 trial is COMPLETE; see `docs/evidence/trial-v5-20261019/README.md`, `docs/HANDOFF.md` and `docs/NEXT-SESSION.md`. Producing executable baseline is `c343e0bbb26f613571dd03602321b74b08b4ecf2` (197 engine tests passed, no failures/errors/skips, lint/validator green). Both real phases passed the same twenty project checks on Python 3.12.15/3.14.8, with zero warnings; outer proof remains NOT_PROVEN, not independent capture.
+
+Owner has authorised direct isolated BUILD through points 1–3, with per-change verification and private checkpoints. Complete protected checking and its contract/state/authority prerequisites, then the full bounded workflow. STOP before point 4's separate final independent review/release phase. No installation, deployment, public publication, paid/model egress or new real-project execution is authorised implicitly. Old real permissions are consumed. The dated progression below is history; former pending-signature/controller-verification notes are superseded by the completed checkpoint, not present blockers.
 
 This current-position section and `docs/TODO.md` reconcile implementation status; the original design below remains the requirements authority. Completed subcomponents do not close their parent milestone. Nothing below changes the safety requirements or grants execution authority.
 
@@ -13,7 +15,7 @@ Read first (paths relative to the engine repository):
 
 Repository: https://github.com/Sahil-SS9/hermes-modernisation-engine (private checkpoint authorised; not a public release).
 Local repository: `/home/kensei/repos/hermes-modernisation-engine`, branch `build/phase0`.
-Executable code baseline: `b914c6d118584a45736611c93bb772905108acd6`; later handoff commits are documentation/recovery-only unless explicitly recorded otherwise.
+Executable code baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2`; b914c6d is historical. This checkpoint changes documentation/recovery only; subsequent production changes require their own recorded verification.
 
 ## Completed components (not full milestone acceptance)
 
@@ -33,7 +35,7 @@ Executable code baseline: `b914c6d118584a45736611c93bb772905108acd6`; later hand
 | Milestone | Current status | What keeps it open |
 |---|---|---|
 | M0.1 | PARTIAL | Real gateway/interactive route and full lifecycle/deadline acceptance |
-| M0.2 | PARTIAL / OWNER GATE | Full intended caller/executor authority routes; fresh exact real-run signatures |
+| M0.2 | PARTIAL / OWNER GATE | Full intended caller/executor authority routes. The v5 real run is complete/spent; any NEW real operation needs a fresh exact grant |
 | M0.3 | PARTIAL | Full isolation/cancel/crash matrix; no unsupported OS execution claims |
 | M0.4 | PARTIAL | Full licence/asset and comparator semantic audit; selected reference cases only completed |
 | M1 | PARTIAL | Full versioned MigrationJob/BusinessRule/receipt/comparison/report schemas |
@@ -69,8 +71,8 @@ The bounded trial is **BLOCKED, NOT RUN**. In addition to missing authentic sign
 ## Immediate next step and holds
 
 1. Re-verify repo, code ancestry, private recovery payload hashes and local prerequisites. Follow `docs/HANDOFF.md`.
-2. Decide what resumes first: complete missing prerequisite safety/schema/state work with fixture controls, or obtain fresh exact signatures for the bounded real regression lane. Signing is NOT a blocker to every remaining coding task.
-3. Only with current authentic signatures, execute original then candidate in isolation. Prior baseline grant is consumed. Pending requests expire at Unix 1792245405; if expired or any bound identity changed, regenerate and obtain new owner approval. Never blindly run a parked command months later.
+2. Owner has chosen: complete missing safety/schema/state prerequisites and protected independent checking using fresh owned fixtures, then the broader bounded workflow. Signing is NOT a blocker to ordinary authorised engineering.
+3. Do NOT repeat the completed v5 trial. Both exact permissions are consumed. Any future real operation needs a NEW namespace, current source/core/environment bindings and fresh exact owner approval. Never run old archived commands or reset authority state.
 4. Work remaining phases in dependency order; preserve failed evidence. Complete M0 acceptance before enabling dependent native/model execution.
 
 Locked: DIRECT implementation only, no workers/delegation. No live installation/config/restart, original-repo changes, public release or model egress/paid experiments without separate approval. This owner's private-repo push permission is a backup/checkpoint exception only; earlier no-public-push restrictions remain. Do not import unrelated Skill Foundry work or its pin into this engine.

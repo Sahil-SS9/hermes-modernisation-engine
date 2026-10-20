@@ -1,5 +1,17 @@
 # Resume here — Modernisation Engine
 
+## CURRENT — 20 October 2026: real trial complete; points 1–3 BUILD authorised
+
+Read [NEXT-SESSION.md](NEXT-SESSION.md) and [the v5 checkpoint](evidence/trial-v5-20261019/README.md) FIRST. The previous paused trial DID run successfully, baseline first then upgraded candidate: the same twenty checks passed with zero failures/errors/skips/warnings. Evidence is still candidate-authored, outer verdict NOT_PROVEN. Both one-use permissions are consumed; no more signing/replay is required for ordinary engineering.
+
+Latest producing executable baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2`. Its full engine gate was 197 passed, zero failures/errors/skips, lint and validator green. The older `b914c6d` and signature-pending/current-position notes below are HISTORICAL, superseded here. For this checkpoint the delta from c343 is docs/recovery only. Subsequent feature work must record and test its actual production delta.
+
+The owner now authorises DIRECT isolated work through points 1–3: save this checkpoint, complete protected independent checking and prerequisite contract/state/authority work, then finish the bounded full workflow. Test each change. STOP before point 4's separate final independent audit/release decisions. No new paid/model egress, live installation/config/restart, public writes, destructive cleanup or implicit real-project execution approval.
+
+Current trial summary/provenance: `docs/evidence/trial-v5-20261019/`. Historical v5 controller sources/probes: `development/recovery/owner-v5/` (immutable as-used layout, NOT runtime commands). Real signatures, live request packages, databases and private keys remain local and outside Git. Never replay/reset them or run the archives blindly.
+
+The dated handoff below preserves prior history and reproducibility limits. Its old pending-request paths are NOT current instructions.
+
 ## 1. State and read order
 
 The work is deliberately parked as a **PARTIAL engineering preview**, not a finished engine. This handoff requires no chat history. Read:
@@ -94,7 +106,7 @@ Important correction: signatures unblock only the bounded real regression lane. 
 
 ## 6. Clean-machine recovery limitations
 
-The private GitHub repository backs up consumer source/tests/lock, the full updated/original design, known recovery recipes, the host patch and benchmark diff, and sanitised evidence summaries. It does NOT contain working images, full third-party host/reference repos, raw owner/private benchmark data, job DBs, signatures or real keys. Expect explicit prerequisite reconstruction on another machine, not a one-command full reproduction promise.
+The private GitHub repository backs up consumer source/tests/lock, the full updated/original design, known recovery recipes, the host patch and benchmark diff, and sanitised evidence summaries. It does NOT contain working images, full third-party host/reference repos, raw owner/private benchmark data, job DBs, signatures or private keys. Archived public verification keys/fingerprints are not signing authority. Expect explicit prerequisite reconstruction on another machine, not a one-command full reproduction promise.
 
 Development fixture/reference tests require `/source`, `/reference` and `/benchmark` read-only mounts. Do not advertise `uv run pytest` on a bare clone as the full host/isolation gate. Reference pin and download hashes are in provenance and the checkpoint. Synthetic executor fixtures also expect empty `empty/` subdirectories: Git does not store empty directories; create those only inside the disposable fixture setup before rerunning controls, and then regenerate fixture-only approvals.
 

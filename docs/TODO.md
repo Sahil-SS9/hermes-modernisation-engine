@@ -1,6 +1,21 @@
 # Remaining work — Modernisation Engine
 
-Current state: **PARTIAL / PARKED engineering preview**, not a complete migration engine or release. Requirements: [updated plan](PLAN.md); pickup: [handoff](HANDOFF.md). Code baseline: `b914c6d118584a45736611c93bb772905108acd6`.
+Current state: **PARTIAL / ACTIVE points 1–3 BUILD** (owner instruction 20 October 2026). The owner-approved real v5 trial is COMPLETE; the full engine is not. STOP before point 4 final review/release; per-change correctness tests remain mandatory. Requirements: [updated plan](PLAN.md); pickup: [handoff](HANDOFF.md). Current producing executable baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2` (the older `b914c6d` is historical).
+
+## Latest checkpoint — 19 October 2026: signed real trial complete
+
+- [x] Public `record` / owned protocol / paired stored comparison and metadata + reviewed-lock replay lanes controller-verified and committed at `c343e0b`. The previous final engine gate was 197 passed, zero failed/error/skipped; lint and validator passed. These engine tests are separate from the twenty project checks below, not an additive total.
+- [x] Fresh real owner package/signatures verified; baseline first, upgraded candidate second through the actual rootless Executor. Each collected and passed the SAME twenty expected testcase identities on Python 3.12.15 / 3.14.8; zero failures, errors, skips or warnings. Raw stdout seals and embedded JUnit were independently re-read afterward.
+- [x] Engine producer -> public record -> persisted accepted phase pair -> public compare -> result/export exercised on the real copies. Inner comparison `SAME_SELECTED_SCOPE`; outer proof stays `NOT_PROVEN`, candidate-authored per-case evidence. This is not protected capture, full equivalence or arbitrary automatic upgrade acceptance.
+- [x] Exactly two one-use authority claims, one per approved operation; replay refused, both actual container IDs confirmed removed, sources still matched signed snapshots, original app and engine repos remained clean. No installation, deployment or public write.
+- [x] Initial pre-claim namespace obstruction diagnosed and preserved without deleting evidence or changing signed inputs. A rejected-signature probe had left a source-only directory. The real-Executor fixture reproduced the lifecycle; no authority had been consumed. The unchanged signed command then completed. Never infer startup readiness from an absent ledger alone.
+- [x] Full local evidence, read-back-verified private recovery backup and a sanitised repo checkpoint retained. Real signatures, generated live signing packages, private keys and authority databases stay LOCAL ONLY; never commit or reset them.
+- [ ] **Recommended next engineering milestone:** a separate/protected checker that actually tests the upgraded app independently of its own test report, plus authenticated receipt acceptance and engine-stored candidate binding. First inspect/complete the M0/M1/M2 authority, contract and attempt/fencing prerequisites at that seam. Use fresh isolated fixtures; new OS permissions or real-project executions require scoped owner approval.
+- [ ] The wider M0–M9 register below remains open/partial. Fresh dependency resolution, arbitrary code/model changes, native run/resume, complete platform/release acceptance and INSTALL/DEPLOY/PUBLISH are NOT delivered by this trial.
+
+Read [the v5 checkpoint](evidence/trial-v5-20261019/README.md) and [NEXT-SESSION.md](NEXT-SESSION.md). Both real v5 grants are SPENT: do not run an old signing/test command or prepare another trial merely to resume coding. A docs-only commit changes HEAD; archived v5 helpers intentionally pin the older producing SHA and must not be blindly replayed.
+
+The dated sections below retain the historical progression. Their former pending-signature / parent-verification notes are superseded by this checkpoint, not new blockers.
 
 Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised at the recorded boundary. An unchecked parent milestone remains open even when some subcomponents pass. Never mark a whole M0–M9 milestone done because a source file exists or a fixture passes.
 
@@ -29,7 +44,7 @@ Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised 
 
 - [x] Read-only pickup verification completed: recorded engine/original/candidate commits, unchanged executable delta, private visibility, recovery checksums, rootless runtime, pinned images and both inert owner-v2 preflights. No real execution or claim. Exact current request nonces are unclaimed; signatures absent. This closes only the pickup checks, not M0 acceptance.
 - [x] Compared all 249 tracked original file bytes to the frozen baseline; unchanged. Candidate byte differences are only CI/Python/dependency/lock metadata. Full filesystem modes and original-only generated files differ and are explicitly retained in the private audit; byte equality is not full identity equality.
-- [ ] Real regression remains BLOCKED: authentic signatures absent, and existing v2 runner retains aggregate counts but discards temporary raw JUnit on container cleanup. Review bounded per-case evidence retention and baseline acceptance before candidate execution; any changed argv/environment/executor requires new exact requests and signatures. No SDK/validator defect reopened; no executor change made.
+- Historical, SUPERSEDED by v3/v4/v5: real regression was BLOCKED on 16 October because authentic signatures were absent and v2 retained aggregate counts but discarded temporary raw JUnit on container cleanup. Review bounded per-case evidence retention and baseline acceptance before candidate execution; any changed argv/environment/executor requires new exact requests and signatures. No SDK/validator defect reopened; no executor change made.
 - [x] SUPERSEDED 17 October: fresh owner-signed v3/v4 grants were obtained and the bounded regression RAN (candidate second, order enforced). See the next section. The 16 October blocker above is historical only.
 - Private return: `/home/kensei/handoff/agent-plugin-plans/evidence/modernisation-first-upgrade/REPORT.txt`; structured audit `preflight-1792190776554361765.json` in the same directory. Original/candidate/core/ledger unchanged. Actual exits, JUnit and test counts remain unmeasured. No M0–M9 milestone closed.
 
@@ -40,7 +55,7 @@ Checkbox rule: `[x]` means the exact subcomponent was implemented and exercised 
 - [x] Fixture self-test 13/13 (stub pytest, no repo code), incl. substituted-name and marker-injection cases that aggregate counts would have accepted. Both v3 preflights PASS inert; negative candidate attempt refused before claim; ledger hash unchanged.
 - [x] Real regression run 17/10/2026 under owner-signed one-use v3 grants (baseline first, candidate second; replay refused). Result: PASSES DECLARED SCOPE — exact same 20 testcase IDs, 20/20 passed on Python 3.12.15 original and Python 3.14.8 candidate; zero fail/error/skip; sources unchanged; containers removed. Receipts NOT_PROVEN (process-only); per-case evidence candidate-authored.
 - [x] Follow-up (v4, owner-signed, candidate-only, gated on accepted v3 baseline): pytest-asyncio 1.4.0 + starlette 0.52.1 lock (clone commit c6134c2). Result 20/20 passed, same IDs/outcomes, **0 warnings**. Named difference closed. Earlier "anyio downgrade" note was wrong: both locks pin anyio 4.14.2; the 4.15.1 came from the generic baseline image.
-- [ ] Optional, owner-gated: PR (not merge) to public walkie-talkie repo with the Python 3.14 metadata + dependency changes so GitHub CI runs the full 3.11–3.14 suite.
+- [ ] Public follow-up, separately owner-gated: inspect the previously recorded walkie-talkie PR #5 and its CURRENT status/CI before any action. Do not create a duplicate or treat this private checkpoint as public write/merge approval.
 - Result: `evidence/modernisation-first-upgrade/RESULT-v3-20261017.txt` and `RESULT-v4-20261017.txt`; artifacts `run-v3-20261017/`, `run-v4-20261017/`.
 - Private return: `evidence/modernisation-first-upgrade/REPORT-v3-runner-fix.txt`. No M0–M9 milestone closed.
 
@@ -88,11 +103,11 @@ All nine briefed fixes implemented on top of the controller-verified 187/0 round
 
 ## Ordered next actions
 
-1. [ ] **Verify before editing.** Follow HANDOFF.md: clean tree, descendant of code baseline, recovery hashes, exact pinned host/image prerequisites. No source changes authorised by merely opening the handoff.
-2. [ ] **Finish prerequisite engineering** (M0, strict contracts, state/fencing), using synthetic controls. These coding tasks do NOT require the real benchmark signatures; do not park the entire engineering backlog behind the regression lane.
-3. [ ] **Optional bounded real-regression lane, owner gated.** Revalidate request expiry/source/executor/oracle/image. Obtain fresh signatures if requests are expired or drifted; run original baseline first, candidate second, only in isolation. Record actual exits, expected collection, pass/fail/error/skip counts, warnings and raw-output hashes. A 20-test regression pass is not complete behavioural equivalence.
-4. [ ] Complete protected evaluator/receipt acceptance and false-proof controls before enabling native run/resume or model orchestration.
-5. [ ] Work the remaining milestones below in dependency order; final independent review and owner decision remain mandatory. DIRECT work only; do not spawn agents to satisfy review without a new owner decision.
+1. [ ] **Verify before editing.** Follow HANDOFF.md and NEXT-SESSION.md: branch/private visibility, clean tree, ancestry from `c343e0b`, scoped checkpoint delta, recovery hashes and supported host/image prerequisites. No destructive cleanup or automatic restore.
+2. [ ] **Scope the independent checker at its real boundary.** Inspect the current record/evaluator/executor/store paths and original M0/M1/M2/M4 requirements. Specify protected test inputs, externally observed outcomes, authentic receipt provenance, candidate-staging binding and negative controls. Do not turn this into another parser-only or fake-Executor pass.
+3. [ ] **Complete the required contract/state/authority prerequisites**, then the protected checking/receipt slice, using owned isolated fixtures and witnessed RED/GREEN. Old one-use signatures are not needed for ordinary authorised coding. Stop for a new owner decision if the proposed boundary needs new OS permissions, services, paid/model egress or real-project executions.
+4. [ ] **Do not repeat v5.** Its two approved operations are complete and consumed. A future real trial must use a fresh job/attempt namespace, current code/source/environment identities and new exact owner approval. Never reset the old ledger, alter a signed operation or reuse failed/occupied attempt storage blindly.
+5. [ ] Continue the remaining milestones in dependency order. Native run/resume/model orchestration stay disabled until their full gates pass. DIRECT work only; final independent implementation review and separate owner release decisions remain required.
 
 ## Milestones and exact closure requirements
 
@@ -166,7 +181,7 @@ The original plan's §6 defines MT01–MT18. Retain every requirement; current t
 
 ## Parked security/authority notes
 
-- The older owner baseline signature is consumed. Never reuse it or copy it into this repo.
-- Pending baseline/candidate requests live only in the local handoff approval directory. Expiry: Unix 1792245405 (17 October 2026 14:56:45 BST). Re-check time and all bound identities when picking up later.
-- A skipped signing question is NOT approval. Signatures only unblock exact regression execution, not remaining coding, model egress, installation or release.
+- The real v3/v4/v5 permissions are historical/consumed; v5 has exactly two consumed operations. Never reuse them, copy real signatures into this repo, reset/move their ledger or ask the owner to sign again for the completed trial.
+- Local live packages, generated request-bearing signers, real signatures and databases are deliberately excluded from Git. A docs checkpoint changes Git HEAD but does not change the recorded producing source. Revalidate and rebind a NEW package only when a new real execution is actually approved.
+- A skipped signing question is NOT approval. Exact real-run permission never approves arbitrary coding/model egress, installation or release.
 - The original public walkie-talkie repo, live Hermes and other projects—including Skill Foundry—are outside writable scope.
