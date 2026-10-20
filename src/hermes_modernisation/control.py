@@ -15,12 +15,12 @@ DECISION_FIELDS = {"schema_version", "kind", "job_id", "attempt_id", "profile", 
 
 def validate_decision(value):
     fields(value, DECISION_FIELDS, "control decision")
-    if type(value["schema_version"]) is not int or value["schema_version"] != 1 or value["kind"] != "ControlDecision" or value["purpose"] not in ("cancel", "recover"):
+    if type(value["schema_version"]) is not int or value["schema_version"] != 1 or value["kind"] != "ControlDecision" or value["purpose"] not in ("cancel", "recover", "recover_build"):
         raise ContractError("Unsupported owner control decision")
     for key in ("job_id", "attempt_id", "profile", "actor"):
         identifier(value[key])
     digest(value["operation_digest"])
-    expected = "modernise-" + hashlib.sha256(value["attempt_id"].encode()).hexdigest()[:32]
+    expected = None if value["purpose"] == "recover_build" else "modernise-" + hashlib.sha256(value["attempt_id"].encode()).hexdigest()[:32]
     if value["container_name"] != expected:
         raise ContractError("Control container identity differs from exact stored attempt")
     return value
@@ -28,6 +28,10 @@ def validate_decision(value):
 
 def request(store, job, attempt_id, purpose, actor, profile):
     identifier(actor)
+    if purpose == "recover_build":
+        from .build_recovery import request_decision
+        decision = request_decision(job, attempt_id, actor, profile)
+        return {"decision": validate_decision(decision), "permission_granted": False, "execution_performed": False}
     with store.read_connection() as connection:
         attempt = _attempt(connection, job["job_id"], attempt_id)
     return {"decision": validate_decision({"schema_version": 1, "kind": "ControlDecision", "job_id": job["job_id"], "attempt_id": attempt_id, "profile": profile, "actor": actor, "purpose": purpose, "operation_digest": hashlib.sha256(dumps(attempt["operation"])).hexdigest(), "container_name": "modernise-" + hashlib.sha256(attempt_id.encode()).hexdigest()[:32]}), "permission_granted": False, "execution_performed": False}

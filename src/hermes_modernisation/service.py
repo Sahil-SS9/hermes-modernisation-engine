@@ -29,6 +29,7 @@ FIELDS = {
     "control_request": {"job", "attempt", "purpose", "actor"},
     "cancel": {"job", "attempt", "grant"},
     "recover": {"job", "attempt", "grant"},
+    "recover_build": {"job", "attempt", "grant"},
     "recipe": {"repo", "recipe", "base_digest", "dest"},
     "compare": {"job"},
     "report": {"job"},
@@ -116,6 +117,11 @@ class Engine:
         if action == "control_request":
             from .control import request
             return request(self.store, job, arguments["attempt"], arguments["purpose"], arguments["actor"], self.profile)
+        if action == "recover_build":
+            from .operator import OperatorPolicy
+            from .build_recovery import recover
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            return recover(self.store, job, arguments["attempt"], arguments["grant"], policy)
         if action in {"cancel", "recover"}:
             from .operator import OperatorPolicy
             from . import control

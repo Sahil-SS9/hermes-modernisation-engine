@@ -70,6 +70,16 @@ def candidate_for(store, job, policy):
 
 def build(store, job, policy):
     from .reviews import accepted
+    from .runtime_lock import locked
+
+    accepted(store, job, "contract", policy)
+    accepted(store, job, "migration", policy)
+    with locked(policy, job["job_id"]):
+        return _build(store, store.get(job["job_id"]), policy)
+
+
+def _build(store, job, policy):
+    from .reviews import accepted
 
     accepted(store, job, "contract", policy)
     accepted(store, job, "migration", policy)

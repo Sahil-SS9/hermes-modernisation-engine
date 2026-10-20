@@ -20,6 +20,7 @@ OPERATIONS = (
     "control_request",
     "cancel",
     "recover",
+    "recover_build",
     "recipe",
     "compare",
     "report",
@@ -34,7 +35,7 @@ PROPERTIES = {
     "page": {"type": "integer", "minimum": 0},
     "actor": {"type": "string"},
     "attempt": {"type": "string"},
-    "purpose": {"type": "string", "enum": ["contract", "migration", "cancel", "recover"]},
+    "purpose": {"type": "string", "enum": ["contract", "migration", "cancel", "recover", "recover_build"]},
     "grant": {"type": "object", "additionalProperties": True},
     "proposal": {"type": "object", "additionalProperties": True},
     "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 600},
@@ -71,6 +72,7 @@ REQUIRED = {
     "control_request": ["job", "attempt", "purpose", "actor"],
     "cancel": ["job", "attempt", "grant"],
     "recover": ["job", "attempt", "grant"],
+    "recover_build": ["job", "attempt", "grant"],
     "run": ["job", "attempt", "grant"],
     "resume": ["job", "attempt"],
     "recipe": ["repo", "recipe", "base_digest", "dest"],
@@ -92,7 +94,7 @@ def setup(parser):
     parser.add_argument("--revision", type=int)
     parser.add_argument("--actor")
     parser.add_argument("--attempt")
-    parser.add_argument("--purpose", choices=["contract", "migration", "cancel", "recover"])
+    parser.add_argument("--purpose", choices=["contract", "migration", "cancel", "recover", "recover_build"])
     parser.add_argument("--grant")
     parser.add_argument("--proposal")
     parser.add_argument("--timeout-seconds", type=int)

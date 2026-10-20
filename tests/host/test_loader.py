@@ -242,14 +242,14 @@ prepared=json.loads(registry.dispatch('modernise_prepare',{'job':args['job'],'ph
 control=json.loads(registry.dispatch('modernise_control_request',{'job':args['job'],'attempt':prepared['attempt_id'],'purpose':'recover','actor':'fixture_owner'},scope=manager.scope_key))
 assert control['decision']['kind']=='ControlDecision' and not control['permission_granted'],control
 slash=get_plugin_command_handler('modernise')
-for action in ('cancel','recover'):
+for action in ('cancel','recover','recover_build'):
     refused=json.loads(slash(action+' --job '+args['job']+' --attempt '+prepared['attempt_id']+' --grant '+shlex.quote(json.dumps({'approved':True}))))
     assert refused['error']=='INVALID_REQUEST' and not refused['execution_performed'],refused
 replayed=json.loads(slash('review --job '+args['job']+' --grant '+shlex.quote(json.dumps(args['grant']))))
 assert replayed['error']=='INVALID_REQUEST' and not replayed['execution_performed'],replayed
 assert json.loads(slash('status --job '+args['job']))['contract_review']['authenticated'] is True
 assert manager.unload('modernisation-engine')
-for name in ('review','review_request','proposal','build','run','resume','control_request','cancel','recover'):
+for name in ('review','review_request','proposal','build','run','resume','control_request','cancel','recover','recover_build'):
     assert registry.get_entry('modernise_'+name,scope=manager.scope_key) is None,name
 print('NATIVE_CONFIGURED_REVIEW_CLI_TOOL_SLASH_OK')
 """.replace("PAYLOAD", repr(json.dumps({"job": jid, "grant": grant})))

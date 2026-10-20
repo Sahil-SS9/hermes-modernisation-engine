@@ -11,6 +11,7 @@ from ..interface import (
 )
 
 DESCRIPTIONS = {
+    "recover_build": "With a fresh exact signed owner decision and no active builder, quarantine the reserved candidate without deletion/reuse, retain failed files and require a new migration review and fresh candidate namespace. No program/model execution.",
     "control_request": "Prepare an unsigned exact owner cancel/recovery decision for a stored attempt. No Docker access, permission or program replay.",
     "cancel": "Persist a separately signed owner cooperative-stop request. Never steals the live worker runtime lock; uncertain/lost work needs explicit recovery.",
     "recover": "With a fresh exact signed owner control grant and no live runtime owner, retire only the stored attempt container, verify absence and fence old workers. Never replays code or adopts partial evidence; fresh execution needs a new attempt/grant.",
