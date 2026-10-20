@@ -1,6 +1,19 @@
 # Remaining work — Modernisation Engine
 
-Current state: **PARTIAL / ACTIVE points 1–3 BUILD** (owner instruction 20 October 2026). The owner-approved real v5 trial is COMPLETE; the full engine is not. STOP before point 4 final review/release; per-change correctness tests remain mandatory. Requirements: [updated plan](PLAN.md); pickup: [handoff](HANDOFF.md). Current producing executable baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2` (the older `b914c6d` is historical).
+Current state: **PARTIAL / ACTIVE points 1–3 BUILD** (owner instruction 20 October 2026). The owner-approved real v5 trial is COMPLETE; the full engine is not. STOP before point 4 final review/release; per-change correctness tests remain mandatory. Requirements: [updated plan](PLAN.md); pickup: [handoff](HANDOFF.md). Historical v5 producing baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2` (the older `b914c6d` is historical). The active build below changes executable code and has its own source-bound receipts.
+
+## Active build — 20 October 2026
+
+Owner instruction: work through points 1–3 directly; STOP before point 4 final independent review/release. Per-change correctness/negative/native checks are mandatory, not postponed to point 4. Full decomposition: [remaining-build plan](plans/2026-10-20-remaining-build.md).
+
+- [x] Point 1: private checkpoint `05742bd367b345d70577b17656a1a82f88a28b5a` pushed and read back exactly from GitHub; historical source/evidence preserved without replaying v5.
+- [x] Slice 2a-1 ONLY: strict protected BehaviourContract v1 through Engine, actual isolated native CLI, registered tool and registered slash handler; private content-addressed expected data, exact source citations/case-rule links, ten distinct declared fresh inputs plus boundary/malformed cases, revision/idempotency and corruption refusals. Unreviewed by construction; no self-authored approval and no app/model execution. Also fixed repeated schema-pragma writes that mutated the DB header on an identical retry. Last full slice gate: 225 passed, 0 failed/error/skipped; lint and plugin validator green. [Source-bound receipt](evidence/remaining-build-20261020/contracts.json); trailing test-file blank-line cleanup is explicitly noted, not hidden as tested bytes.
+- [ ] Slice 2a-2: durable attempt ownership, fencing, transitions, restart/uncertain-outcome recovery and engine-owned candidate staging. Existing imported evaluations remain reported-only; this parent point is NOT complete.
+- [ ] Point 2 protected externally observed checking, authentic acceptance and real isolation/authority/native route proofs.
+- [ ] All point 3 implementation obligations from the original M0–M8/MT01–18 register: broader workflows, proposals/budgets/batches, rule/difference proof, full native journey and reporting. Do not tick them on the contract-only slice.
+- [ ] HOLD point 4: final independent review, untouched qualification/value campaign and separate owner release/live decisions.
+
+Native execution stays OFF. A separately trusted execution workspace outside `.hermes`/other credential directories is required: do not loosen the current mount policy to put candidates under a live profile. Public SDK `get_config` and lazy `llm` were inspected in the actual pinned image; no real settings, credentials, services or provider calls were changed.
 
 ## Latest checkpoint — 19 October 2026: signed real trial complete
 

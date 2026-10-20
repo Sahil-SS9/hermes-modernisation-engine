@@ -16,6 +16,7 @@ FIELDS = {
     "status": {"job"},
     "record": {"job", "phase", "expectation", "output", "source_digest"},
     "protocol": set(),
+    "contract": {"job", "revision", "contract"},
     "recipe": {"repo", "recipe", "base_digest", "dest"},
     "compare": {"job"},
     "report": {"job"},
@@ -55,6 +56,7 @@ class Engine:
                     "compare-gaps",
                     "report-gaps",
                     "protocol-descriptor",
+                    "unreviewed-protected-contract",
                 ],
             }
         required = FIELDS[action]
@@ -84,6 +86,13 @@ class Engine:
                 arguments["dest"],
             )
         job = self.store.get(arguments["job"])
+        if action == "contract":
+            from .contracts import validate_contract
+
+            contract = validate_contract(
+                arguments["contract"], job["repo"], job["assessment"]["source_digest"]
+            )
+            return self.store.save_contract(job["job_id"], arguments["revision"], contract)
         if action == "status":
             return job
         if action == "record":

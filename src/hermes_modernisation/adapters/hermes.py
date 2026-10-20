@@ -4,7 +4,7 @@ import argparse
 import json
 import shlex
 from ..service import Engine
-from ..jsonio import ContractError
+from ..jsonio import ContractError, loads
 
 OPERATIONS = (
     "assess",
@@ -13,6 +13,7 @@ OPERATIONS = (
     "status",
     "record",
     "protocol",
+    "contract",
     "recipe",
     "compare",
     "report",
@@ -32,6 +33,7 @@ PROPERTIES = {
     "revision": {"type": "integer", "minimum": 0},
     "phase": {"type": "string", "enum": ["baseline", "candidate"]},
     "expectation": {"type": "object", "additionalProperties": True},
+    "contract": {"type": "object", "additionalProperties": True},
     "output": {"type": "string"},
     "source_digest": {"type": "string"},
     "recipe": {"type": "string"},
@@ -45,6 +47,7 @@ REQUIRED = {
     "status": [],
     "record": ["job", "phase", "expectation", "output", "source_digest"],
     "protocol": [],
+    "contract": ["job", "revision", "contract"],
     "recipe": ["repo", "recipe", "base_digest", "dest"],
     "compare": ["job"],
     "report": ["job"],
@@ -64,6 +67,7 @@ def setup(parser):
     parser.add_argument("--revision", type=int)
     parser.add_argument("--phase", choices=["baseline", "candidate"])
     parser.add_argument("--expectation")
+    parser.add_argument("--contract")
     parser.add_argument("--output")
     parser.add_argument("--source-digest")
     parser.add_argument("--recipe")
@@ -72,16 +76,21 @@ def setup(parser):
 
 
 def arguments_for(fields):
-    expectation = fields.get("expectation")
-    if isinstance(expectation, str):
-        try:
-            fields["expectation"] = json.loads(expectation)
-        except (ValueError, TypeError, RecursionError) as error:
-            raise ContractError("Expectation must be a valid JSON object") from error
+    for key in ("expectation", "contract"):
+        if isinstance(fields.get(key), str):
+            try:
+                fields[key] = loads(fields[key])
+            except ContractError as error:
+                raise ContractError(key.title() + " must be a bounded duplicate-free JSON object") from error
     return {key: value for key, value in fields.items() if value is not None}
 
 
 DESCRIPTIONS = {
+    "contract": (
+        "Register an unreviewed protected JSON-response contract and exact source citations. "
+        "Expected values stay in private job storage, outside candidate mounts. "
+        "This stores data only, grants no authority and runs no app or model."
+    ),
     "record": (
         "Record operator-evaluated retained run output for a job after trusted "
         "per-case evaluation. Never runs repository code or models. Recorded "
@@ -122,7 +131,10 @@ def register(ctx):
 
     def cli(arguments):
         fields = {key: getattr(arguments, key, None) for key in PROPERTIES}
-        result = invoke(arguments.operation, arguments_for(fields))
+        try:
+            result = invoke(arguments.operation, arguments_for(fields))
+        except ContractError as error:
+            result = {"error": "INVALID_ARGUMENTS", "message": str(error), "execution_performed": False}
         print(json.dumps(result))
         if "error" in result:
             raise SystemExit(2)

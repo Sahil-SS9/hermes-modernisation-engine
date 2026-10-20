@@ -6,20 +6,13 @@ attempt fencing belong to the separate trusted executor, not caller JSON.
 
 import hashlib
 import os
-import re
 import sqlite3
 import stat
 import uuid
 from contextlib import contextmanager, closing
 import time
 from pathlib import Path
-from .jsonio import ContractError, dumps, loads
-
-
-def identifier(value):
-    if type(value) is not str or not re.fullmatch(r"[a-zA-Z0-9_-]{1,100}", value):
-        raise ContractError("Invalid identifier")
-    return value
+from .jsonio import ContractError, dumps, loads, identifier
 
 
 def partition_assessment(assessment):
@@ -144,7 +137,8 @@ class Store:
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS evaluations (job_id TEXT NOT NULL, phase TEXT NOT NULL, source_digest TEXT NOT NULL, expectation_digest TEXT NOT NULL, body BLOB NOT NULL, body_sha256 TEXT NOT NULL, UNIQUE(job_id, phase))"
                 )
-                connection.execute("PRAGMA user_version=3")
+                if version != 3:
+                    connection.execute("PRAGMA user_version=3")
                 yield connection
         except (OSError, sqlite3.Error) as error:
             raise ContractError(
@@ -275,6 +269,53 @@ class Store:
                 "UPDATE jobs SET body=? WHERE id=?", (dumps(job), job_id)
             )
             return job
+
+    def save_contract(self, job_id, revision, contract):
+        """Atomically retain unreviewed oracle bytes and their job-bound reference."""
+        from .contracts import contract_summary
+
+        identifier(job_id)
+        if type(revision) is not int or revision < 0:
+            raise ContractError("Expected revision required")
+        raw = dumps(contract)
+        summary = contract_summary(contract)
+        with self.connection() as connection:
+            row = connection.execute("SELECT body FROM jobs WHERE id=?", (job_id,)).fetchone()
+            if row is None:
+                raise ContractError("Job not found in current profile")
+            job = loads(row[0])
+            if summary["source_digest"] != job["assessment"]["source_digest"]:
+                raise ContractError("Contract source differs from assessed source")
+            if job["revision"] != revision:
+                if job["revision"] == revision + 1 and job.get("behaviour_contract") == summary:
+                    return job
+                raise ContractError("Stale job revision")
+            if job["state"] not in ("ASSESSED", "BASELINE_AUTHORITY_REQUIRED"):
+                raise ContractError("Contract changes unavailable after execution has begun")
+            existing = connection.execute("SELECT body FROM details WHERE hash=?", (summary["digest"],)).fetchone()
+            if existing is not None and existing[0] != raw:
+                raise ContractError("Protected contract storage is corrupted")
+            connection.execute("INSERT OR IGNORE INTO details VALUES (?,?)", (summary["digest"], raw))
+            job.update(revision=revision + 1, state="BASELINE_AUTHORITY_REQUIRED", behaviour_contract=summary)
+            connection.execute("UPDATE jobs SET body=? WHERE id=?", (dumps(job), job_id))
+            return job
+
+    def contract_for(self, job_id):
+        """Trusted controller read; deliberately not exposed as a model/tool action."""
+        from .contracts import contract_summary, validate_contract
+
+        job = self.get(job_id)
+        reference = job.get("behaviour_contract")
+        if reference is None:
+            raise ContractError("No protected behaviour contract registered")
+        with self.read_connection() as connection:
+            row = connection.execute("SELECT body FROM details WHERE hash=?", (reference["digest"],)).fetchone()
+        if row is None or hashlib.sha256(row[0]).hexdigest() != reference["digest"]:
+            raise ContractError("Protected contract missing or corrupted")
+        value = validate_contract(loads(row[0]), job["repo"], job["assessment"]["source_digest"])
+        if contract_summary(value) != reference or value["source_digest"] != job["assessment"]["source_digest"]:
+            raise ContractError("Protected contract has contradictory job bindings")
+        return value
 
     def record_evaluation(self, job_id, phase, source_digest, expectation, body):
         identifier(job_id)

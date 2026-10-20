@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hermes-modernisation:behaviour-contract:1",
+  "title": "Unreviewed protected JSON-response BehaviourContract v1",
+  "description": "Registration is not approval or execution. Runtime validation also enforces source-byte citations, bidirectional case/rule references, distinct fresh inputs and JSON resource limits.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "scope", "track", "source_digest", "adapter", "runtimes", "allowed_paths", "seed", "rules", "cases", "normalizations", "planned_differences"],
+  "properties": {
+    "schema_version": {"const": 1, "type": "integer"},
+    "kind": {"const": "BehaviourContract"},
+    "scope": {"$ref": "#/$defs/id"},
+    "track": {"enum": ["uplift", "transform", "reimagine"]},
+    "source_digest": {"$ref": "#/$defs/sha256"},
+    "adapter": {"const": "json-batch-v1"},
+    "runtimes": {
+      "type": "object", "additionalProperties": false,
+      "required": ["baseline", "candidate"],
+      "properties": {"baseline": {"$ref": "#/$defs/runtime"}, "candidate": {"$ref": "#/$defs/runtime"}}
+    },
+    "allowed_paths": {"type": "array", "minItems": 1, "maxItems": 100, "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+    "seed": {"type": "integer", "minimum": 0, "maximum": 2147483647},
+    "rules": {"type": "array", "minItems": 1, "maxItems": 100, "items": {"$ref": "#/$defs/rule"}},
+    "cases": {"type": "array", "minItems": 12, "maxItems": 500, "items": {"$ref": "#/$defs/case"}},
+    "normalizations": {"type": "array", "maxItems": 0},
+    "planned_differences": {"type": "array", "maxItems": 0}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-zA-Z0-9_-]{1,100}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 4096, "description": "Runtime safe_relative and protected-path policy additionally apply; no traversal, symlink, hidden/test/oracle output path."},
+    "runtime": {
+      "type": "object", "additionalProperties": false, "required": ["image", "argv"],
+      "properties": {
+        "image": {"type": "string", "pattern": "^[a-z0-9./_-]+@sha256:[a-f0-9]{64}$"},
+        "argv": {"type": "array", "minItems": 1, "maxItems": 128, "items": {"type": "string", "maxLength": 16384}}
+      }
+    },
+    "citation": {
+      "type": "object", "additionalProperties": false, "required": ["path", "line_start", "line_end", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "line_start": {"type": "integer", "minimum": 1},
+        "line_end": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "rule": {
+      "type": "object", "additionalProperties": false, "required": ["id", "text", "source_refs", "case_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "source_refs": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"$ref": "#/$defs/citation"}},
+        "case_ids": {"type": "array", "minItems": 1, "maxItems": 500, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "case": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind", "input", "expected", "rule_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["fresh", "boundary", "malformed", "state", "property", "metamorphic", "concurrency"]},
+        "input": true, "expected": true,
+        "rule_ids": {"type": "array", "minItems": 1, "maxItems": 100, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+      }
+    }
+  }
+}

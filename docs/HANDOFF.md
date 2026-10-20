@@ -1,5 +1,11 @@
 # Resume here — Modernisation Engine
 
+## ACTIVE BUILD — protected contract slice completed; remaining points 2–3 open
+
+Private checkpoint 05742bd is saved. Slice 2a-1 adds strict unreviewed behavioural contracts, protected private storage and real native CLI/tool/registered-slash wiring. Current verified slice has 225 tests passed with zero failures/errors/skips, lint and validator green; source-bound receipt is `docs/evidence/remaining-build-20261020/contracts.json`. It does NOT implement the protected process checker, signed review, candidate ownership, attempt fencing/recovery or the full workflow. Continue those, do not stop after the schema slice. Native run/resume still refuse. The original M0–M8/MT01–18 obligations remain tracked in `docs/plans/2026-10-20-remaining-build.md`.
+
+The section below records the earlier docs-only checkpoint; the current feature delta is now executable and separately verified. Historical v5 commands/signatures remain spent.
+
 ## CURRENT — 20 October 2026: real trial complete; points 1–3 BUILD authorised
 
 Read [NEXT-SESSION.md](NEXT-SESSION.md) and [the v5 checkpoint](evidence/trial-v5-20261019/README.md) FIRST. The previous paused trial DID run successfully, baseline first then upgraded candidate: the same twenty checks passed with zero failures/errors/skips/warnings. Evidence is still candidate-authored, outer verdict NOT_PROVEN. Both one-use permissions are consumed; no more signing/replay is required for ordinary engineering.

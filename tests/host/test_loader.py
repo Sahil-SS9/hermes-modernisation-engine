@@ -144,3 +144,42 @@ print('NATIVE_REGISTRY_SLASH_HANDLER_RELOAD_UNLOAD_OK')
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "NATIVE_REGISTRY_SLASH_HANDLER_RELOAD_UNLOAD_OK" in result.stdout
+
+
+def test_contract_registration_reaches_native_cli_tool_and_slash(tmp_path):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("owned_contract_fixture", ROOT / "tests/unit/test_behaviour_contract.py")
+    assert spec is not None and spec.loader is not None
+    fixture = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fixture)
+    _, _, contract = fixture.contract_fixture(tmp_path)
+    home, environment = installed_home(tmp_path)
+    command = ["/opt/hermes/.venv/bin/hermes", "modernise"]
+    source = str(tmp_path / "legacy")
+    assessed = subprocess.run(command + ["assess", "--repo", source, "--goal", "fixture", "--request-id", "native-contract"], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert assessed.returncode == 0, assessed.stdout + assessed.stderr
+    jid = json.loads(assessed.stdout)["job_id"]
+    registered = subprocess.run(command + ["contract", "--job", jid, "--revision", "0", "--contract", json.dumps(contract)], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert registered.returncode == 0, registered.stdout + registered.stderr
+    assert json.loads(registered.stdout)["behaviour_contract"]["review_state"] == "unreviewed"
+    code = """import json,shlex
+from hermes_cli.plugins import discover_plugins,get_plugin_manager,get_plugin_command_handler
+from tools.registry import registry
+discover_plugins(); m=get_plugin_manager()
+args=json.loads(PAYLOAD)
+a=json.loads(registry.dispatch('modernise_contract',args,scope=m.scope_key))
+assert a['behaviour_contract']['review_state']=='unreviewed',a
+slash=get_plugin_command_handler('modernise')
+command='contract --job '+shlex.quote(args['job'])+' --revision 0 --contract '+shlex.quote(json.dumps(args['contract']))
+b=json.loads(slash(command))
+assert b==a,(a,b)
+malformed=json.loads(slash('contract --job '+args['job']+' --revision 1 --contract '+shlex.quote('{"schema_version":1,"schema_version":2}')))
+assert malformed['error']=='INVALID_ARGUMENTS',malformed
+assert m.unload('modernisation-engine')
+assert registry.get_entry('modernise_contract',scope=m.scope_key) is None
+print('NATIVE_CONTRACT_CLI_TOOL_SLASH_OK')
+""".replace("PAYLOAD", repr(json.dumps({"job": jid, "revision": 0, "contract": contract})))
+    result = subprocess.run(["python", "-B", "-c", code], cwd=home, env=environment, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "NATIVE_CONTRACT_CLI_TOOL_SLASH_OK" in result.stdout

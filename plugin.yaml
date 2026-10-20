@@ -9,6 +9,7 @@ provides_tools:
   - modernise_plan
   - modernise_record
   - modernise_protocol
+  - modernise_contract
   - modernise_recipe
   - modernise_compare
   - modernise_report

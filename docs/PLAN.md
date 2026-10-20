@@ -15,7 +15,7 @@ Read first (paths relative to the engine repository):
 
 Repository: https://github.com/Sahil-SS9/hermes-modernisation-engine (private checkpoint authorised; not a public release).
 Local repository: `/home/kensei/repos/hermes-modernisation-engine`, branch `build/phase0`.
-Executable code baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2`; b914c6d is historical. This checkpoint changes documentation/recovery only; subsequent production changes require their own recorded verification.
+Historical v5 producing baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2`; b914c6d is historical. The active protected-contract slice now changes executable code; its exact source manifest and 225-case gate are in `docs/evidence/remaining-build-20261020/contracts.json`. Protected execution and the wider implementation remain unfinished.
 
 ## Completed components (not full milestone acceptance)
 

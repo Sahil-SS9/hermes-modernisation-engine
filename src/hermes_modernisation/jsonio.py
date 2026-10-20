@@ -2,6 +2,7 @@
 
 import json
 import math
+import re
 
 MAX_BYTES = 1048576
 MAX_DEPTH = 24
@@ -10,6 +11,12 @@ MAX_NODES = 20000
 
 class ContractError(ValueError):
     """Unusable or ambiguous product data."""
+
+
+def identifier(value):
+    if type(value) is not str or not re.fullmatch(r"[a-zA-Z0-9_-]{1,100}", value):
+        raise ContractError("Invalid identifier")
+    return value
 
 
 def _validate(value, depth=0, count=None):
