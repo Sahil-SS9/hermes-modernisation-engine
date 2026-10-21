@@ -1,0 +1,127 @@
+{
+  "branch": "build/phase0",
+  "commit": "09ca3006d91ee2f8bc5e3f3a59f59b03a14690f3",
+  "date": "2026-10-21",
+  "explicitly_not_claimed": [
+    "real dependency resolution",
+    "live model/provider call",
+    "real-project execution",
+    "source-mutant execution",
+    "install",
+    "deploy",
+    "publish",
+    "point 4 final review"
+  ],
+  "gate": {
+    "all": {
+      "errors": 0,
+      "failures": 0,
+      "receipt": "development-all-1792550672814025137.json",
+      "skipped": 0,
+      "tests": 439
+    },
+    "lint": {
+      "receipt": "development-lint-1792550683299112770.json",
+      "result": "All checks passed"
+    },
+    "validate": {
+      "ok": true,
+      "receipt": "development-validate-1792550691035245412.json",
+      "warnings": []
+    }
+  },
+  "kind": "Point3CompletionEvidence",
+  "point_2c": {
+    "host": "pinned isolated development image",
+    "proved": [
+      "modernise status returns READ_ONLY_PREVIEW and execution_available false",
+      "unknown command refused",
+      "run refused through gateway and raw registry with EXECUTION_UNAVAILABLE before execution"
+    ],
+    "route": "tui_gateway.server.dispatch command.dispatch"
+  },
+  "point_3": {
+    "3a": {
+      "blocked": "DEPENDENCY_RESOLUTION_EXPLICITLY_BLOCKED for npm/pip/uv without an enrolled offline adapter/cache",
+      "implemented": [
+        "engine-owned staging",
+        "literal proposals",
+        "reviewed metadata/lock lane",
+        "dependency-resolution port"
+      ]
+    },
+    "3b": {
+      "boundary": "no live provider/auth read or model call",
+      "implemented": [
+        "batches.py",
+        "strict call/input/output/time/token caps",
+        "disjoint batches",
+        "FixtureProposer",
+        "HermesPublicModelAdapter injected-callable-only",
+        "propose_batches reaches saved proposal/build"
+      ]
+    },
+    "3c": {
+      "boundary": "mutants are response-boundary, not source-mutant execution",
+      "implemented": [
+        "authenticated rule trace",
+        "typed contract-sealed normalisations",
+        "approved-difference disclosure",
+        "response-boundary mutants",
+        "recomputed rule coverage in proof report"
+      ]
+    },
+    "3d": {
+      "boundary": "collector is a declared offline artifact fixture; no real project execution",
+      "implemented": [
+        "assess",
+        "contract",
+        "signed review",
+        "plan",
+        "baseline prepare/run",
+        "restart",
+        "successful resume",
+        "bounded batch proposal",
+        "migration review",
+        "build",
+        "candidate prepare/run",
+        "compare",
+        "report",
+        "signed cancel",
+        "uncertain-attempt refusal"
+      ]
+    },
+    "3e": {
+      "implemented": [
+        "register reconciled",
+        "explicit owner-gated boundaries disclosed",
+        "point 4 remains HOLD"
+      ]
+    }
+  },
+  "schema_version": 1,
+  "source_manifest": {
+    "docs/NEXT-SESSION.md": "26239f457f334c6d218d3b20e47c5e06b4845018d6cdc9ef6ff6f9a6e8e6ffff",
+    "docs/TODO.md": "ab49b52f408b6f0fbda2b8aeecccf3da321ebfbf390962d77021409e2d4ee17a",
+    "src/hermes_modernisation/baseline.py": "abb9206e79ddbb78f0eb63cff677be9ac2e0f73615981863cef534ac7042a07d",
+    "src/hermes_modernisation/batches.py": "51f22490af5a6928f79f519ff3eec4eec9b654022d8711226a1006ab2f03a2e7",
+    "src/hermes_modernisation/contracts.py": "2db092db7768928a0a250cfa0e2ab92f5c928ab82d0e5eb7a964c1a33e07699c",
+    "src/hermes_modernisation/dependencies.py": "afff05c58be4edaec585abdec1f2e921d7910f450859471242e18ad3b0100275",
+    "src/hermes_modernisation/differences.py": "3263fb9c10177a1170a6acc4aa01d01a089406fdf47f638e0632ccc409c141bf",
+    "src/hermes_modernisation/evidence_contracts.py": "6a2c10e1306a2e54a17ee963d3e5fc9784a146cf61ede022e4c600cd3186d7b9",
+    "src/hermes_modernisation/mutants.py": "8ab4539935b11689e29dc11ac2f10b56c4ffe96624e1507fae0393098a92d962",
+    "src/hermes_modernisation/observations.py": "b2be62d4487d82c86f694d4fcdef48aca5561813992680d124b4e509c7375573",
+    "src/hermes_modernisation/report.py": "1a57febdcc106f40f955906aa698dba26b1482f2b9d8de71341dcaff64858437",
+    "src/hermes_modernisation/rule_trace.py": "c38e3d2cabe03513c522403ed5ad3b67381f069f00799eea2548216eb92614cc",
+    "src/hermes_modernisation/service.py": "e1333e6cc9efbd8ac3e8c67fcbdf6afe27a701002cf7493e3de52eabc761d211",
+    "tests/host/test_gateway_dispatch.py": "cd6f0d2f2c15625d8c003e6df166f37c330d9cf7046886be4e92fd9db4faf577",
+    "tests/unit/test_batches.py": "252e2afc7504547eec9265fbccfe1052a489a6649a31be542ed8b31255fd15a2",
+    "tests/unit/test_behaviour_contract.py": "1f399bd9c03ff72068e18dea1a5be5b0460158fe6cd36525d88268adc8d73ae3",
+    "tests/unit/test_dependencies.py": "a591f41faecdd9d6a5d7eb367a48d1cd3e9a147347f4f5444c90bb6a9296a77f",
+    "tests/unit/test_differences.py": "9817f0103719ca937eb913d6202cc15b0cbeca14df49b410f82d8f67d3cd19de",
+    "tests/unit/test_evidence_contract_contracts.py": "4d794fa365cc7ba7984f5d5b1e73f2c720ee9c08315dde819810260a7515582f",
+    "tests/unit/test_journey.py": "67fa769375d541d48352879f92a14d8c37857728ece667830fe784cb3924011c",
+    "tests/unit/test_mutants.py": "c0a65980ec0696a7564b0eb62199f37167908c5139b2d5cff38abceb48e678e3",
+    "tests/unit/test_rule_trace.py": "713a832e4551ce2ee88223b67c68aa7f4b1ff8bcbeb542348bb039aa01429cd6"
+  }
+}
