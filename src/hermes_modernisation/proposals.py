@@ -55,12 +55,31 @@ FILES = {
     "composer.lock",
     "yarn.lock",
     "pnpm-lock.yaml",
+    "bun.lock",
     "bun.lockb",
     "deno.lock",
     "flake.nix",
     "flake.lock",
 }
-DEPENDENCY_PREFIXES = ("requirements.", "requirements-", "Dockerfile.", "docker-compose.")
+BUILD_PREFIXES = ("Dockerfile.", "docker-compose.")
+REQUIREMENTS_FILE = re.compile(r"requirements(?:[._-][^/]+)?\.(?:txt|in)\Z")
+FILES_LOWER = {item.lower() for item in FILES}
+
+
+def _dependency_manifest(parts):
+    """Recognise dependency manifests without matching ordinary source modules."""
+    if not parts:
+        return False
+    name = parts[-1].lower()
+    if name in FILES_LOWER:
+        return True
+    if REQUIREMENTS_FILE.fullmatch(name):
+        return True
+    return (
+        len(parts) > 1
+        and any(part.lower() == "requirements" for part in parts[:-1])
+        and name.endswith((".txt", ".in"))
+    )
 
 
 def forbidden_edit(path):
@@ -71,7 +90,7 @@ def forbidden_edit(path):
         return "protected directory"
     if any(part.startswith(".") for part in parts):
         return "hidden path"
-    if name in FILES or name.startswith(DEPENDENCY_PREFIXES):
+    if _dependency_manifest(parts) or name.startswith(BUILD_PREFIXES):
         return "dependency, build or test manifest"
     if name.startswith("test_"):
         return "test file"

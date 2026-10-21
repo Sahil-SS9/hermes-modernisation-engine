@@ -75,18 +75,70 @@ def test_stale_input_missing_bytes_and_arbitrary_fields_refused(tmp_path):
         validate_proposal(repo, p)
 
 
-def test_dependency_manifest_is_refused_even_when_explicitly_allowlisted(tmp_path):
-    repo, p = fixture(tmp_path)
-    manifest = repo / "requirements.txt"
-    manifest.write_text("requests==2\n")
-    p["source_digest"] = snapshot(repo)["digest"]
-    p["allowed_paths"] = ["requirements.txt"]
-    p["changes"] = [
-        {
-            "path": "requirements.txt",
-            "before_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
-            "replacement": "requests==3\n",
-        }
-    ]
+def _dependency_proposal(repo, path):
+    target = repo / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("fixture-package==1\n")
+    return {
+        "schema_version": 1,
+        "source_digest": snapshot(repo)["digest"],
+        "goal": "modernise",
+        "changes": [
+            {
+                "path": path,
+                "before_sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+                "replacement": "fixture-package==2\n",
+            }
+        ],
+        "allowed_paths": [path],
+        "planned_differences": [],
+    }
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "requirements.txt",
+        "requirements-dev.txt",
+        "requirements_dev.txt",
+        "requirements_prod.txt",
+        "requirements/dev.txt",
+        "requirements/base.in",
+        "bun.lock",
+    ],
+)
+def test_dependency_manifest_variants_are_refused_even_when_allowlisted(
+    tmp_path, path
+):
+    repo, _ = fixture(tmp_path)
+    proposal = _dependency_proposal(repo, path)
     with pytest.raises(ContractError, match="Protected"):
-        validate_proposal(repo, p)
+        validate_proposal(repo, proposal)
+    with pytest.raises(ContractError, match="Protected"):
+        stage_candidate(repo, tmp_path / "candidate", proposal)
+    assert not (tmp_path / "candidate").exists()
+
+
+def test_ordinary_requirements_module_is_not_a_dependency_manifest(tmp_path):
+    repo, _ = fixture(tmp_path)
+    module = repo / "src/requirements.py"
+    module.parent.mkdir(parents=True)
+    module.write_text("VALUE = 1\n")
+    proposal = {
+        "schema_version": 1,
+        "source_digest": snapshot(repo)["digest"],
+        "goal": "modernise",
+        "changes": [
+            {
+                "path": "src/requirements.py",
+                "before_sha256": hashlib.sha256(module.read_bytes()).hexdigest(),
+                "replacement": "VALUE = 2\n",
+            }
+        ],
+        "allowed_paths": ["src/requirements.py"],
+        "planned_differences": [],
+    }
+    validated, _ = validate_proposal(repo, proposal)
+    result = stage_candidate(repo, tmp_path / "candidate", validated)
+    assert (tmp_path / "candidate/src/requirements.py").read_text() == "VALUE = 2\n"
+    assert result["changed_paths"] == ["src/requirements.py"]

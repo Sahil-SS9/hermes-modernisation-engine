@@ -11,11 +11,15 @@ from hermes_modernisation.service import Engine
 IMAGE = "modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6"
 
 
-def contract_fixture(tmp_path):
+def contract_fixture(tmp_path, extra=None):
     source = tmp_path / "legacy"
     source.mkdir()
     raw = b"def calculate(value):\n    return value * 2\n"
     (source / "app.py").write_bytes(raw)
+    for path, body in (extra or {}).items():
+        target = source / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(body)
     engine = Engine(tmp_path / "private")
     job = engine.invoke(
         "assess", {"repo": str(source), "goal": "Keep the declared response behaviour", "request_id": "owned-contract-fixture"}
@@ -190,3 +194,35 @@ def test_rehashed_unknown_fields_cannot_bypass_protected_contract_readback(tmp_p
         connection.execute("UPDATE jobs SET body=? WHERE id=?", (dumps(saved), job["job_id"]))
     with pytest.raises(ContractError, match="fields"):
         engine.store.contract_for(job["job_id"])
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "requirements_dev.txt",
+        "requirements_prod.txt",
+        "requirements/dev.txt",
+        "bun.lock",
+    ],
+)
+def test_dependency_manifest_variants_cannot_be_candidate_outputs(tmp_path, path):
+    engine, job, contract = contract_fixture(tmp_path, extra={path: "fixture-package==1\n"})
+    contract["allowed_paths"] = [path]
+    before = (engine.store.root / "jobs.sqlite").read_bytes()
+    with pytest.raises(ContractError):
+        engine.invoke(
+            "contract", {"job": job["job_id"], "revision": 0, "contract": contract}
+        )
+    assert (engine.store.root / "jobs.sqlite").read_bytes() == before
+
+
+def test_ordinary_requirements_module_is_allowed_as_a_candidate_output(tmp_path):
+    engine, job, contract = contract_fixture(
+        tmp_path, extra={"src/requirements.py": "VALUE = 1\n"}
+    )
+    contract["allowed_paths"] = ["src/requirements.py"]
+    registered = engine.invoke(
+        "contract", {"job": job["job_id"], "revision": 0, "contract": contract}
+    )
+    assert registered["behaviour_contract"]["review_state"] == "unreviewed"
+    assert registered["execution_available"] is False
