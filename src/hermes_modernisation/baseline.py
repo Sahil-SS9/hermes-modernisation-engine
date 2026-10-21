@@ -12,6 +12,7 @@ import stat
 from pathlib import Path
 
 from .contracts import fields, input_digest
+from .evidence_contracts import validate_receipt
 from .jsonio import ContractError, dumps, loads, MAX_BYTES
 
 
@@ -101,15 +102,16 @@ def capture(executor, grant, operation, source, oracle, contract):
     stored = loads(read_artifact(folder / "receipt.json", MAX_BYTES))
     if dumps(stored) != dumps(receipt):
         raise ContractError("Executor receipt readback differs")
-    for name in ("job_id", "attempt_id", "profile", "source_digest", "oracle_digest", "environment_digest"):
-        if receipt.get(name) != operation[name]:
-            raise ContractError("Capture receipt has contradictory operation bindings")
-    if receipt.get("phase") != executor.phase or receipt.get("image") != executor.image:
-        raise ContractError("Capture phase/image differs")
-    if type(receipt.get("process_exit_code")) is not int or receipt["process_exit_code"] != 0 or any(receipt.get(key) is not False for key in ("timed_out", "truncated")) or any(receipt.get(key) is not True for key in ("container_removed", "source_unchanged", "input_complete")):
-        raise ContractError("Process capture incomplete, failed or cleanup/source unverified")
-    if receipt.get("input_sha256") != hashlib.sha256(payload).hexdigest() or receipt.get("input_bytes") != len(payload):
-        raise ContractError("Captured input transport differs")
+    bindings = {key: operation[key] for key in ("job_id", "attempt_id", "profile", "source_digest", "oracle_digest", "environment_digest")}
+    bindings.update(
+        phase=executor.phase,
+        image=executor.image,
+        input_sha256=hashlib.sha256(payload).hexdigest(),
+        input_bytes=len(payload),
+    )
+    if type(grant) is dict and type(grant.get("body")) is dict and "nonce" in grant["body"]:
+        bindings["authority_nonce"] = grant["body"]["nonce"]
+    validate_receipt(receipt, bindings=bindings, require_collected=True)
     raw = read_artifact(folder / "output.bin", operation["output_limit_bytes"])
     if len(raw) != receipt["output_bytes"] or hashlib.sha256(raw).hexdigest() != receipt["output_sha256"]:
         raise ContractError("Captured process output changed")

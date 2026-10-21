@@ -5,12 +5,13 @@ from pathlib import Path
 
 from .baseline import evaluate_response, make_inputs, read_artifact
 from .contracts import fields
+from .evidence_contracts import OBSERVED_GRADE, validate_receipt
 from .identity import snapshot
 from .jsonio import ContractError, dumps, loads, MAX_BYTES
 from .runtime import environment_spec
 from .state import _attempt, _job, _owned, _save, timestamp
 
-GRADE = "independently-observed-json-process-response"
+GRADE = OBSERVED_GRADE
 CHECKPOINTS = ["AUTHORITY_CLAIMED", "START_REQUESTED", "COLLECTED", "CLEANUP_VERIFIED"]
 
 
@@ -84,13 +85,17 @@ def read_one(store, job, reference, policy):
     receipt = loads(read_artifact(folder / "receipt.json", MAX_BYTES))
     cleanup = loads(read_artifact(folder / "cleanup.json", MAX_BYTES))
     raw = read_artifact(folder / "output.bin", operation["output_limit_bytes"])
-    if receipt != captured["receipt"] or cleanup.get("removed") is not True or receipt.get("container_removed") is not True or receipt.get("source_unchanged") is not True or receipt.get("input_complete") is not True or type(receipt.get("process_exit_code")) is not int or receipt["process_exit_code"] != 0 or receipt.get("timed_out") is not False or receipt.get("truncated") is not False:
+    if receipt != captured["receipt"] or cleanup.get("removed") is not True:
         raise ContractError("Observed process collection/cleanup changed or is incomplete")
-    for key in ("job_id", "attempt_id", "profile", "source_digest", "oracle_digest", "environment_digest"):
-        if receipt.get(key) != operation[key]:
-            raise ContractError("Observed receipt operation binding changed")
-    if receipt.get("phase") != phase or receipt.get("image") != runtime["image"] or receipt.get("authority_nonce") != value["grant"]["body"]["nonce"] or receipt.get("input_bytes") != len(payload) or receipt.get("input_sha256") != hashlib.sha256(payload).hexdigest():
-        raise ContractError("Observed receipt phase/image/authority/input binding changed")
+    bindings = {
+        "job_id": job["job_id"], "attempt_id": aid, "profile": operation["profile"],
+        "phase": phase, "source_digest": operation["source_digest"],
+        "oracle_digest": operation["oracle_digest"],
+        "environment_digest": operation["environment_digest"],
+        "image": runtime["image"], "authority_nonce": value["grant"]["body"]["nonce"],
+        "input_bytes": len(payload), "input_sha256": hashlib.sha256(payload).hexdigest(),
+    }
+    validate_receipt(receipt, bindings=bindings, require_collected=True)
     if len(raw) != receipt["output_bytes"] or hashlib.sha256(raw).hexdigest() != receipt["output_sha256"] or captured["raw_output_sha256"] != receipt["output_sha256"]:
         raise ContractError("Observed process output artifact changed")
     evaluation = evaluate_response(contract, aid, raw)

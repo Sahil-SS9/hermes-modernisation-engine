@@ -1,0 +1,29 @@
+{
+  "checkpoint": "remaining-build-20261020",
+  "slice": "ExecutionReceipt / EvidenceComparison / ProofReport v1 strict evidence output contracts (slice 2a, M1 evidence seam)",
+  "status": "ENGINE_GREEN_LOCAL_ONLY",
+  "boundary": [
+    "Verified against the exact changed bytes in evidence-output-source-manifest.json. This closes ONLY the receipt, comparison and report data contracts on the collect/read/compare/report paths plus their schema surface; it does NOT close parent point 2a, the BusinessRule reviewed/executed state machine, MT08 acceptance, the complete state/profile/concurrency matrix, or any point 3 register row.",
+    "Receipts remain NOT_PROVEN process observations. The receipt is revalidated against the separately stored operation, grant nonce, runtime image and payload hashes on every collect and stored-observation read; it never certifies itself and grants nothing.",
+    "No legacy receipt lane exists: no released store contains protected observations, and accepting an unmarked receipt would let a tamperer strip the version marker and downgrade validation. Unmarked or renamed markers are refused (explicit tamper test).",
+    "Comparisons remain NOT_PROVEN in both public lanes. Approved differences, execution_performed true, stronger verdicts, unknown fields, wrong phase receipts and self-certified grades are refused before any public return or render.",
+    "The rendered report now emits the derived ProofReport as its machine-readable body; rule coverage stays unverified, claims stay empty, execution_performed stays false. No installation/configuration, model egress, real-project execution or public write occurred. Point 4 remains HOLD."
+  ],
+  "design": {
+    "receipt": "ExecutionReceipt v1: exact field set, version/kind marker, observed grade, NOT_PROVEN verdict, digest-pinned image, strict booleans/ints, input-transport consistency, and caller-supplied bindings (job/attempt/profile/phase/source/oracle/environment/image/nonce/input hashes/bytes). require_collected additionally demands a completed, untimed-out, untruncated, cleaned-up, source-unchanged collection with complete input. The executor self-checks the shape before checkpointing; capture and stored observation reads revalidate with the full operation bindings.",
+    "comparison": "EvidenceComparison v1: two named lanes discriminated by their declared grade markers. The observed lane requires its protected observation references (both phases), case rows matching the compared count, exact case fields and non-empty unobserved effects; the reported lane validates its inner per-case comparison and count. Both refuse stronger verdicts, execution, approved differences, unknown or partial fields.",
+    "report": "ProofReport v1: derived only from a validated comparison, binds comparison_sha256, carries provenance (protected observed pair vs reported evidence), NOT_PROVEN, empty claims, unverified rule coverage, the comparison's missing evidence and unobserved effects, execution_performed false.",
+    "schema_surface": "execution-receipt-v1, evidence-comparison-v1 and proof-report-v1 descriptors are served data-only through Engine, native CLI (--name choices), registered tool and registered slash, matching schemas/*.json by digest and granting/executing nothing."
+  },
+  "witnessed": {
+    "RED": "development-unit-1792542074893303322.json — 10 failures in the new contract tests: unsupported receipt/comparison/report schema names, self-certified PROVEN comparisons returned publicly, missing proof_report, and mutated receipts (extra field, changed grade, renamed kind, empty missing-evidence) accepted as collected.",
+    "GREEN": [
+      "development-unit-1792542323345258241.json — 290 collected, 290 passed, 0 failed, 0 errors, 0 skipped",
+      "development-all-1792542395761583604.json — 317 collected (unit + host + integration + platform), 317 passed, 0 failed, 0 errors, 0 skipped; includes the actual native/rootless receipt collection paths"
+    ],
+    "lint": "development-lint-1792542420111553753.json — pass",
+    "validator": "development-validate-1792542430349245271.json — exit 0, ok true, warnings empty"
+  },
+  "evidence_root": "/home/kensei/projects/modernisation-benchmarks/control/evidence/",
+  "runner": "Unchanged approved fixed rootless gate (run-development.py all/lint/validate), network=none, read-only source/reference/benchmark mounts, uid 65534; receipts record container_removed true."
+}

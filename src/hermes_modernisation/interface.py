@@ -35,7 +35,7 @@ PROPERTIES = {
     },
     "page": {"type": "integer", "minimum": 0},
     "actor": {"type": "string"},
-    "name": {"type": "string", "enum": ["migration-job-v1", "business-rule-v1"]},
+    "name": {"type": "string", "enum": ["migration-job-v1", "business-rule-v1", "execution-receipt-v1", "evidence-comparison-v1", "proof-report-v1"]},
     "attempt": {"type": "string"},
     "purpose": {"type": "string", "enum": ["contract", "migration", "cancel", "recover", "recover_build"]},
     "grant": {"type": "object", "additionalProperties": True},
@@ -96,7 +96,7 @@ def setup(parser):
     parser.add_argument("--page", type=int)
     parser.add_argument("--revision", type=int)
     parser.add_argument("--actor")
-    parser.add_argument("--name", choices=["migration-job-v1", "business-rule-v1"])
+    parser.add_argument("--name", choices=["migration-job-v1", "business-rule-v1", "execution-receipt-v1", "evidence-comparison-v1", "proof-report-v1"])
     parser.add_argument("--attempt")
     parser.add_argument("--purpose", choices=["contract", "migration", "cancel", "recover", "recover_build"])
     parser.add_argument("--grant")

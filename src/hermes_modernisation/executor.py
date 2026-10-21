@@ -14,6 +14,7 @@ import subprocess
 import time
 from pathlib import Path
 from .approvals import AuthorityDenied, ExternalAuthority, validate_operation
+from .evidence_contracts import validate_receipt
 from .identity import snapshot, read_source
 from .jsonio import ContractError, dumps, loads, MAX_BYTES
 from .runtime import environment_spec
@@ -226,6 +227,7 @@ class Executor:
             self._write_bytes(attempt / "output.bin", output)
             receipt = {
                 "schema_version": 1,
+                "kind": "ExecutionReceipt",
                 "grade": "observed-process-only",
                 "actor": operation["actor"],
                 "profile": self.profile,
@@ -254,6 +256,7 @@ class Executor:
                     "rule adequacy and mutation controls",
                 ],
             }
+            validate_receipt(receipt, require_collected=False)
             self._checkpoint("COLLECTED", {"process_exit_code": state["ExitCode"], "output_sha256": receipt["output_sha256"], "timed_out": timed_out, "truncated": truncated})
         finally:
             target = container or name

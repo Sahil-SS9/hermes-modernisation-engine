@@ -1,0 +1,15 @@
+{
+  "producing_state": "see evidence-contracts.json; commits this slice",
+  "source_sha256": {
+    "schemas/evidence-comparison-v1.json": "98a3ce6d03505ebafb80278794f1dec283d8d3325748d24e564aae187f5da44c",
+    "schemas/execution-receipt-v1.json": "e3dd9fe23e547ccc7678c21a1b2433dd398212446bec70f96d6c379b5cac8c21",
+    "schemas/proof-report-v1.json": "d334b31a1c5a66ce4b22283ae2853382501905c3ecaed46ac89ce81127c2e7d2",
+    "src/hermes_modernisation/baseline.py": "1b766573d9997759080ac85e75eb424ba7ad36d80dad600d3bd269c4a4582f11",
+    "src/hermes_modernisation/evidence_contracts.py": "cf06dfd9f9a359572fe64144224cd213b126486402223d9c11f999ede7bdea6f",
+    "src/hermes_modernisation/executor.py": "fb8e4921ea2b223536eed71e69f00da88334ee2706316430b28c17dbcb378263",
+    "src/hermes_modernisation/interface.py": "25e210a0b02e440ffc0a94f5d1d1b8d1e0fc8d571738b6f3c01edbf79a44619d",
+    "src/hermes_modernisation/observations.py": "ccccd6d5821e4fcfea9fab2f366da3006bc8ff22bc4214a3bf3b42edf9aa31ac",
+    "src/hermes_modernisation/service.py": "b5c6d063b7c4f373ad07c96271e275c18ff6795b6472f5e8de44dbe9c2cbc359",
+    "tests/unit/test_evidence_contract_contracts.py": "e424ed539753b0fa46f19f6caa543800939857e2cc1257aa75989f63cb39c06d"
+  }
+}

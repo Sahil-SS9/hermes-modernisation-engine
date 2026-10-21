@@ -1,0 +1,263 @@
+{
+  "$comment": "Two named lanes: the observed lane binds protected observation references and the reported lane binds candidate-authored per-case evidence. Neither lane may claim PROVEN, perform execution, or carry approved differences without a separate reviewed contract.",
+  "$id": "urn:hermes-modernisation:evidence-comparison:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approved_differences": {
+      "const": [],
+      "type": "array"
+    },
+    "baseline_failed": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "baseline_passed": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "baseline_receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+          "type": "string"
+        },
+        "failed": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "grade": {
+          "const": "independently-observed-json-process-response"
+        },
+        "kind": {
+          "const": "ObservationReference"
+        },
+        "oracle_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "passed": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "phase": {
+          "enum": [
+            "baseline",
+            "candidate"
+          ]
+        },
+        "schema_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "source_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "failed",
+        "grade",
+        "kind",
+        "oracle_digest",
+        "passed",
+        "phase",
+        "schema_version",
+        "sha256",
+        "source_digest"
+      ],
+      "type": "object"
+    },
+    "candidate_failed": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "candidate_passed": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "candidate_receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+          "type": "string"
+        },
+        "failed": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "grade": {
+          "const": "independently-observed-json-process-response"
+        },
+        "kind": {
+          "const": "ObservationReference"
+        },
+        "oracle_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "passed": {
+          "maximum": 500,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "phase": {
+          "enum": [
+            "baseline",
+            "candidate"
+          ]
+        },
+        "schema_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "source_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "failed",
+        "grade",
+        "kind",
+        "oracle_digest",
+        "passed",
+        "phase",
+        "schema_version",
+        "sha256",
+        "source_digest"
+      ],
+      "type": "object"
+    },
+    "cases": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_matches_expected": {
+            "type": "boolean"
+          },
+          "candidate_matches_expected": {
+            "type": "boolean"
+          },
+          "id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+            "type": "string"
+          },
+          "input_digest": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "rule_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "same_output": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "baseline_matches_expected",
+          "candidate_matches_expected",
+          "id",
+          "input_digest",
+          "rule_ids",
+          "same_output"
+        ],
+        "type": "object"
+      },
+      "maxItems": 500,
+      "type": "array"
+    },
+    "compared_cases": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "comparison": {
+      "type": "object"
+    },
+    "contract_scope": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "evidence_grade": {
+      "const": "independently-observed-json-process-response"
+    },
+    "execution_performed": {
+      "const": false
+    },
+    "job_id": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "missing_evidence": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 50,
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "scope": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "unobserved_effects": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "type": "array"
+    },
+    "verdict": {
+      "const": "NOT_PROVEN"
+    }
+  },
+  "required": [
+    "approved_differences",
+    "compared_cases",
+    "execution_performed",
+    "job_id",
+    "missing_evidence",
+    "schema_version",
+    "scope",
+    "source_digest",
+    "verdict"
+  ],
+  "title": "EvidenceComparison v1 public comparison",
+  "type": "object"
+}

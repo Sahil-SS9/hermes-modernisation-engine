@@ -1,0 +1,93 @@
+{
+  "$comment": "Everything a rendered report may claim about evidence. Rule coverage stays unverified until a separate reviewed rule/adequacy contract exists; claims stay empty and the verdict stays NOT_PROVEN.",
+  "$id": "urn:hermes-modernisation:proof-report:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "const": [],
+      "type": "array"
+    },
+    "compared_cases": {
+      "maximum": 500,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "comparison_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "execution_performed": {
+      "const": false
+    },
+    "job_id": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ProofReport"
+    },
+    "missing_evidence": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 50,
+      "type": "array"
+    },
+    "provenance": {
+      "enum": [
+        "protected-observed-pair",
+        "reported-junit-evidence"
+      ]
+    },
+    "rule_coverage": {
+      "const": "unverified"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "scope": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "unobserved_effects": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "type": "array"
+    },
+    "verdict": {
+      "const": "NOT_PROVEN"
+    }
+  },
+  "required": [
+    "claims",
+    "compared_cases",
+    "comparison_sha256",
+    "execution_performed",
+    "job_id",
+    "kind",
+    "missing_evidence",
+    "provenance",
+    "rule_coverage",
+    "schema_version",
+    "scope",
+    "source_digest",
+    "unobserved_effects",
+    "verdict"
+  ],
+  "title": "ProofReport v1 bounded verdict",
+  "type": "object"
+}

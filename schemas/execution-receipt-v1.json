@@ -1,0 +1,154 @@
+{
+  "$comment": "Data-only receipt shape. Core validation binds it to the separately stored operation and refuses any self-certified grade, verdict, exit status, cleanup or input completeness. A receipt is not permission and not proof.",
+  "$id": "urn:hermes-modernisation:execution-receipt:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actor": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "attempt_id": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "authority_nonce": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": "string"
+    },
+    "container_removed": {
+      "type": "boolean"
+    },
+    "duration_seconds": {
+      "maximum": 86400,
+      "minimum": 0,
+      "type": "number"
+    },
+    "environment_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "grade": {
+      "const": "observed-process-only"
+    },
+    "image": {
+      "pattern": "^[a-z0-9./_-]+@sha256:[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "input_bytes": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "input_complete": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "input_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "job_id": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ExecutionReceipt"
+    },
+    "missing_evidence": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "oracle_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "output_bytes": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "output_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "phase": {
+      "enum": [
+        "baseline",
+        "candidate"
+      ]
+    },
+    "process_exit_code": {
+      "maximum": 255,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "profile": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "source_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "source_unchanged": {
+      "type": "boolean"
+    },
+    "timed_out": {
+      "type": "boolean"
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "verdict": {
+      "const": "NOT_PROVEN"
+    }
+  },
+  "required": [
+    "actor",
+    "attempt_id",
+    "authority_nonce",
+    "container_removed",
+    "duration_seconds",
+    "environment_digest",
+    "grade",
+    "image",
+    "input_bytes",
+    "input_complete",
+    "input_sha256",
+    "job_id",
+    "kind",
+    "missing_evidence",
+    "oracle_digest",
+    "output_bytes",
+    "output_sha256",
+    "phase",
+    "process_exit_code",
+    "profile",
+    "schema_version",
+    "source_digest",
+    "source_unchanged",
+    "timed_out",
+    "truncated",
+    "verdict"
+  ],
+  "title": "ExecutionReceipt v1 observed process collection",
+  "type": "object"
+}

@@ -90,6 +90,9 @@ class Engine:
                 from .rules import rule_schema
                 schema = rule_schema()
             else:
+                from .evidence_contracts import NAMES, descriptor
+                if arguments["name"] in NAMES:
+                    return descriptor(arguments["name"])
                 raise ContractError("Unsupported schema name/version")
             return {"schema_version": 1, "kind": "SchemaDescriptor", "name": arguments["name"], "schema": schema, "sha256": hashlib.sha256(dumps(schema)).hexdigest(), "permission_granted": False, "execution_performed": False}
         if action == "assess":
@@ -204,13 +207,17 @@ class Engine:
             comparison = observed_comparison(self.store, job, policy)
         else:
             comparison = evidence.comparison(job, self.store.evidence_for(job["job_id"]))
+        from .evidence_contracts import proof_report, validate_comparison
+        comparison = validate_comparison(comparison)
         if action == "compare":
             return comparison
+        proof = proof_report(job, comparison)
         return {
-            "json": dumps(comparison).decode(),
+            "json": dumps(proof).decode(),
             "html": render(job, comparison),
             "text": "NOT_PROVEN within requested scope: "
             + job["goal"]
             + "\n"
-            + "\n".join("- " + gap for gap in comparison["missing_evidence"]),
+            + "\n".join("- " + gap for gap in proof["missing_evidence"]),
+            "proof_report": proof,
         }
