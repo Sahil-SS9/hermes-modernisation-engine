@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "kind": "ReviewRemediation",
+  "recorded_at": "2026-10-21",
+  "base_commit": "986da26b783e74b43c75edf294eeccdfc8be4517",
+  "fix_commit": "c4b72dd8b3765fc070a6cc8472d0c59aca11c321",
+  "source": {
+    "review": "/tmp/independent-review-modernisation-20261021/REPORT.md",
+    "review_summary": "/tmp/independent-review-modernisation-20261021/SUMMARY.json",
+    "second_pass": "/home/kensei/handoff/modernisation-engine/KENSEI-PASS-20261021.md",
+    "probe": "/home/kensei/handoff/modernisation-engine/KENSEI-FIX-PROBES-20261021.py"
+  },
+  "findings_closed": [
+    {
+      "id": "F-01",
+      "priority": "P1",
+      "finding": "Proposal budgets were not strict limits: an exhausted token budget permitted another call and a blocking proposer retained control past its deadline.",
+      "fix": "Token budget is checked before every batch after the first exhausted call. Proposer calls are bounded by the total-run deadline and results arriving after the deadline are never accepted.",
+      "evidence": [
+        "tests/unit/test_batches.py::test_exhausted_token_budget_refuses_before_the_next_call",
+        "tests/unit/test_batches.py::test_blocking_proposer_is_stopped_at_the_deadline",
+        "KENSEI-FIX-PROBES-20261021: blocking_time_cap 1.001s / 1 call; exhausted_token_budget 1 call"
+      ]
+    },
+    {
+      "id": "F-02",
+      "priority": "P1",
+      "finding": "Parent/child normalisation paths were accepted and could hide nested differences.",
+      "fix": "Prefix-related paths are refused in either order. Dropping a dict/list container is refused; drop is restricted to scalar leaves.",
+      "evidence": [
+        "tests/unit/test_differences.py::test_broad_overlapping_or_unknown_masks_are_refused",
+        "tests/unit/test_differences.py::test_dropping_a_container_is_refused_so_it_cannot_hide_children",
+        "KENSEI-FIX-PROBES-20261021: parent_then_child, child_then_parent, container_drop"
+      ]
+    },
+    {
+      "id": "F-03",
+      "priority": "P2",
+      "finding": "Rule-trace validation accepted contradictory verified coverage, empty/malformed citations, missing review identity and impossible counts.",
+      "fix": "Authenticated review records are required at build time. Validation now requires bounded source citations, valid digests and line ranges, state/review/digest agreement, phase and case consistency, recomputed reviewed/executed/failed/lexical counts, non-contradictory orphan and missing-evidence lists, and complete rows for verified coverage.",
+      "evidence": [
+        "tests/unit/test_rule_trace.py::test_unauthenticated_review_cannot_promote_a_rule",
+        "tests/unit/test_rule_trace.py::test_validator_rejects_forged_citations_identity_and_counts",
+        "tests/unit/test_rule_trace.py::test_validator_rejects_verified_coverage_with_a_missing_phase",
+        "KENSEI-FIX-PROBES-20261021: forged_trace, unauthenticated_review"
+      ]
+    },
+    {
+      "id": "K-01",
+      "priority": "P1",
+      "finding": "requirements.txt was absent from the denied file set and was accepted by both a proposal and an allowed_paths contract.",
+      "fix": "Dependency/build manifests and their common prefixed variants are refused by the same helper in proposal validation and contract allowed-path validation.",
+      "evidence": [
+        "tests/unit/test_proposals.py::test_dependency_manifest_is_refused_even_when_explicitly_allowlisted",
+        "tests/unit/test_behaviour_contract.py::test_invalid_contracts_cannot_mutate_job_or_storage",
+        "KENSEI-FIX-PROBES-20261021: dependency_edit_guard"
+      ]
+    },
+    {
+      "id": "K-02",
+      "priority": "P2",
+      "finding": "Mutant controls sampled only the first 12 cases and could still report verified coverage; receipt validation did not reject contradictory detection outcomes or missing evidence under verified coverage.",
+      "fix": "Sampling above the cap now records a missing-evidence note and cannot verify coverage. Receipt validation recomputes counts, checks detection/outcome agreement and rejects verified coverage with missing evidence.",
+      "evidence": [
+        "tests/unit/test_mutants.py::test_large_case_collection_is_not_silently_sampled_as_verified",
+        "tests/unit/test_mutants.py::test_receipt_cannot_claim_verified_with_missing_evidence_or_contradictory_outcome"
+      ]
+    }
+  ],
+  "gate": {
+    "command": "python3 -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py checks",
+    "result": "451 passed, 0 failed, 0 errors, 0 skipped",
+    "exit_code": 0,
+    "container_removed": true,
+    "receipt": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-checks-1792576811110900221.json",
+    "receipt_sha256": "1ba175fa41c509b889955eba58e0929d91ea60d436d09eff7ee2879c088a2c59",
+    "output_sha256": "e206edf6497a62f12c1088a7eb946f8a97b48ce9d5ed4b174d1e1d5328ece34e",
+    "lint": "ruff check --no-cache src tests: pass",
+    "validator": "hermes plugins validate /source --json: ok true, warnings empty"
+  },
+  "honest_limits": [
+    "The deadline wrapper stops the engine waiting and refuses late results, but Python cannot forcibly terminate arbitrary blocking proposer code. A daemon worker may be abandoned; no late output is accepted.",
+    "Trace validation checks citation shape and internal consistency, not source-file bytes or a review store signature; the public trace is not an execution receipt.",
+    "These are fixture/engine checks. No live provider, real-project execution, dependency resolution, install, deploy, publish or point 4 release qualification is claimed.",
+    "Point 4 remains HOLD pending the separate owner decision."
+  ]
+}
