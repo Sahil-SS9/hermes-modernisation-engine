@@ -2,16 +2,17 @@
 
 This is NOT the finished migration engine and is NOT ready for live installation.
 
-## Active private build — start here
+## Active public build — start here
 
-Private backup: https://github.com/Sahil-SS9/hermes-modernisation-engine (branch `build/phase0`). No live installation or public release is authorised.
+Public repository: https://github.com/Sahil-SS9/hermes-modernisation-engine (branch `build/phase0`). No live installation or deployment is authorised.
 
 - [Resume handoff](docs/HANDOFF.md): state verification, safe commands, local prerequisites and pickup order.
 - [Updated plan](docs/PLAN.md): current position plus the original requirements preserved verbatim.
 - [Completed work and TODO](docs/TODO.md): checked-off delivered components and every remaining milestone.
-- [Current source-bound evidence](docs/evidence/remaining-build-20261021/fix-pass.json): exact tested source, remediation results and remaining limits. Older checkpoint files are historical, not current totals.
+- [Development/recovery archive](development/README.md): historical controller sources and probes; not runtime commands.
+- [Current source-bound evidence](docs/evidence/remaining-build-20261021/fix-pass-2.json): exact tested source, remediation results and remaining limits. Older checkpoint files are historical, not current totals.
 
-Current isolated remediation gate: 451 passed, zero failures/errors/skips; lint and warning-free native validation pass on the explicitly pinned/patched sandbox host. This includes the repairs for the independent review’s two P1 findings and one P2 finding. A configured owned-fixture journey still proves fixture orchestration, not live application execution or release qualification. Points 2–3 remain fixture-bound and point 4 final review/release is on hold.
+Current isolated remediation gate: 463 passed, zero failures/errors/skips; lint and warning-free native validation pass. The gate was run against the owner-approved rebuilt sandbox image after the exact `a947dae2…` image could not be restored locally. This includes the repairs for the independent review’s two P1 findings and one P2 finding. A configured owned-fixture journey still proves fixture orchestration, not live application execution or release qualification. Points 2–3 remain fixture-bound; point 4 independent review/release remains separate.
 
 Implemented: source-only bounded assessment, lexical Python inventory with exact citations, conservative rule candidates, source fingerprints, durable profile-owned assessment jobs and content-addressed inventory pages, idempotent creation, stale-revision checks, source-replacement proposal validation and separate-candidate materialisation primitives, deterministic data comparison with conservative partial proof policy, review-only plans, explicit missing-evidence JSON/text/offline-HTML reporting, real Hermes CLI/tool/registered-slash-handler surfaces and external owner-signature primitives. An operator-only executor primitive has real synthetic-container tests for success, streaming output cap, timeout/descendant cleanup and replay refusal. Those are fixture-authority controls, not real owner migration acceptance.
 
@@ -42,4 +43,4 @@ Sandbox host compatibility is proven only on PR #138686 head `4539b09a730d6a9754
 
 All untrusted repository-code workloads and package-build workloads run in disposable, resource-limited, network-disabled rootless containers. The trusted external operator control plane runs on the host to control rootless Docker; it is never mounted into a candidate. Image preparation alone may retrieve pinned development dependencies. No real credentials, host home or Docker socket are mounted. Source and engine references remain read-only; build output is extracted from disposable storage by the trusted operator. Docker shares the host kernel; this is not a VM, and a compromised trusted host/operator is outside the claim.
 
-The engine is a development build backed up privately; the external host validator patch has not been taken up live or claimed merged upstream. No merge, public push, live install, deployment, telemetry or scheduled auto-rewrite. BUILD/INSTALL/DEPLOY/PUBLISH are separate owner approvals. No public licence or supported release promise is made by this unreleased preview.
+The engine is a public, unreleased engineering preview; the external host validator patch has not been taken up live or claimed merged upstream. No live install, deployment, telemetry or scheduled auto-rewrite is authorised. BUILD/INSTALL/DEPLOY are separate owner approvals. No supported-release promise is made by this preview.
