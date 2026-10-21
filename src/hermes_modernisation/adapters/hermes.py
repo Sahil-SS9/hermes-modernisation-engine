@@ -115,9 +115,10 @@ def register(ctx):
         ):
             handle = register_one()
             if handle is None:
-                raise RuntimeError(
-                    "Modernisation namespace collision; registration refused"
-                )
+                # The host capability probe may skip optional CLI/slash surfaces
+                # and return None. Treat that as an unavailable surface, not a
+                # collision; the registered tools below remain fail-closed.
+                continue
             handles.append(handle)
         for action, required in REQUIRED.items():
             fields = required if action != "status" else ["job"]
@@ -146,9 +147,8 @@ def register(ctx):
                 },
                 handler,
             )
-            if handle is None:
-                raise RuntimeError("Modernisation tool collision; registration refused")
-            handles.append(handle)
+            if handle is not None:
+                handles.append(handle)
     except BaseException:
         for handle in reversed(handles):
             handle.dispose()

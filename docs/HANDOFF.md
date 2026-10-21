@@ -8,7 +8,7 @@ The canonical `hermes verify --json` gate now passes: **463 passed, 0 failed, 0 
 
 Point 3’s implementation is repaired, not newly declared release-qualified. 3a preserves engine-owned staging/literal proposals/reviewed lanes and the explicitly blocked dependency-resolution port. 3b now enforces token exhaustion before the next call and refuses a blocking proposer at the total-run deadline. 3c now refuses parent/child normalisation overlaps and container-wide `drop`, understands unauthenticated reviews as candidates only, and recomputes rule-trace counts/citations/phase consistency before allowing verified coverage. The remaining limits are recorded in `fix-pass-2.json`; notably, the deadline wrapper stops waiting and refuses late results but cannot forcibly terminate arbitrary blocking Python proposer code.
 
-Explicitly not claimed: real dependency resolution, live model/provider calls, real-project execution, source-mutant execution, install, deploy, or point 4 independent review. The journey collector is a declared offline artifact fixture, not a real Docker launch. The owner separately approved commit, push and public publication; the repository is public at https://github.com/Sahil-SS9/hermes-modernisation-engine (default branch `build/phase0`). Independent re-review was not performed.
+Explicitly not claimed: real dependency resolution, live model/provider calls, real-project execution, source-mutant execution, install, deploy, or point 4 independent review. The journey collector is a declared offline artifact fixture, not a real Docker launch. The owner separately approved commit, push and public publication; the repository is public at https://github.com/Sahil-SS9/modernisation-engine (default branch `build/phase0`). Independent re-review was not performed.
 
 The historical sections below preserve the earlier 20 October authorisation and v5 checkpoint. Historical v5 commands/signatures remain spent and must not be replayed.
 
@@ -34,7 +34,7 @@ The work is deliberately parked as a **PARTIAL engineering preview**, not a fini
 4. [evidence/checkpoint-2026-10-15.json](evidence/checkpoint-2026-10-15.json): immutable summary of producing identities, test scopes and payload hashes.
 5. [development-checkpoint.md](development-checkpoint.md): historical producing-session detail, NOT a fresh state query.
 
-Private remote intended for this checkpoint: `Sahil-SS9/hermes-modernisation-engine`. Branch retained: `build/phase0`. Baseline implementation: `b914c6d118584a45736611c93bb772905108acd6`. The handoff/push commits are additive docs/recovery files; verify the delta rather than pinning a self-changing final HEAD. README links are navigation updates, not changed execution semantics.
+Private remote intended for this checkpoint: `Sahil-SS9/modernisation-engine`. Branch retained: `build/phase0`. Baseline implementation: `b914c6d118584a45736611c93bb772905108acd6`. The handoff/push commits are additive docs/recovery files; verify the delta rather than pinning a self-changing final HEAD. README links are navigation updates, not changed execution semantics.
 
 ## 2. Locked boundaries
 
@@ -54,7 +54,7 @@ From the existing local checkout:
     git merge-base --is-ancestor b914c6d118584a45736611c93bb772905108acd6 HEAD
     git diff --name-only b914c6d118584a45736611c93bb772905108acd6..HEAD
     git remote -v
-    gh repo view Sahil-SS9/hermes-modernisation-engine --json isPrivate,url,defaultBranchRef
+    gh repo view Sahil-SS9/modernisation-engine --json isPrivate,url,defaultBranchRef
 
 Expected: clean tree, branch `build/phase0`, descendant of the implementation baseline; checkpoint delta only README/.gitignore/docs/development recovery content; authenticated repository visibility private. Any unexpected executable production change requires new scoped verification. Do not reset unrelated work.
 

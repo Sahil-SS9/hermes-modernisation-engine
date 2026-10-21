@@ -1,7 +1,17 @@
 name: modernisation-engine
 version: 0.0.1
+manifest_version: 2
 kind: standalone
 description: Source-read-only assessment and migration evidence preview; execution gated.
+author: Sahil Saghir (owner); authored by KENSEI
+homepage: https://github.com/Sahil-SS9/modernisation-engine
+tags:
+  - migration
+  - assessment
+  - evidence
+  - hermes-plugin
+requires_env: []
+
 provides_tools:
   - modernise_status
   - modernise_assess
@@ -31,3 +41,8 @@ provides_tools:
   - modernise_compare
   - modernise_report
 capabilities: []
+config_schema:
+  operator_config:
+    type: str
+    default: ""
+    description: Absolute path to the trusted operator configuration. Empty keeps execution gated.

@@ -16,6 +16,10 @@ trusted-executor = ["cryptography>=46,<51"]
 [dependency-groups]
 dev = ["pytest==9.1.1", "ruff==0.15.10", "cryptography==50.0.1"]
 
+[project.urls]
+Homepage = "https://github.com/Sahil-SS9/modernisation-engine"
+Repository = "https://github.com/Sahil-SS9/modernisation-engine"
+
 [project.scripts]
 modernisation-engine = "hermes_modernisation.__main__:main"
 

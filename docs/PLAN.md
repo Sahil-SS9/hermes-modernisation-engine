@@ -13,7 +13,7 @@ Read first (paths relative to the engine repository):
 3. This plan — full preserved requirements and original test matrix.
 4. `docs/development-checkpoint.md` and `docs/evidence/checkpoint-2026-10-15.json` — producing code/evidence scope.
 
-Repository: https://github.com/Sahil-SS9/hermes-modernisation-engine (private checkpoint authorised; not a public release).
+Repository: https://github.com/Sahil-SS9/modernisation-engine (public engineering build)
 Local repository: `/home/kensei/repos/hermes-modernisation-engine`, branch `build/phase0`.
 Historical v5 producing baseline: `c343e0bbb26f613571dd03602321b74b08b4ecf2`; b914c6d is historical. The active build now includes configured protected capture, signed reviews, fenced attempts and engine-owned candidates. Its exact source manifest and 260-case gate are in `docs/evidence/remaining-build-20261020/configured-capture.json`; the earlier contract-only 225-case checkpoint remains historical. Owned-fixture Engine old/new capture passed 15/15 each. The subsequent runtime slice passed five actual controller-loss checkpoints plus cooperative cancellation, with a 270-case gate in `docs/evidence/remaining-build-20261020/runtime-recovery.json`. Three actual build-reservation crash seams also passed quarantine/fresh-review/new-namespace recovery (`docs/evidence/remaining-build-20261020/build-recovery.json`). Strict current MigrationJob headers, profile/row binding, sealed-contract-derived metadata and public schema descriptors now pass a 285-case gate (`docs/evidence/remaining-build-20261020/job-header-sealed.json`); legacy assessment bytes remain readable unchanged. The other rule/evidence/report models, full native/gateway execution, complete state/profile qualification, wider orchestration/proof and parent milestones remain unfinished.
 
@@ -136,7 +136,7 @@ Source H establishes:
 
 ## 1. Scope, users and release shape
 
-Working identifiers (proposed; verify collisions in Phase 0): repository `hermes-modernisation-engine`, Python package `hermes_modernisation`, plugin id `modernisation-engine`, native CLI `hermes modernise`, slash `/modernise`, tools `modernise_assess`, `modernise_plan`, `modernise_status`, `modernise_compare`, `modernise_report`, plus `modernise_run` for the same authentic-grant-gated execution service as CLI `run`. `modernise_run` is disabled until public authority and isolation gates pass; resume remains an explicit CLI/slash operation, not an implicit side effect of status. All state belongs to `plugin-data/modernisation-engine/` for the current profile. A tool that can cause a mutation must be a distinct, gated operation, not an undocumented mode of a read-only tool.
+Working identifiers (proposed; verify collisions in Phase 0): repository `modernisation-engine`, Python package `hermes_modernisation`, plugin id `modernisation-engine`, native CLI `hermes modernise`, slash `/modernise`, tools `modernise_assess`, `modernise_plan`, `modernise_status`, `modernise_compare`, `modernise_report`, plus `modernise_run` for the same authentic-grant-gated execution service as CLI `run`. `modernise_run` is disabled until public authority and isolation gates pass; resume remains an explicit CLI/slash operation, not an implicit side effect of status. All state belongs to `plugin-data/modernisation-engine/` for the current profile. A tool that can cause a mutation must be a distinct, gated operation, not an undocumented mode of a read-only tool.
 
 User journey:
 
@@ -190,7 +190,7 @@ Prior-art pointers at H: `plugin-catalog/hades-coding-workflows.yaml` (workflow 
 ## 3. Architecture and module boundaries
 
 ```text
-hermes-modernisation-engine/
+modernisation-engine/
   plugin.yaml                    # native manifest, supported config fields, real capabilities
   __init__.py                    # register(ctx); thin, no work/network/model call at import
   pyproject.toml, uv.lock         # proposed managed development environment; lock created after BUILD

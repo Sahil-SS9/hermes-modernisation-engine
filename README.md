@@ -1,8 +1,8 @@
-# Hermes Modernisation Engine
+# Modernisation Engine
 
 **Assess first. Review the contract. Change only with evidence.**
 
-Hermes Modernisation Engine is a controlled migration engine for existing repositories. It maps what a codebase does, turns the behaviour that must survive into a reviewable contract, prepares a separate candidate, and records reproducible old/new evidence before production code changes.
+Modernisation Engine is a controlled migration engine for existing repositories. It maps what a codebase does, turns the behaviour that must survive into a reviewable contract, prepares a separate candidate, and records reproducible old/new evidence before production code changes.
 
 **Status:** v0.1 public engineering build. The read-only assessment and evidence workflow is implemented and verified. Execution is an owner-gated deployment step: it runs only with trusted operator configuration and a fresh, exact owner grant.
 
@@ -90,4 +90,4 @@ The current engineering gate passes **463 tests** with zero failures, errors or 
 - [Current evidence](docs/evidence/remaining-build-20261021/fix-pass-2.json)
 - [Development and recovery archive](development/README.md)
 
-Repository: https://github.com/Sahil-SS9/hermes-modernisation-engine
+Repository: https://github.com/Sahil-SS9/modernisation-engine
