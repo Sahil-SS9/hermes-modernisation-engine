@@ -39,7 +39,43 @@ FILES = {
     "oracle.json",
     "Dockerfile",
     "Makefile",
+    "Pipfile",
+    "Pipfile.lock",
+    "poetry.lock",
+    "Cargo.toml",
+    "Cargo.lock",
+    "go.mod",
+    "go.sum",
+    "Gemfile",
+    "Gemfile.lock",
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "composer.json",
+    "composer.lock",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "bun.lockb",
+    "deno.lock",
+    "flake.nix",
+    "flake.lock",
 }
+DEPENDENCY_PREFIXES = ("requirements.", "requirements-", "Dockerfile.", "docker-compose.")
+
+
+def forbidden_edit(path):
+    """Return why a path is outside this lane, or None when it is permitted."""
+    parts = Path(path).parts
+    name = Path(path).name
+    if any(part in PROTECTED for part in parts):
+        return "protected directory"
+    if any(part.startswith(".") for part in parts):
+        return "hidden path"
+    if name in FILES or name.startswith(DEPENDENCY_PREFIXES):
+        return "dependency, build or test manifest"
+    if name.startswith("test_"):
+        return "test file"
+    return None
 
 
 def validate_proposal(source, proposal):
@@ -79,14 +115,10 @@ def validate_proposal(source, proposal):
         }:
             raise ContractError("Invalid source replacement")
         path = safe_relative(change["path"])
-        parts = Path(path).parts
         if (
             path not in paths
             or path in names
-            or any(part in PROTECTED for part in parts)
-            or Path(path).name in FILES
-            or Path(path).name.startswith("test_")
-            or any(part.startswith(".") for part in parts)
+            or forbidden_edit(path) is not None
         ):
             raise ContractError("Protected, duplicate or out-of-contract edit")
         if not re.fullmatch(r"[a-f0-9]{64}", change["before_sha256"]):

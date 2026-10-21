@@ -7,7 +7,8 @@ it.  Coverage stays unverified on any stale review, orphan link, missing phase
 or failed response.
 """
 
-from .contracts import fields
+from .contracts import digest, fields
+from .identity import safe_relative
 from .jsonio import ContractError, dumps, identifier
 import hashlib
 
@@ -45,11 +46,22 @@ def build(job, rules, reviews, evaluations):
     """Pure trace builder over sealed lexical rules, reviews and observations."""
     if type(job) is not dict:
         raise ContractError("Migration job required")
+    if type(rules) is not list or type(reviews) is not list or type(evaluations) is not list:
+        raise ContractError("Rule trace inputs must be lists")
     rule_rows = []
     reviewed = {}
     stale = set()
     for review in reviews:
-        rule_id = review["rule_id"]
+        if type(review) is not dict or review.get("authenticated") is not True:
+            raise ContractError("Rule review is not authenticated")
+        for key in ("id", "rule_id", "rule_digest", "current_rule_digest"):
+            if key not in review:
+                raise ContractError("Rule review identity is incomplete")
+        rule_id = identifier(review["rule_id"])
+        identifier(review["id"])
+        digest(review["rule_digest"])
+        if review["current_rule_digest"] is not None:
+            digest(review["current_rule_digest"])
         reviewed[rule_id] = review
         if review["rule_digest"] != review["current_rule_digest"]:
             stale.add(rule_id)
@@ -146,6 +158,25 @@ def build(job, rules, reviews, evaluations):
     }
 
 
+def _trace_citation(value):
+    fields(value, {"path", "line_start", "line_end", "sha256"}, "rule trace citation")
+    safe_relative(value["path"])
+    digest(value["sha256"])
+    if any(type(value[key]) is not int for key in ("line_start", "line_end")):
+        raise ContractError("Rule trace citation lines must be integers")
+    if not 1 <= value["line_start"] <= value["line_end"] <= 1000000:
+        raise ContractError("Rule trace citation lines are out of bounds")
+
+
+def _trace_case(value):
+    fields(value, CASE_FIELDS, "rule trace case")
+    identifier(value["case_id"])
+    if value["phase"] not in {"baseline", "candidate"}:
+        raise ContractError("Invalid rule trace phase")
+    if type(value["matches_expected"]) is not bool:
+        raise ContractError("Invalid rule trace case result")
+
+
 def validate_trace(value):
     fields(value, FIELDS, "rule trace")
     if (
@@ -158,16 +189,28 @@ def validate_trace(value):
         raise ContractError("Unsupported rule trace")
     identifier(value["job_id"])
     for key in ("source_digest", "oracle_digest"):
-        if type(value[key]) is not str or len(value[key]) != 64:
-            raise ContractError("Rule trace digest is invalid")
+        digest(value[key])
     if value["coverage"] not in {"verified", "unverified"}:
         raise ContractError("Unknown rule coverage state")
-    if type(value["rules"]) is not list:
-        raise ContractError("Rule trace rows must be a list")
-    for row in value["rules"]:
+    if type(value["lexical_only"]) is not bool:
+        raise ContractError("Rule trace lexical flag must be boolean")
+    rules = value["rules"]
+    if type(rules) is not list or len(rules) > 10000:
+        raise ContractError("Rule trace rows must be a bounded list")
+    rule_ids = set()
+    reviewed_count = 0
+    executed_count = 0
+    failed_count = 0
+    lexical_only = False
+    for row in rules:
         fields(row, RULE_FIELDS, "rule trace row")
-        identifier(row["rule_id"])
-        if row["status"] not in {
+        rule_id = identifier(row["rule_id"])
+        if rule_id in rule_ids:
+            raise ContractError("Duplicate rule trace identity")
+        rule_ids.add(rule_id)
+        digest(row["rule_digest"])
+        status = row["status"]
+        if status not in {
             "candidate_only",
             "review_stale",
             "reviewed_unexecuted",
@@ -176,17 +219,110 @@ def validate_trace(value):
             "reviewed_executed",
         }:
             raise ContractError("Unknown rule trace state")
-        if type(row["source_refs"]) is not list or type(row["cases"]) is not list:
-            raise ContractError("Invalid rule trace citations")
-        for case in row["cases"]:
-            fields(case, CASE_FIELDS, "rule trace case")
-            if case["phase"] not in {"baseline", "candidate"} or type(case["matches_expected"]) is not bool:
-                raise ContractError("Invalid rule trace case link")
-    if value["coverage"] == "verified" and (
-        not value["rules"]
-        or any(row["status"] != "reviewed_executed" for row in value["rules"])
+        refs = row["source_refs"]
+        if type(refs) is not list or not 1 <= len(refs) <= 20:
+            raise ContractError("Rule trace citations must be bounded")
+        for ref in refs:
+            _trace_citation(ref)
+        review_id = row["review_id"]
+        reviewed_digest = row["reviewed_rule_digest"]
+        if review_id is None:
+            if reviewed_digest is not None or status != "candidate_only":
+                raise ContractError("Review identity contradicts rule trace state")
+        else:
+            identifier(review_id)
+            if reviewed_digest is None:
+                raise ContractError("Reviewed rule digest required")
+            digest(reviewed_digest)
+            if status == "candidate_only":
+                raise ContractError("Candidate row cannot carry a review identity")
+            if status == "review_stale":
+                if reviewed_digest == row["rule_digest"]:
+                    raise ContractError("Stale review digest matches the current rule")
+            elif reviewed_digest != row["rule_digest"]:
+                raise ContractError("Reviewed rule digest does not match the current rule")
+            reviewed_count += 1
+        cases = row["cases"]
+        if type(cases) is not list or len(cases) > 10000:
+            raise ContractError("Rule trace cases must be a bounded list")
+        seen_cases = set()
+        phases = set()
+        for case in cases:
+            _trace_case(case)
+            key = (case["phase"], case["case_id"])
+            if key in seen_cases:
+                raise ContractError("Duplicate rule trace case link")
+            seen_cases.add(key)
+            phases.add(case["phase"])
+        if status == "reviewed_unexecuted" and cases:
+            raise ContractError("Unexecuted rule cannot carry case links")
+        if status in {"reviewed_partial", "reviewed_failed", "reviewed_executed"} and not cases:
+            raise ContractError("Executed rule status requires case links")
+        if status == "reviewed_partial" and (
+            not phases or phases == {"baseline", "candidate"}
+        ):
+            raise ContractError("Partial rule must have exactly one observed phase")
+        if status == "reviewed_failed" and all(
+            case["matches_expected"] for case in cases
+        ):
+            raise ContractError("Failed rule must contain a failed case")
+        if status == "reviewed_executed" and (
+            phases != {"baseline", "candidate"}
+            or not all(case["matches_expected"] for case in cases)
+        ):
+            raise ContractError("Executed rule needs both passing observed phases")
+        gaps = row["gaps"]
+        if type(gaps) is not list or any(
+            type(gap) is not str or not 1 <= len(gap) <= 1000 for gap in gaps
+        ):
+            raise ContractError("Rule trace gaps must be bounded text")
+        if status == "reviewed_executed":
+            if gaps:
+                raise ContractError("Executed rule cannot carry a coverage gap")
+            executed_count += 1
+        elif not gaps:
+            raise ContractError("Unverified rule must disclose a coverage gap")
+        if status in {"reviewed_failed", "review_stale"}:
+            failed_count += 1
+        if status == "candidate_only":
+            lexical_only = True
+    for key in ("reviewed", "executed", "failed"):
+        if type(value[key]) is not int or value[key] < 0:
+            raise ContractError("Rule trace counts must be non-negative integers")
+    if value["reviewed"] != reviewed_count:
+        raise ContractError("Rule trace reviewed count contradicts its rows")
+    if value["executed"] != executed_count:
+        raise ContractError("Rule trace executed count contradicts its rows")
+    if value["failed"] != failed_count:
+        raise ContractError("Rule trace failed count contradicts its rows")
+    if value["lexical_only"] != lexical_only:
+        raise ContractError("Rule trace lexical flag contradicts its rows")
+    orphan_links = value["orphan_links"]
+    if type(orphan_links) is not list:
+        raise ContractError("Rule trace orphan links must be a list")
+    seen_orphans = set()
+    for rule_id in orphan_links:
+        identifier(rule_id)
+        if rule_id in seen_orphans or rule_id in rule_ids:
+            raise ContractError("Rule trace orphan link is duplicated or known")
+        seen_orphans.add(rule_id)
+    missing = value["missing_evidence"]
+    if type(missing) is not list or any(
+        type(item) is not str or not 1 <= len(item) <= 1000 for item in missing
     ):
-        raise ContractError("Verified coverage contradicts an incomplete rule row")
+        raise ContractError("Rule trace missing evidence must be bounded text")
+    if value["coverage"] == "verified":
+        if (
+            not rules
+            or value["lexical_only"]
+            or value["reviewed"] != len(rules)
+            or value["executed"] != len(rules)
+            or value["failed"]
+            or orphan_links
+            or missing
+            or any(row["status"] != "reviewed_executed" for row in rules)
+        ):
+            raise ContractError("Verified coverage contradicts an incomplete rule row")
     return value
 
 

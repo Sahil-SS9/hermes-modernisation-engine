@@ -1,7 +1,9 @@
 """Real response-boundary mutants must be detected by the unchanged oracle."""
 
+import pytest
+
 from hermes_modernisation.baseline import evaluate_response
-from hermes_modernisation.jsonio import dumps
+from hermes_modernisation.jsonio import ContractError, dumps
 from hermes_modernisation.mutants import build, validate
 
 
@@ -70,3 +72,46 @@ def test_weakened_case_collection_never_verifies():
     assert receipt["integrity"] == "weakened"
     assert receipt["coverage"] == "unverified"
     assert any("differs" in gap for gap in receipt["missing_evidence"])
+
+
+def test_large_case_collection_is_not_silently_sampled_as_verified():
+    job, contract, _, attempt = fixture()
+    contract["cases"] = [
+        {
+            "id": f"fresh_{index}",
+            "kind": "fresh",
+            "input": {"value": index},
+            "expected": {"value": index * 2},
+            "rule_ids": ["double"],
+        }
+        for index in range(20)
+    ]
+    from hermes_modernisation.baseline import wire_id
+
+    raw = dumps(
+        {
+            "schema_version": 1,
+            "results": [
+                {"id": wire_id(attempt, case["id"]), "output": case["expected"]}
+                for case in contract["cases"]
+            ],
+        }
+    )
+    evaluation = evaluate_response(contract, attempt, raw)
+    receipt = build(job, contract, evaluation, attempt)
+    assert receipt["total"] == 15
+    assert receipt["coverage"] == "unverified"
+    assert any("14 of 20" in gap or "12 of 20" in gap for gap in receipt["missing_evidence"])
+
+
+def test_receipt_cannot_claim_verified_with_missing_evidence_or_contradictory_outcome():
+    job, contract, evaluation, attempt = fixture()
+    receipt = build(job, contract, evaluation, attempt)
+    assert receipt["coverage"] == "verified"
+    receipt["missing_evidence"] = ["undeclared gap"]
+    with pytest.raises(ContractError):
+        validate(receipt)
+    receipt = build(job, contract, evaluation, attempt)
+    receipt["mutants"][0]["outcome"] = "undetected"
+    with pytest.raises(ContractError):
+        validate(receipt)

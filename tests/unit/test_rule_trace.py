@@ -1,8 +1,11 @@
 """Rule citations stay lexical until a fresh authenticated review and links."""
 
 import hashlib
+from copy import deepcopy
 
-from hermes_modernisation.jsonio import dumps
+import pytest
+
+from hermes_modernisation.jsonio import ContractError, dumps
 from hermes_modernisation.rule_trace import build, validate_trace
 
 JOB = {
@@ -110,3 +113,55 @@ def test_failed_or_orphan_links_block_coverage():
     )
     assert orphan["orphan_links"] == ["invented"]
     assert orphan["coverage"] == "unverified"
+
+
+def test_unauthenticated_review_cannot_promote_a_rule():
+    value = rule()
+    review_value = review(value)
+    review_value["authenticated"] = False
+    with pytest.raises(ContractError, match="authenticated"):
+        build(
+            JOB,
+            [value],
+            [review_value],
+            [evaluation("baseline"), evaluation("candidate")],
+        )
+
+
+def test_validator_rejects_forged_citations_identity_and_counts():
+    value = rule()
+    valid = build(
+        JOB,
+        [value],
+        [review(value)],
+        [evaluation("baseline"), evaluation("candidate")],
+    )
+    validate_trace(valid)
+    forged = deepcopy(valid)
+    forged["rules"][0].update(
+        source_refs=[{"arbitrary": "not a citation"}],
+        review_id=None,
+        reviewed_rule_digest=None,
+        cases=[],
+    )
+    forged.update(
+        reviewed=0,
+        executed=999,
+        failed=999,
+        orphan_links=["nonexistent"],
+    )
+    with pytest.raises(ContractError):
+        validate_trace(forged)
+
+
+def test_validator_rejects_verified_coverage_with_a_missing_phase():
+    value = rule()
+    valid = build(
+        JOB,
+        [value],
+        [review(value)],
+        [evaluation("baseline")],
+    )
+    valid["rules"][0]["status"] = "reviewed_executed"
+    with pytest.raises(ContractError):
+        validate_trace(valid)

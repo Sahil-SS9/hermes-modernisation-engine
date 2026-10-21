@@ -149,6 +149,10 @@ def build(job, contract, evaluation, attempt_id):
         missing.append("One or more behavioural mutants were not detected")
     if not mutants:
         missing.append("No response cases were available for mutant controls")
+    if len(outputs) > MAX_CASES:
+        missing.append(
+            f"Mutant controls sampled {MAX_CASES} of {len(outputs)} observed cases"
+        )
     return validate(
         {
             "schema_version": 1,
@@ -188,6 +192,8 @@ def validate(value):
         raise ContractError("Unknown mutant integrity")
     if type(value["mutants"]) is not list or len(value["mutants"]) > 64:
         raise ContractError("Bounded mutant list required")
+    detected_count = 0
+    undetected_count = 0
     for mutant in value["mutants"]:
         fields(mutant, MUTANT_FIELDS, "behavioural mutant")
         if type(mutant["detected"]) is not bool:
@@ -196,12 +202,35 @@ def validate(value):
             raise ContractError("Unknown mutant kind")
         if mutant["outcome"] not in {"mismatch", "refused", "undetected"}:
             raise ContractError("Unknown mutant outcome")
+        if mutant["detected"] != (mutant["outcome"] != "undetected"):
+            raise ContractError("Mutant outcome contradicts its detection flag")
+        if mutant["detected"]:
+            detected_count += 1
+        else:
+            undetected_count += 1
+    if type(value["total"]) is not int or value["total"] < 0:
+        raise ContractError("Mutant total must be a non-negative integer")
+    if type(value["detected"]) is not int or value["detected"] < 0:
+        raise ContractError("Detected mutant count must be a non-negative integer")
+    if type(value["undetected"]) is not int or value["undetected"] < 0:
+        raise ContractError("Undetected mutant count must be a non-negative integer")
     if value["total"] != len(value["mutants"]):
         raise ContractError("Mutant total contradicts its receipts")
+    if value["detected"] != detected_count or value["undetected"] != undetected_count:
+        raise ContractError("Mutant counts do not reconcile")
     if value["detected"] + value["undetected"] != value["total"]:
         raise ContractError("Mutant counts do not reconcile")
+    missing = value["missing_evidence"]
+    if type(missing) is not list or any(
+        type(item) is not str or not 1 <= len(item) <= 1000 for item in missing
+    ):
+        raise ContractError("Bounded mutant missing-evidence notes required")
     if value["coverage"] == "verified" and (
-        value["undetected"] or value["integrity"] != "exact"
+        value["undetected"]
+        or value["integrity"] != "exact"
+        or not value["mutants"]
+        or value["detected"] != value["total"]
+        or missing
     ):
         raise ContractError("Verified mutant coverage contradicts its receipts")
     return value

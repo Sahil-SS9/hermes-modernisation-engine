@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .identity import read_source, safe_relative, snapshot
 from .jsonio import ContractError, dumps, loads, identifier
-from .proposals import PROTECTED
+from .proposals import forbidden_edit
 
 CONTRACT_FIELDS = {
     "schema_version", "kind", "scope", "track", "source_digest", "adapter",
@@ -75,7 +75,7 @@ def validate_contract(value, source, source_digest):
         raise ContractError("Bounded allowed paths required")
     for path in paths:
         safe_relative(path)
-        if any(part in PROTECTED or part.startswith(".") for part in Path(path).parts) or Path(path).name.startswith("test_"):
+        if forbidden_edit(path) is not None:
             raise ContractError("Protected oracle/test paths cannot be candidate outputs")
     if len(set(paths)) != len(paths):
         raise ContractError("Duplicate allowed path")

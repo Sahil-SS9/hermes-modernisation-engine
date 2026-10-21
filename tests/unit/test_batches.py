@@ -1,6 +1,8 @@
 """Bounded proposal batches: typed data only, injected port, no provider access."""
 
 import json
+import threading
+import time
 
 import pytest
 
@@ -145,6 +147,45 @@ def test_time_cap_is_checked_between_calls(tmp_path, monkeypatch):
     monkeypatch.setattr(batches.time, "monotonic", lambda: next(clock))
     with pytest.raises(BatchRefused, match="BUDGET_EXCEEDED"):
         propose(job, contract, request(), budget(max_seconds=1), FixtureProposer(responses()))
+
+
+def test_exhausted_token_budget_refuses_before_the_next_call(tmp_path):
+    _, job, contract = make_job(tmp_path)
+    values = responses()
+    values["one"] = envelope("one", [{"path": "a.txt", "replacement": "ALPHA\n"}], tokens=5)
+    values["two"] = envelope("two", [{"path": "b.txt", "replacement": "BETA\n"}], tokens=5)
+    proposer = FixtureProposer(values)
+    with pytest.raises(BatchRefused, match="token cap reached"):
+        propose(job, contract, request(), budget(max_tokens=10), proposer)
+    assert len(proposer.prompts) == 1
+
+
+def test_blocking_proposer_is_stopped_at_the_deadline(tmp_path):
+    _, job, contract = make_job(tmp_path)
+    started = threading.Event()
+    release = threading.Event()
+
+    class BlockingProposer:
+        def __init__(self):
+            self.calls = 0
+
+        def propose(self, prompt):
+            self.calls += 1
+            started.set()
+            release.wait(2)
+            return responses()["one"]
+
+    proposer = BlockingProposer()
+    began = time.monotonic()
+    try:
+        with pytest.raises(BatchRefused, match="time cap"):
+            propose(job, contract, request()[:1], budget(max_seconds=1), proposer)
+    finally:
+        release.set()
+    elapsed = time.monotonic() - began
+    assert started.is_set()
+    assert proposer.calls == 1
+    assert elapsed < 1.6, f"engine waited {elapsed:.2f}s for a 1s deadline"
 
 
 def test_overlapping_paths_are_refused_before_any_call(tmp_path):

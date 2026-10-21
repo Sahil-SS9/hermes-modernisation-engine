@@ -73,3 +73,20 @@ def test_stale_input_missing_bytes_and_arbitrary_fields_refused(tmp_path):
     p["approved"] = True
     with pytest.raises(ContractError):
         validate_proposal(repo, p)
+
+
+def test_dependency_manifest_is_refused_even_when_explicitly_allowlisted(tmp_path):
+    repo, p = fixture(tmp_path)
+    manifest = repo / "requirements.txt"
+    manifest.write_text("requests==2\n")
+    p["source_digest"] = snapshot(repo)["digest"]
+    p["allowed_paths"] = ["requirements.txt"]
+    p["changes"] = [
+        {
+            "path": "requirements.txt",
+            "before_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
+            "replacement": "requests==3\n",
+        }
+    ]
+    with pytest.raises(ContractError, match="Protected"):
+        validate_proposal(repo, p)

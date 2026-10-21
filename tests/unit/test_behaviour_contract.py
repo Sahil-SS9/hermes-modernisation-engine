@@ -107,6 +107,7 @@ def test_broad_or_unknown_normalisations_are_refused(tmp_path, entry):
     ("track", "anything"), ("seed", True), ("seed", -1),
     ("allowed_paths", ["../app.py"]), ("allowed_paths", ["tests/oracle.py"]),
     ("allowed_paths", [".github/workflows/ci.yaml"]),
+    ("allowed_paths", ["requirements.txt"]),
     ("normalizations", [{"path": "*", "drop": True}]),
     ("planned_differences", [{"approved": True}]),
 ])

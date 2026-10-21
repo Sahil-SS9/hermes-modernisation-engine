@@ -70,11 +70,39 @@ def test_missing_or_wrongly_typed_fields_fail_closed():
                 {"op": "lowercase", "path": "x"},
             ],
         },
+        {
+            "case_id": "c",
+            "operations": [
+                {"op": "trim", "path": "meta.name"},
+                {"op": "drop", "path": "meta"},
+            ],
+        },
+        {
+            "case_id": "c",
+            "operations": [
+                {"op": "drop", "path": "meta"},
+                {"op": "trim", "path": "meta.name"},
+            ],
+        },
     ],
 )
 def test_broad_overlapping_or_unknown_masks_are_refused(entry):
     with pytest.raises(ContractError):
         validate_entries([entry], {"c"})
+
+
+def test_dropping_a_container_is_refused_so_it_cannot_hide_children():
+    with pytest.raises(ContractError, match="scalar"):
+        apply_to_case(
+            contract(
+                {
+                    "case_id": "c",
+                    "operations": [{"op": "drop", "path": "meta"}],
+                }
+            ),
+            "c",
+            {"meta": {"canary": "old"}},
+        )
 
 
 def test_approved_difference_shape_is_bounded():

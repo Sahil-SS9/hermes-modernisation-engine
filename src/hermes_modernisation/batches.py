@@ -9,6 +9,8 @@ tool call, dependency edit or authority claim.
 """
 
 import hashlib
+import queue
+import threading
 import time
 from pathlib import Path
 
@@ -169,6 +171,36 @@ def _prompt(job, batch, contents):
     )
 
 
+def _propose_with_deadline(proposer, prompt, deadline):
+    """Call an injected port, but stop waiting at the total-run deadline.
+
+    The port is arbitrary third-party code and may block indefinitely.  A
+    daemon worker lets the engine refuse at its deadline even when that code
+    has no cancellation API.  A worker that returns after the deadline is
+    never accepted; its result is discarded with the timed-out queue.
+    """
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise BatchRefused("BUDGET_EXCEEDED", "time cap reached before the next call")
+    results = queue.Queue(maxsize=1)
+
+    def invoke():
+        try:
+            results.put((True, proposer.propose(prompt)))
+        except BaseException as error:  # re-raise in the caller's thread
+            results.put((False, error))
+
+    worker = threading.Thread(target=invoke, name="proposal-call", daemon=True)
+    worker.start()
+    try:
+        ok, value = results.get(timeout=remaining)
+    except queue.Empty:
+        raise BatchRefused("BUDGET_EXCEEDED", "time cap exceeded") from None
+    if not ok:
+        raise value
+    return value
+
+
 def propose(job, contract, batches_value, budget_value, proposer):
     """Run bounded batches and return a validated proposal, never saved here."""
     budget = validate_budget(budget_value)
@@ -189,6 +221,8 @@ def propose(job, contract, batches_value, budget_value, proposer):
     summaries = []
     by_path = {}
     for batch in batches:
+        if tokens >= budget["max_tokens"]:
+            raise BatchRefused("BUDGET_EXCEEDED", "token cap reached before the next call")
         if time.monotonic() - started > budget["max_seconds"]:
             raise BatchRefused("BUDGET_EXCEEDED", "time cap reached before the next call")
         contents = []
@@ -208,7 +242,9 @@ def propose(job, contract, batches_value, budget_value, proposer):
             raise BatchRefused("BUDGET_EXCEEDED", "input byte cap exceeded")
         calls += 1
         try:
-            response = proposer.propose(prompt)
+            response = _propose_with_deadline(
+                proposer, prompt, started + budget["max_seconds"]
+            )
         except BatchRefused:
             raise
         except Exception as error:

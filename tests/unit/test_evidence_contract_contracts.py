@@ -121,7 +121,14 @@ def test_proof_report_recomputes_verified_rule_coverage_from_the_trace():
             {
                 "rule_id": "double",
                 "rule_digest": "c" * 64,
-                "source_refs": [],
+                "source_refs": [
+                    {
+                        "path": "app.py",
+                        "line_start": 1,
+                        "line_end": 1,
+                        "sha256": "d" * 64,
+                    }
+                ],
                 "status": "reviewed_executed",
                 "review_id": "review",
                 "reviewed_rule_digest": "c" * 64,

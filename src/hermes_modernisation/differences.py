@@ -76,7 +76,12 @@ def validate_entries(value, case_ids):
             else:
                 raise ContractError("Unsupported normalisation operation")
             path = ".".join(_path(operation["path"]))
-            if path in seen_paths:
+            if any(
+                path == seen
+                or path.startswith(seen + ".")
+                or seen.startswith(path + ".")
+                for seen in seen_paths
+            ):
                 raise ContractError("Overlapping normalisation paths refused")
             seen_paths.add(path)
     return value
@@ -115,6 +120,8 @@ def apply_to_case(contract, case_id, value):
         path = operation["path"]
         if op == "drop":
             parent, key = _locate(copied, path)
+            if type(parent[key]) in {dict, list}:
+                raise ContractError("drop must target a scalar leaf, not a container")
             del parent[key]
         elif op in {"trim", "lowercase"}:
             parent, key = _locate(copied, path)
