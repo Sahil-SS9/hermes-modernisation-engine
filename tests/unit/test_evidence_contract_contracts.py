@@ -108,6 +108,65 @@ def test_report_emits_a_bounded_not_proven_proof_report(tmp_path):
     assert "NOT_PROVEN" in report["text"] and "NOT_PROVEN" in report["html"]
 
 
+def test_proof_report_recomputes_verified_rule_coverage_from_the_trace():
+    from hermes_modernisation.evidence_contracts import proof_report
+
+    trace = {
+        "schema_version": 1,
+        "kind": "RuleTrace",
+        "job_id": "job",
+        "source_digest": "a" * 64,
+        "oracle_digest": "b" * 64,
+        "rules": [
+            {
+                "rule_id": "double",
+                "rule_digest": "c" * 64,
+                "source_refs": [],
+                "status": "reviewed_executed",
+                "review_id": "review",
+                "reviewed_rule_digest": "c" * 64,
+                "cases": [
+                    {"phase": "baseline", "case_id": "fresh_0", "matches_expected": True},
+                    {"phase": "candidate", "case_id": "fresh_0", "matches_expected": True},
+                ],
+                "gaps": [],
+            }
+        ],
+        "coverage": "verified",
+        "lexical_only": False,
+        "reviewed": 1,
+        "executed": 1,
+        "failed": 0,
+        "orphan_links": [],
+        "missing_evidence": [],
+        "verdict": "NOT_PROVEN",
+        "execution_performed": False,
+    }
+    comparison = {
+        "schema_version": 1,
+        "job_id": "job",
+        "scope": "declared",
+        "contract_scope": "declared",
+        "source_digest": "a" * 64,
+        "verdict": "NOT_PROVEN",
+        "evidence_grade": "independently-observed-json-process-response",
+        "execution_performed": False,
+        "compared_cases": 0,
+        "approved_differences": [],
+        "missing_evidence": [],
+        "unobserved_effects": ["filesystem"],
+        "rule_trace": trace,
+    }
+    job = {
+        "job_id": "job",
+        "goal": "declared",
+        "assessment": {"source_digest": "a" * 64},
+    }
+    report = proof_report(job, comparison)
+    assert report["rule_coverage"] == "verified"
+    assert report["verdict"] == "NOT_PROVEN"
+
+
 def _fake_capture(tmp_path, mutation=None):
     engine, job, contract = contract_fixture(tmp_path)
     aid = "attempt_one"

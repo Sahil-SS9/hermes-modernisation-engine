@@ -20,7 +20,11 @@ def render(job, comparison):
             counts.get("rules", "unknown"),
         ),
         ("Compared execution cases", comparison["compared_cases"]),
-        ("Business-rule coverage", "unknown"),
+        (
+            "Business-rule coverage",
+            comparison.get("rule_trace", {}).get("coverage", "unknown"),
+        ),
+        ("Approved normalisations", len(comparison.get("approved_differences", []))),
         ("Model/API cost", "unknown"),
     ]
     rows = "".join(

@@ -50,6 +50,7 @@ OBSERVED_CORE = {
 OBSERVED_OPTIONAL = {
     "baseline_passed", "baseline_failed", "candidate_passed",
     "candidate_failed", "cases", "baseline_receipt", "candidate_receipt",
+    "rule_trace",
 }
 COMPARISON_CASE_FIELDS = {
     "id", "input_digest", "baseline_matches_expected",
@@ -181,8 +182,8 @@ def _comparison_common(value):
     if value["execution_performed"] is not False:
         raise ContractError("A comparison report never performs execution")
     _integer(value["compared_cases"], 0, 500, "compared case count")
-    if value["approved_differences"] != []:
-        raise ContractError("Approved differences require a separate reviewed contract")
+    from .differences import validate_approved
+    validate_approved(value["approved_differences"])
     _strings(value["missing_evidence"], 0, 50, 4000)
 
 
@@ -248,16 +249,32 @@ def validate_comparison(value):
                 raise ContractError("Observed comparison case rows do not match its count")
             for row in value["cases"]:
                 _comparison_case(row)
+            approved_ids = {entry["case_id"] for entry in value["approved_differences"]}
+            if not approved_ids <= {row["id"] for row in value["cases"]}:
+                raise ContractError("Approved difference names an absent comparison case")
             validate_observation_ref(value["baseline_receipt"], "baseline observation reference")
             validate_observation_ref(value["candidate_receipt"], "candidate observation reference")
             if value["baseline_receipt"]["phase"] != "baseline" or value["candidate_receipt"]["phase"] != "candidate":
                 raise ContractError("Observation references are bound to the wrong phase")
+        if "rule_trace" in keys:
+            from .rule_trace import validate_trace
+
+            trace = validate_trace(value["rule_trace"])
+            if (
+                trace["job_id"] != value["job_id"]
+                or trace["source_digest"] != value["source_digest"]
+            ):
+                raise ContractError("Rule trace is bound to a different comparison")
         return value
     if not LEGACY_CORE <= keys or not keys <= LEGACY_CORE | LEGACY_OPTIONAL:
         raise ContractError("Comparison has unknown or missing fields")
     if type(value["schema_version"]) is not int or value["schema_version"] != 1:
         raise ContractError("Unsupported comparison version")
     _comparison_common(value)
+    if value["approved_differences"]:
+        raise ContractError(
+            "Recorded evidence has no sealed contract to approve a normalisation"
+        )
     if "comparison" in value:
         _inner_comparison(value["comparison"])
         if value["compared_cases"] != len(value["comparison"]["cases"]):
@@ -279,7 +296,9 @@ def proof_report(job, comparison):
         "provenance": provenance,
         "comparison_sha256": hashlib.sha256(dumps(comparison)).hexdigest(),
         "compared_cases": comparison["compared_cases"],
-        "rule_coverage": "unverified",
+        "rule_coverage": comparison.get("rule_trace", {}).get(
+            "coverage", "unverified"
+        ),
         "claims": [],
         "missing_evidence": comparison["missing_evidence"],
         "unobserved_effects": comparison.get(
@@ -303,8 +322,10 @@ def validate_proof_report(value):
         raise ContractError("A proof report cannot claim more than NOT_PROVEN")
     if value["provenance"] not in (PROVENANCE_OBSERVED, PROVENANCE_REPORTED):
         raise ContractError("Unknown proof report provenance")
-    if value["rule_coverage"] != "unverified":
-        raise ContractError("Rule coverage requires a separate reviewed rule contract")
+    if value["rule_coverage"] not in {"unverified", "verified"}:
+        raise ContractError("Unknown rule coverage state")
+    if value["rule_coverage"] == "verified" and value["provenance"] != PROVENANCE_OBSERVED:
+        raise ContractError("Only protected observed evidence can verify rule coverage")
     _integer(value["compared_cases"], 0, 500, "proof report case count")
     _strings(value["missing_evidence"], 0, 50, 4000)
     _strings(value["unobserved_effects"], 1, 20, 4000)

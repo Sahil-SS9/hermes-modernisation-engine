@@ -56,7 +56,10 @@ def evaluate_response(contract, attempt_id, raw):
         fields(result, {"id", "output"}, "process response case")
         if result["id"] != wire_id(attempt_id, case["id"]):
             raise ContractError("Missing, duplicate, extra or reordered response identity")
-        matches = dumps({"value": result["output"]}) == dumps({"value": case["expected"]})
+        from .differences import matches as normalised_match
+        matches, _ = normalised_match(
+            contract, case["id"], result["output"], case["expected"]
+        )
         evaluated.append({
             "id": case["id"], "kind": case["kind"], "input_digest": input_digest(case["input"]),
             "output": result["output"], "matches_expected": matches, "rule_ids": case["rule_ids"],

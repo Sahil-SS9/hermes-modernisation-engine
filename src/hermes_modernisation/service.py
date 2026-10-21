@@ -29,6 +29,9 @@ FIELDS = {
     "run": {"job", "attempt", "grant"},
     "resume": {"job", "attempt"},
     "proposal": {"job", "revision", "proposal"},
+    "propose_batches": {"job", "batches", "budget"},
+    "rules_trace": {"job"},
+    "mutants": {"job"},
     "build": {"job"},
     "control_request": {"job", "attempt", "purpose", "actor"},
     "cancel": {"job", "attempt", "grant"},
@@ -46,6 +49,7 @@ class Engine:
         self.profile = identifier(profile)
         self.store = Store(root, profile=self.profile)
         self.operator_config = operator_config
+        self.proposer = None
 
     def invoke(self, action, arguments):
         if action == "approve" or (action in ("run", "resume") and self.operator_config is None):
@@ -149,6 +153,42 @@ class Engine:
         if action == "proposal":
             from .candidates import save_proposal
             return save_proposal(self.store, job, arguments["revision"], arguments["proposal"])
+        if action == "propose_batches":
+            from .batches import propose
+            from .candidates import save_proposal
+            if self.proposer is None:
+                raise ContractError("Trusted proposer port is not configured")
+            if not job.get("baseline_ref") or job["state"] not in {"BASELINED", "PLAN_REVIEW_REQUIRED"}:
+                raise ContractError("An accepted protected baseline is required before proposal batches")
+            contract = self.store.contract_for(job["job_id"])
+            result = propose(job, contract, arguments["batches"], arguments["budget"], self.proposer)
+            current = save_proposal(self.store, job, job["revision"], result["proposal"])
+            return {
+                "schema_version": 1,
+                "kind": "ProposalBatchApplied",
+                "job": current,
+                "proposal_digest": result["proposal_digest"],
+                "batches": result["batches"],
+                "model_calls": result["model_calls"],
+                "tokens": result["tokens"],
+                "provider_access": result["provider_access"],
+                "live_model_call": False,
+                "execution_performed": False,
+                "verdict": "NOT_PROVEN",
+            }
+        if action == "rules_trace":
+            from .operator import OperatorPolicy
+            from .rule_trace import trace
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            return trace(self.store, job, policy)
+        if action == "mutants":
+            from . import mutants, observations
+            from .operator import OperatorPolicy
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            if not job.get("baseline_ref"):
+                raise ContractError("A protected baseline observation is required for mutant controls")
+            evaluation = observations.read_one(self.store, job, job["baseline_ref"], policy)
+            return mutants.build(job, self.store.contract_for(job["job_id"]), evaluation, job["baseline_ref"]["attempt_id"])
         if action in {"run", "resume", "build"}:
             from .operator import OperatorPolicy
             policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
@@ -216,14 +256,19 @@ class Engine:
                 "unknowns": job["assessment"]["missing_evidence"],
             }
             return self.store.save_plan(job["job_id"], arguments["revision"], plan)
+        from .evidence_contracts import proof_report, validate_comparison
         if job.get("baseline_ref") or job.get("candidate_observation_ref"):
             from .operator import OperatorPolicy
             from .observations import comparison as observed_comparison
             policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
             comparison = observed_comparison(self.store, job, policy)
+            comparison = validate_comparison(comparison)
+            if job["assessment"].get("rule_schema") == "business-rule-v1":
+                from .rule_trace import trace
+                comparison["rule_trace"] = trace(self.store, job, policy)
+                comparison = validate_comparison(comparison)
         else:
             comparison = evidence.comparison(job, self.store.evidence_for(job["job_id"]))
-        from .evidence_contracts import proof_report, validate_comparison
         comparison = validate_comparison(comparison)
         if action == "compare":
             return comparison

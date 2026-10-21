@@ -131,8 +131,12 @@ def validate_contract(value, source, source_digest):
             raise ContractError("Rule references missing or contradictory cases")
     if len(fresh) < 10 or not {"boundary", "malformed"} <= kinds:
         raise ContractError("Ten distinct fresh inputs plus boundary/malformed cases required")
-    if value["normalizations"] != [] or value["planned_differences"] != []:
-        raise ContractError("Approved differences and normalizations require a separate implemented review contract")
+    from .differences import validate_entries
+    if value["planned_differences"] != []:
+        raise ContractError(
+            "Planned behavioural differences remain unavailable; only typed narrow normalisations are supported"
+        )
+    validate_entries(value["normalizations"], set(case_index))
     if snapshot(source)["digest"] != source_digest:
         raise ContractError("Source changed while validating protected contract")
     return value

@@ -70,6 +70,37 @@ def test_public_contract_registration_persists_without_execution_or_self_approva
     assert not any(source.name in ("oracle.json", "contract.json") for source in (tmp_path / "legacy").iterdir())
 
 
+def test_typed_narrow_normalisation_is_accepted_into_the_sealed_contract(tmp_path):
+    engine, job, contract = contract_fixture(tmp_path)
+    contract["normalizations"] = [
+        {"case_id": "malformed", "operations": [{"op": "trim", "path": "error"}]}
+    ]
+    registered = engine.invoke(
+        "contract", {"job": job["job_id"], "revision": 0, "contract": contract}
+    )
+    assert registered["behaviour_contract"]["review_state"] == "unreviewed"
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        {"case_id": "absent", "operations": [{"op": "trim", "path": "error"}]},
+        {"case_id": "malformed", "operations": [{"op": "drop", "path": "*"}]},
+        {
+            "case_id": "malformed",
+            "operations": [{"op": "trim", "path": "error"}, {"op": "lowercase", "path": "error"}],
+        },
+    ],
+)
+def test_broad_or_unknown_normalisations_are_refused(tmp_path, entry):
+    engine, job, contract = contract_fixture(tmp_path)
+    contract["normalizations"] = [entry]
+    with pytest.raises(ContractError):
+        engine.invoke(
+            "contract", {"job": job["job_id"], "revision": 0, "contract": contract}
+        )
+
+
 @pytest.mark.parametrize("field,value", [
     ("schema_version", True), ("schema_version", 2), ("review_state", "reviewed"),
     ("source_digest", "a" * 63), ("adapter", "self-reported-junit"),

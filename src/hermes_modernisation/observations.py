@@ -117,8 +117,18 @@ def comparison(store, job, policy):
         return result
     if len(old["cases"]) != len(new["cases"]) or any((a["id"], a["input_digest"]) != (b["id"], b["input_digest"]) for a, b in zip(old["cases"], new["cases"], strict=True)):
         raise ContractError("Observed phases do not cover the same protected input identities")
-    rows = [{"id": a["id"], "input_digest": a["input_digest"], "baseline_matches_expected": a["matches_expected"], "candidate_matches_expected": b["matches_expected"], "same_output": dumps({"value": a["output"]}) == dumps({"value": b["output"]}), "rule_ids": a["rule_ids"]} for a, b in zip(old["cases"], new["cases"], strict=True)]
-    result.update(compared_cases=len(rows), baseline_passed=old["passed"], candidate_passed=new["passed"], baseline_failed=old["failed"], candidate_failed=new["failed"], cases=rows, baseline_receipt=baseline, candidate_receipt=candidate)
+    contract = store.contract_for(job["job_id"])
+    from .differences import approved_difference, matches as normalised_match
+
+    rows = []
+    approved = []
+    for a, b in zip(old["cases"], new["cases"], strict=True):
+        raw_same = dumps({"value": a["output"]}) == dumps({"value": b["output"]})
+        same, _ = normalised_match(contract, a["id"], a["output"], b["output"])
+        if same and not raw_same:
+            approved.append(approved_difference(contract, a["id"]))
+        rows.append({"id": a["id"], "input_digest": a["input_digest"], "baseline_matches_expected": a["matches_expected"], "candidate_matches_expected": b["matches_expected"], "same_output": same, "rule_ids": a["rule_ids"]})
+    result.update(compared_cases=len(rows), baseline_passed=old["passed"], candidate_passed=new["passed"], baseline_failed=old["failed"], candidate_failed=new["failed"], cases=rows, baseline_receipt=baseline, candidate_receipt=candidate, approved_differences=approved)
     if old["failed"] or new["failed"]:
         result["missing_evidence"].append("Observed responses fail the unchanged protected oracle")
     return result
