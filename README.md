@@ -90,4 +90,6 @@ The current engineering gate passes **463 tests** with zero failures, errors or 
 - [Current evidence](docs/evidence/remaining-build-20261021/fix-pass-2.json)
 - [Development and recovery archive](development/README.md)
 
+Licensed under Apache-2.0. See [LICENSE](LICENSE).
+
 Repository: https://github.com/Sahil-SS9/modernisation-engine

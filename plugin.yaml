@@ -4,6 +4,7 @@ manifest_version: 2
 kind: standalone
 description: Source-read-only assessment and migration evidence preview; execution gated.
 author: Sahil Saghir (owner); authored by KENSEI
+license: Apache-2.0
 homepage: https://github.com/Sahil-SS9/modernisation-engine
 tags:
   - migration
