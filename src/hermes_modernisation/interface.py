@@ -16,6 +16,9 @@ OPERATIONS = (
     "attempts",
     "review_request",
     "review",
+    "rule_review_request",
+    "rule_review",
+    "rule_reviews",
     "proposal",
     "build",
     "control_request",
@@ -38,6 +41,7 @@ PROPERTIES = {
     "name": {"type": "string", "enum": ["migration-job-v1", "business-rule-v1", "execution-receipt-v1", "evidence-comparison-v1", "proof-report-v1"]},
     "attempt": {"type": "string"},
     "purpose": {"type": "string", "enum": ["contract", "migration", "cancel", "recover", "recover_build"]},
+    "rule_id": {"type": "string"},
     "grant": {"type": "object", "additionalProperties": True},
     "proposal": {"type": "object", "additionalProperties": True},
     "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 600},
@@ -70,6 +74,9 @@ REQUIRED = {
     "attempts": ["job"],
     "review_request": ["job", "purpose", "actor"],
     "review": ["job", "grant"],
+    "rule_review_request": ["job", "rule_id", "actor"],
+    "rule_review": ["job", "grant"],
+    "rule_reviews": ["job"],
     "proposal": ["job", "revision", "proposal"],
     "build": ["job"],
     "control_request": ["job", "attempt", "purpose", "actor"],
@@ -100,6 +107,7 @@ def setup(parser):
     parser.add_argument("--attempt")
     parser.add_argument("--purpose", choices=["contract", "migration", "cancel", "recover", "recover_build"])
     parser.add_argument("--grant")
+    parser.add_argument("--rule-id")
     parser.add_argument("--proposal")
     parser.add_argument("--timeout-seconds", type=int)
     parser.add_argument("--output-limit-bytes", type=int)

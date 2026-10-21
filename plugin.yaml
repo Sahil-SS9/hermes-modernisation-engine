@@ -16,6 +16,9 @@ provides_tools:
   - modernise_attempts
   - modernise_review_request
   - modernise_review
+  - modernise_rule_review_request
+  - modernise_rule_review
+  - modernise_rule_reviews
   - modernise_proposal
   - modernise_build
   - modernise_run

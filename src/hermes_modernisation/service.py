@@ -23,6 +23,9 @@ FIELDS = {
     "attempts": {"job"},
     "review_request": {"job", "purpose", "actor"},
     "review": {"job", "grant"},
+    "rule_review_request": {"job", "rule_id", "actor"},
+    "rule_review": {"job", "grant"},
+    "rule_reviews": {"job"},
     "run": {"job", "attempt", "grant"},
     "resume": {"job", "attempt"},
     "proposal": {"job", "revision", "proposal"},
@@ -166,6 +169,19 @@ class Engine:
             return accept(self.store, job, arguments["grant"], policy)
         if action == "attempts":
             return {"schema_version": 1, "job_id": job["job_id"], "attempts": self.store.attempts_for(job["job_id"])}
+        if action == "rule_review_request":
+            from .rule_reviews import request as rule_review_request
+            return rule_review_request(self.store, job, arguments["rule_id"], arguments["actor"], self.profile)
+        if action == "rule_review":
+            from .operator import OperatorPolicy
+            from .rule_reviews import accept as rule_review_accept
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            return rule_review_accept(self.store, job, arguments["grant"], policy)
+        if action == "rule_reviews":
+            from .operator import OperatorPolicy
+            from .rule_reviews import listing as rule_reviews_listing
+            policy = OperatorPolicy(self.operator_config, self.profile, self.store.root, job["repo"])
+            return rule_reviews_listing(self.store, job, policy)
         if action == "prepare":
             from .runtime import prepare_request
             return prepare_request(self.store, job, arguments, profile=self.profile)

@@ -1,0 +1,11 @@
+{
+  "producing_state": "see rule-review.json; commits this slice",
+  "source_sha256": {
+    "plugin.yaml": "b754bd8f72b2ec5b0b417e351a41751a29b8c03df2226ab1c3b367ae662d3a5f",
+    "src/hermes_modernisation/approvals.py": "0f38bec3639662fb14db639c4660cb03c26a4683a90e052eae778ed4a67417a1",
+    "src/hermes_modernisation/interface.py": "da673a1768f815f56d283ea4e908552292584e89015cb79be2cc70301a3b4a2c",
+    "src/hermes_modernisation/rule_reviews.py": "92740356f2a6325e68e3f159b60999405a4c88193bc5c0ae1ff8bc96171fadbd",
+    "src/hermes_modernisation/service.py": "e8e6d289f8061c7c9c402eb55c00c5862cb8034807bdacc96057aa6ec405dbc0",
+    "tests/unit/test_rule_reviews.py": "7c554f54f99ab1dc4a131f9f34f9c3a8f902a97c5a236f7a4d79027b0a7b7c63"
+  }
+}

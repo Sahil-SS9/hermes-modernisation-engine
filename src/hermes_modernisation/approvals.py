@@ -58,6 +58,15 @@ class ExternalAuthority:
         validate_decision(decision)
         return self._verify(grant, decision, "decision")
 
+    def verify_rule_review(self, grant, decision):
+        from .rule_reviews import validate_decision
+        validate_decision(decision)
+        return self._verify(grant, decision, "decision")
+
+    def claim_rule_review(self, grant, decision):
+        nonce, now = self.verify_rule_review(grant, decision)
+        return self._record(decision, nonce, now)
+
     def claim_control(self, grant, decision):
         nonce, now = self.verify_control(grant, decision)
         return self._record(decision, nonce, now)

@@ -1,0 +1,30 @@
+{
+  "checkpoint": "remaining-build-20261020",
+  "slice": "Authenticated BusinessRule owner-review records (slice 2a, M1/M3 rule review seam)",
+  "status": "ENGINE_GREEN_LOCAL_ONLY",
+  "boundary": [
+    "Verified against the exact changed bytes in rule-review-source-manifest.json. This closes ONLY the authenticated owner-review record for current BusinessRule candidates; it does NOT close parent 2a (the complete state/profile/concurrency matrix), executed rule coverage/case-assertion links (point 3c), MT08 adequacy acceptance, or any other point 3 row.",
+    "The sealed lexical rule page stays candidate-only and byte-identical. Review is a separate authenticated record (reviews table, purpose='rule') binding rule_id, the canonical rule digest and the assessment source digest; a page edit cannot mint or alter a review.",
+    "Adequacy is the fixed owner assertion `owner-asserted-adequate`, not a proof and not free text. Listing always reports coverage_status unverified: no executed case/assertion evidence is inferred from a review.",
+    "Review request is data-only (no database byte change). Acceptance requires an exact signed RuleReviewDecision, a live source match, and a one-use external-authority claim; replay is refused. Listing revalidates row hashes, reference/decision equality, job/profile/source binding and the recorded claim at its claim time.",
+    "No store schema migration was needed: the existing private reviews table is reused with an explicit purpose discriminator. Legacy assessments without the BusinessRule marker return an empty review list and are never upgraded.",
+    "No subprocess, model egress, real-project execution, installation or public write occurred. Point 4 remains HOLD."
+  ],
+  "design": {
+    "decision": "RuleReviewDecision v1 exact fields: schema_version, kind, job_id, profile, actor, purpose='rule', source_digest, rule_id, rule_digest, adequacy. The rule digest is sha256(canonical rule object) and the request is computed from the current sealed page.",
+    "acceptance": "rule_review authenticates the exact grant before any write (verify_rule_review), claims the one-use nonce in the private authority ledger, then stores {reference, grant} hash-bound in the reviews table with purpose 'rule'. Job state and revision are unchanged: a review is not execution and does not advance the workflow.",
+    "listing": "rule_reviews is a trusted read: it requires the operator workspace/public keys, re-verifies each signature against the recorded claim, refuses rehashed bodies and contradictory references, and returns each review's rule_digest beside the current page's digest for that rule. It never returns the grant or claims executed coverage.",
+    "surface": "Three native operations (rule_review_request, rule_review, rule_reviews) are available through the shared standalone CLI, registered tools and registered slash commands; plugin.yaml declares the three tools."
+  },
+  "witnessed": {
+    "RED": "development-unit-1792543143058484847.json — 14 failures: unsupported rule_review_request/rule_review/rule_reviews operations, no decision shape, no authenticated storage, no listing and no tamper refusals.",
+    "GREEN": [
+      "development-unit-1792543427397242353.json — 304 collected, 304 passed, 0 failed, 0 errors, 0 skipped",
+      "development-all-1792543800014549087.json — 331 collected (unit + host + integration + platform), 331 passed, 0 failed, 0 errors, 0 skipped; includes the real plugin validator and native registration checks"
+    ],
+    "lint": "development-lint-1792543813670560207.json — pass",
+    "validator": "development-validate-1792543821394955368.json — ok true, warnings empty"
+  },
+  "evidence_root": "/home/kensei/projects/modernisation-benchmarks/control/evidence/",
+  "runner": "Unchanged approved fixed rootless gate (run-development.py all/lint/validate), network=none, read-only source/reference/benchmark mounts, uid 65534; receipts record container_removed true."
+}
