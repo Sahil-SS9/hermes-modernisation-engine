@@ -1,113 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1060" viewBox="0 0 1600 1060">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1420" viewBox="0 0 1000 1420">
 <defs>
-<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.7"/></pattern>
-<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker>
-<marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#34d399"/></marker>
-<marker id="arrow-rose" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#fb7185"/></marker>
-<marker id="arrow-violet" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#a78bfa"/></marker>
-<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/></filter>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.8"/></pattern>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+<marker id="arrow-rose" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#be123c"/></marker>
 </defs>
-<rect width="1600" height="1060" fill="#020617"/><rect width="1600" height="1060" fill="url(#grid)"/>
-<text x="50" y="58" fill="#f8fafc" font-family="DejaVu Sans, sans-serif" font-size="30" font-weight="700">Hermes Modernisation Engine</text>
-<text x="50" y="88" fill="#94a3b8" font-family="DejaVu Sans, sans-serif" font-size="14">Source assessment, reviewed migration contracts and gated old/new evidence — not a live migration service.</text>
-<rect x="1245" y="38" width="305" height="42" rx="21" fill="#0f172a" stroke="#334155"/><circle cx="1270" cy="59" r="6" fill="#34d399"/><text x="1287" y="64" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="13">READ-ONLY BY DEFAULT</text>
-<rect x="50" y="135" width="300" height="185" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="50" y="135" width="300" height="185" rx="12" fill="#22d3ee" fill-opacity="0.10" stroke="#22d3ee" stroke-width="1.5"/>
-<text x="68" y="163" fill="#22d3ee" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">SURFACES</text>
-<text x="68" y="185" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">hermes modernise CLI</text>
-<text x="68" y="204" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">hermes tools: modernise_*</text>
-<text x="68" y="223" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">standalone Python CLI</text>
-<text x="68" y="242" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="68" y="261" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">Same Engine service and</text>
-<text x="68" y="280" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">strict argument validation</text>
-<rect x="390" y="135" width="350" height="185" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="390" y="135" width="350" height="185" rx="12" fill="#34d399" fill-opacity="0.10" stroke="#34d399" stroke-width="1.5"/>
-<text x="408" y="163" fill="#34d399" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">ENGINE SERVICE</text>
-<text x="408" y="185" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">Engine.invoke(action, args)</text>
-<text x="408" y="204" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">service.py — action router</text>
-<text x="408" y="223" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">assess · contract · proposal</text>
-<text x="408" y="242" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">run · compare · report</text>
-<text x="408" y="261" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="408" y="280" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">No authority from prompt text</text>
-<rect x="1235" y="135" width="315" height="185" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="1235" y="135" width="315" height="185" rx="12" fill="#a78bfa" fill-opacity="0.10" stroke="#a78bfa" stroke-width="1.5"/>
-<text x="1253" y="163" fill="#a78bfa" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">PRIVATE JOB STORE</text>
-<text x="1253" y="185" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">SQLite WAL + fenced writes</text>
-<text x="1253" y="204" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">profile-owned data root</text>
-<text x="1253" y="223" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">jobs · schemas · evidence</text>
-<text x="1253" y="242" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">content-addressed details</text>
-<text x="1253" y="261" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="1253" y="280" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">outside source and candidate roots</text>
-<rect x="50" y="370" width="390" height="175" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="50" y="370" width="390" height="175" rx="12" fill="#60a5fa" fill-opacity="0.10" stroke="#60a5fa" stroke-width="1.5"/>
-<text x="68" y="398" fill="#60a5fa" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">READ-ONLY ASSESSMENT</text>
-<text x="68" y="420" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">inventory.assess</text>
-<text x="68" y="439" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">identity.snapshot</text>
-<text x="68" y="458" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">lexical symbols + citations</text>
-<text x="68" y="477" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">paged inventory and plan</text>
-<text x="68" y="496" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="68" y="515" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">never imports or runs repository code</text>
-<rect x="480" y="370" width="360" height="175" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="480" y="370" width="360" height="175" rx="12" fill="#fbbf24" fill-opacity="0.10" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="498" y="398" fill="#fbbf24" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">REVIEW AND CONTRACT</text>
-<text x="498" y="420" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">contracts · reviews · rule_reviews</text>
-<text x="498" y="439" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">proposal validation</text>
-<text x="498" y="458" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">owner-signed review records</text>
-<text x="498" y="477" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">strict schemas and digests</text>
-<text x="498" y="496" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="498" y="515" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">review is not execution permission</text>
-<rect x="880" y="370" width="340" height="175" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="880" y="370" width="340" height="175" rx="12" fill="#fb7185" fill-opacity="0.10" stroke="#fb7185" stroke-width="1.5"/>
-<text x="898" y="398" fill="#fb7185" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">CANDIDATE AND EXECUTION</text>
-<text x="898" y="420" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">proposals · candidates</text>
-<text x="898" y="439" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">executor · sandbox · runtime</text>
-<text x="898" y="458" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">disposable rootless container</text>
-<text x="898" y="477" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">network disabled; no credentials</text>
-<text x="898" y="496" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="898" y="515" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">requires exact one-use owner grant</text>
-<rect x="50" y="600" width="600" height="190" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="50" y="600" width="600" height="190" rx="12" fill="#a78bfa" fill-opacity="0.10" stroke="#a78bfa" stroke-width="1.5"/>
-<text x="68" y="628" fill="#a78bfa" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">EVIDENCE AND REPORT</text>
-<text x="68" y="650" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">record · evidence · compare</text>
-<text x="68" y="669" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">proof · rule_trace · mutants</text>
-<text x="68" y="688" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">observed outcomes and gaps</text>
-<text x="68" y="707" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">JSON · text · offline HTML</text>
-<text x="68" y="726" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="68" y="745" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">verdicts stay bounded; missing evidence is explicit</text>
-<rect x="880" y="600" width="340" height="190" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1" filter="url(#shadow)"/>
-<rect x="880" y="600" width="340" height="190" rx="12" fill="#fb7185" fill-opacity="0.10" stroke="#fb7185" stroke-width="1.5"/>
-<text x="898" y="628" fill="#fb7185" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="700">OWNER AUTHORITY</text>
-<text x="898" y="650" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">trusted operator configuration</text>
-<text x="898" y="669" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">public keys + one-use grants</text>
-<text x="898" y="688" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">external to model/candidate</text>
-<text x="898" y="707" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12"></text>
-<text x="898" y="726" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">no sign or approve endpoint</text>
-<text x="898" y="745" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">inside the engine</text>
-<rect x="50" y="830" width="1500" height="105" rx="12" fill="#0f172a" fill-opacity="0.72" stroke="#334155" stroke-dasharray="8,5"/>
-<text x="70" y="858" fill="#94a3b8" font-family="DejaVu Sans, sans-serif" font-size="13" font-weight="700">TRUST BOUNDARIES</text>
-<text x="70" y="885" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">• read-only source copy</text>
-<text x="380" y="885" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">• disposable rootless sandbox</text>
-<text x="720" y="885" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">• private job store</text>
-<text x="1030" y="885" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">• owner-held signing keys</text>
-<text x="1320" y="885" fill="#cbd5e1" font-family="DejaVu Sans, sans-serif" font-size="12">• no host home or Docker socket</text>
-<text x="70" y="912" fill="#64748b" font-family="DejaVu Sans, sans-serif" font-size="11">Execution is unavailable unless trusted operator configuration and a fresh exact signed grant are present. Archived grants and fixture signatures never authorise a live run.</text>
-<path d="M350,227 L390,227" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-<path d="M740,227 L1235,227" fill="none" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrow-violet)"/>
-<text x="990" y="215" fill="#a78bfa" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">persist jobs and details</text>
-<path d="M565,320 L565,370" fill="none" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-green)"/>
-<text x="625" y="350" fill="#34d399" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">reviewed contract</text>
-<path d="M445,320 L250,370" fill="none" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-green)"/>
-<text x="280" y="350" fill="#34d399" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">assess / plan</text>
-<path d="M740,300 L920,370" fill="none" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-green)"/>
-<text x="835" y="335" fill="#34d399" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">gated actions</text>
-<path d="M840,457 L880,457" fill="none" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
-<path d="M300,545 L300,600" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="370" y="575" fill="#60a5fa" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">assessment evidence</text>
-<path d="M950,545 L650,600" fill="none" stroke="#fb7185" stroke-width="2" marker-end="url(#arrow-rose)"/>
-<text x="800" y="585" fill="#fb7185" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">observed outcomes</text>
-<path d="M880,650 L950,545" fill="none" stroke="#fb7185" stroke-width="2" stroke-dasharray="6,5" marker-end="url(#arrow-rose)"/>
-<text x="870" y="600" fill="#fb7185" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">signed grant</text>
-<path d="M880,690 L800,545" fill="none" stroke="#fb7185" stroke-width="2" stroke-dasharray="6,5" marker-end="url(#arrow-rose)"/>
-<text x="805" y="625" fill="#fb7185" font-family="DejaVu Sans, sans-serif" font-size="11" text-anchor="middle">owner review</text>
-<text x="50" y="985" fill="#475569" font-family="DejaVu Sans, sans-serif" font-size="11">SOLID: request / control flow · DASHED: authority or private readback · Plugin surfaces are adapters; the domain engine remains host-neutral</text>
+<rect width="1000" height="1420" fill="#f8fafc"/><rect width="1000" height="1420" fill="url(#grid)"/>
+<text x="50" y="48" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="32" font-weight="700">Hermes Modernisation Engine</text>
+<text x="50" y="78" fill="#475569" font-family="DejaVu Sans, sans-serif" font-size="16">Assess source, review the contract, gate execution, and record the evidence.</text>
+<rect x="720" y="30" width="230" height="38" rx="19" fill="#ecfdf5" stroke="#059669" stroke-width="2"/><circle cx="744" cy="49" r="6" fill="#059669"/><text x="762" y="54" fill="#065f46" font-family="DejaVu Sans, sans-serif" font-size="14" font-weight="700">READ-ONLY FIRST</text>
+<rect x="50" y="110" width="900" height="100" rx="12" fill="#ffffff" stroke="#0891b2" stroke-width="2.5"/>
+<rect x="50" y="110" width="8" height="100" rx="4" fill="#0891b2"/>
+<text x="74" y="140" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">SURFACES</text>
+<text x="74" y="164" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Hermes CLI: hermes modernise  ·  Hermes tools: modernise_*  ·  Standalone Python CLI</text>
+<text x="74" y="186" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">All surfaces use the same engine and strict argument validation.</text>
+<rect x="50" y="250" width="900" height="100" rx="12" fill="#ffffff" stroke="#059669" stroke-width="2.5"/>
+<rect x="50" y="250" width="8" height="100" rx="4" fill="#059669"/>
+<text x="74" y="280" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">ENGINE SERVICE</text>
+<text x="74" y="304" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Engine.invoke(action, args)  ·  service.py action router</text>
+<text x="74" y="326" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">assess · contract · proposal · run · compare · report</text>
+<rect x="50" y="390" width="900" height="115" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+<rect x="50" y="390" width="8" height="115" rx="4" fill="#2563eb"/>
+<text x="74" y="420" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">READ-ONLY ASSESSMENT</text>
+<text x="74" y="444" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">inventory.assess  ·  identity.snapshot</text>
+<text x="74" y="466" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Lexical symbols and citations  ·  paged inventory and plan</text>
+<text x="74" y="488" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Never imports or runs repository code.</text>
+<rect x="50" y="545" width="900" height="115" rx="12" fill="#ffffff" stroke="#b45309" stroke-width="2.5"/>
+<rect x="50" y="545" width="8" height="115" rx="4" fill="#b45309"/>
+<text x="74" y="575" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">REVIEW AND CONTRACT</text>
+<text x="74" y="599" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">contracts  ·  reviews  ·  rule_reviews  ·  proposal validation</text>
+<text x="74" y="621" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Owner-signed review records  ·  strict schemas and digests</text>
+<text x="74" y="643" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">A review record is not execution permission.</text>
+<rect x="50" y="700" width="900" height="120" rx="12" fill="#ffffff" stroke="#be123c" stroke-width="2.5"/>
+<rect x="50" y="700" width="8" height="120" rx="4" fill="#be123c"/>
+<text x="74" y="730" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">CANDIDATE AND GATED EXECUTION</text>
+<text x="74" y="754" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">proposals  ·  candidates  ·  executor  ·  sandbox  ·  runtime</text>
+<text x="74" y="776" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Disposable rootless container  ·  network disabled  ·  no credentials</text>
+<text x="74" y="798" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Execution requires a fresh exact one-use owner grant.</text>
+<rect x="50" y="860" width="900" height="105" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<rect x="50" y="860" width="8" height="105" rx="4" fill="#7c3aed"/>
+<text x="74" y="890" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">EVIDENCE AND REPORTING</text>
+<text x="74" y="914" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">record  ·  evidence  ·  compare  ·  proof  ·  rule_trace  ·  mutants</text>
+<text x="74" y="936" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="15">Observed outcomes, gaps and bounded verdicts  ·  JSON, text or offline HTML</text>
+<rect x="50" y="1010" width="430" height="135" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="74" y="1040" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="17" font-weight="700">PRIVATE JOB STORE</text>
+<text x="74" y="1065" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">SQLite WAL + fenced writes</text>
+<text x="74" y="1085" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Profile-owned data root</text>
+<text x="74" y="1105" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Outside source and candidate roots</text>
+<rect x="520" y="1010" width="430" height="135" rx="12" fill="#ffffff" stroke="#be123c" stroke-width="2.5"/>
+<text x="544" y="1040" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="17" font-weight="700">OWNER AUTHORITY</text>
+<text x="544" y="1065" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Trusted operator configuration</text>
+<text x="544" y="1085" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Public keys and one-use grants</text>
+<text x="544" y="1105" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">External to the model and candidate</text>
+<rect x="50" y="1175" width="900" height="160" rx="12" fill="#ffffff" stroke="#64748b" stroke-width="2" stroke-dasharray="9,5"/>
+<text x="72" y="1206" fill="#0f172a" font-family="DejaVu Sans, sans-serif" font-size="17" font-weight="700">TRUST BOUNDARIES</text>
+<text x="72" y="1232" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Read-only source copy  ·  disposable rootless sandbox  ·  private job store</text>
+<text x="72" y="1254" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Owner-held signing keys  ·  no host home, real credentials or Docker socket</text>
+<text x="72" y="1276" fill="#334155" font-family="DejaVu Sans, sans-serif" font-size="14">Execution is available only with trusted operator configuration and a fresh exact grant.</text>
+<path d="M500,210 L500,250" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M500,350 L500,390" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M500,505 L500,545" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M500,660 L500,700" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M500,820 L500,860" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M50,350 L25,350 L25,1075 L50,1075" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="7,5" marker-end="url(#arrow)"/>
+<path d="M950,1075 L975,1075 L975,760 L950,760" fill="none" stroke="#be123c" stroke-width="2.5" stroke-dasharray="7,5" marker-end="url(#arrow-rose)"/>
+<text x="50" y="1375" fill="#475569" font-family="DejaVu Sans, sans-serif" font-size="14">Solid: request/control flow. Dashed: authority or private readback. Plugin surfaces are adapters; the domain engine is host-neutral.</text>
 </svg>
