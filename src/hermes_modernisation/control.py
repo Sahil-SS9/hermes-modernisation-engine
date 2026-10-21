@@ -63,7 +63,7 @@ def cancel(store, job, attempt_id, grant, policy):
     reference = {"id": uuid.uuid4().hex, "attempt_id": attempt_id, "purpose": "cancel", "authority_nonce": nonce, "authenticated": True}
     raw = dumps({"reference": reference, "grant": grant})
     with store.connection() as connection:
-        current = _job(connection, job["job_id"])
+        current = _job(connection, job["job_id"], store.profile)
         attempt = _attempt(connection, job["job_id"], attempt_id)
         if attempt["state"] in {"COMPLETED", "RETIRED"}:
             raise ContractError("Worker completed before cancellation; control grant consumed, no replay")
@@ -96,7 +96,7 @@ def recover(store, job, attempt_id, grant, policy):
         nonce = authority.claim_control(grant, decision)
         # Revoke every old fencing token BEFORE any external runtime retirement.
         with store.connection() as connection:
-            current = _job(connection, job["job_id"])
+            current = _job(connection, job["job_id"], store.profile)
             attempt = _attempt(connection, job["job_id"], attempt_id)
             current.update(state="RECOVERY_REQUIRED", fence_epoch=current.get("fence_epoch", 0) + 1)
             attempt.update(state="INTERRUPTED", _lease=None, failure_reason="Owner-authorised runtime retirement pending; no replay")
@@ -128,7 +128,7 @@ def recover(store, job, attempt_id, grant, policy):
         if not source_matches:
             restore_state = "BLOCKED_PREREQUISITE"
         with store.connection() as connection:
-            current = _job(connection, job["job_id"])
+            current = _job(connection, job["job_id"], store.profile)
             attempt = _attempt(connection, job["job_id"], attempt_id)
             if current["state"] != "RECOVERY_REQUIRED":
                 raise ContractError("Recovery state changed; residue retained, no automatic replay")

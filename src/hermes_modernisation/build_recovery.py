@@ -46,7 +46,7 @@ def recover(store, job, candidate_id, grant, policy):
         quarantined = {**reservation, "state": "QUARANTINED", "recovery_id": reference["id"]}
         candidate_raw = dumps(quarantined)
         with store.connection() as connection:
-            latest = _job(connection, job["job_id"])
+            latest = _job(connection, job["job_id"], store.profile)
             if latest["revision"] != current["revision"] or latest.get("candidate_reservation") != reservation:
                 raise ContractError("Build state changed; control grant consumed, no automatic replay")
             connection.execute("UPDATE candidates SET body=?,body_sha256=? WHERE id=? AND job_id=?", (candidate_raw, hashlib.sha256(candidate_raw).hexdigest(), candidate_id, job["job_id"]))

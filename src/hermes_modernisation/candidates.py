@@ -24,7 +24,7 @@ def save_proposal(store, job, revision, proposal):
     digest = hashlib.sha256(raw).hexdigest()
     reference = {"schema_version": 1, "kind": "SourceProposalReference", "digest": digest, "source_digest": value["source_digest"], "paths": value["allowed_paths"]}
     with store.connection() as connection:
-        current = _job(connection, job["job_id"])
+        current = _job(connection, job["job_id"], store.profile)
         if current["revision"] != revision or current["state"] not in {"BASELINED", "PLAN_REVIEW_REQUIRED"}:
             raise ContractError("Job changed before proposal registration")
         row = connection.execute("SELECT body FROM details WHERE hash=?", (digest,)).fetchone()
@@ -92,7 +92,7 @@ def _build(store, job, policy):
     reservation = {"id": candidate_id, "job_id": job["job_id"], "path": str(destination), "state": "BUILDING", "proposal_digest": job["proposal_ref"]["digest"]}
     raw = dumps(reservation)
     with store.connection() as connection:
-        current = _job(connection, job["job_id"])
+        current = _job(connection, job["job_id"], store.profile)
         if current["revision"] != job["revision"] or current["state"] != "MIGRATION_APPROVED":
             raise ContractError("Job changed or candidate already building")
         connection.execute("INSERT INTO candidates VALUES (?,?,?,?,?)", (candidate_id, job["job_id"], str(destination), raw, hashlib.sha256(raw).hexdigest()))
@@ -104,7 +104,7 @@ def _build(store, job, policy):
         reference = {"schema_version": 1, "kind": "EngineCandidate", "id": candidate_id, "job_id": job["job_id"], "path": str(destination), "source_digest": result["source_digest"], "candidate_digest": result["candidate_digest"], "proposal_digest": result["proposal_digest"], "changed_paths": result["changed_paths"]}
         raw = dumps(reference)
         with store.connection() as connection:
-            current = _job(connection, job["job_id"])
+            current = _job(connection, job["job_id"], store.profile)
             if current.get("candidate_reservation") != reservation or current["state"] != "CANDIDATE_BUILDING":
                 raise ContractError("Candidate reservation changed; materialisation quarantined")
             connection.execute("UPDATE candidates SET body=?,body_sha256=? WHERE id=? AND job_id=?", (raw, hashlib.sha256(raw).hexdigest(), candidate_id, job["job_id"]))
@@ -115,7 +115,7 @@ def _build(store, job, policy):
     except BaseException:
         # Never delete or reuse partial output. A fresh decision/recovery is needed.
         with store.connection() as connection:
-            current = _job(connection, job["job_id"])
+            current = _job(connection, job["job_id"], store.profile)
             if current.get("candidate_reservation") == reservation and current["state"] == "CANDIDATE_BUILDING":
                 current.update(state="INTERRUPTED", revision=current["revision"] + 1, failure_reason="Candidate build interrupted; reserved residue retained, no automatic replay")
                 connection.execute("UPDATE jobs SET body=? WHERE id=?", (dumps(current), job["job_id"]))

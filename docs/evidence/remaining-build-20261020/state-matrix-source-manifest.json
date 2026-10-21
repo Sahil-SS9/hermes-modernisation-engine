@@ -1,0 +1,12 @@
+{
+  "producing_state": "see state-matrix.json; commits this slice",
+  "source_sha256": {
+    "src/hermes_modernisation/build_recovery.py": "badc2a821fb0b9ddaf4e5d1754475395820438e9a169b9aef05d2931f7a8f6a1",
+    "src/hermes_modernisation/candidates.py": "ec19acd51d588e06677cd58b40a3b4a2d988dcd750284f18bd11b4204739d046",
+    "src/hermes_modernisation/control.py": "f2bc02f9761083b6a1b0a2e07acfeb23c024dae94130d8620e26e80deb110e00",
+    "src/hermes_modernisation/observations.py": "43aac929edcd1b050b9b7e297917c970897d892882cacc84d3975339289192bf",
+    "src/hermes_modernisation/reviews.py": "cf77bd3620e9786c2e0acf2ae4b5944adff2229acfbf2d878ade6cb0353cde8b",
+    "src/hermes_modernisation/state.py": "c159d564d48ab8a216e70e6a53171737dfc5fa2fb707aded83607668f7f01488",
+    "tests/unit/test_state_matrix.py": "63baf55ec96fbfaff5ebc9a880dc54990f59f7d1d684f9dda6c538597874d86a"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "checkpoint": "remaining-build-20261020",
+  "slice": "Exhaustive ownership state/profile/concurrency matrix and cross-profile mutation fix (slice 2a completion)",
+  "status": "ENGINE_GREEN_LOCAL_ONLY",
+  "boundary": [
+    "Verified against the exact changed bytes in state-matrix-source-manifest.json. This completes the 2a ownership matrix: every declared job state for both phases, every attempt state, the full checkpoint order, all stop outcomes, profile isolation across read/claim/checkpoint/stop/prepare and same-lease/parallel-profile races.",
+    "It fixes a real trusted-layer defect found by the matrix: state.prepare/claim/checkpoint/stop loaded the job through decode_job without the store profile, so a Store opened for another profile could mutate a foreign profile's job. Public Engine reads were already profile-scoped, so this was a defence-in-depth boundary defect in the trusted mutation layer, not a public-route bypass. Every mutation path now passes store.profile and refuses cross-profile jobs.",
+    "It does NOT claim executed rule coverage/case-assertion linkage, MT08 adequacy acceptance, a full native/gateway owner journey, or any point 3 row; those remain open (3c and the remaining point 2 obligations). Point 4 remains HOLD."
+  ],
+  "design": {
+    "job_state_matrix": "For both baseline and candidate phases, an attempt is claimable only in its declared job states (baseline: BASELINE_AUTHORITY_REQUIRED; candidate: CANDIDATE_BUILT/CANDIDATE_AUTHORITY_REQUIRED). All other 20/21 states refuse with state/recovery/active errors, and an allowed claim yields fence >= 1 with attempt state RUNNING.",
+    "attempt_state_matrix": "Claim is allowed only for a PREPARED attempt; RUNNING/CLAIMED/COLLECTED active rows refuse with an active/recovery error and every terminal state refuses replay.",
+    "checkpoint_matrix": "The four labels are accepted in exactly AUTHORITY_CLAIMED → START_REQUESTED → COLLECTED → CLEANUP_VERIFIED order; every out-of-order label refuses, a same-details replay is idempotent, changed details refuse and unknown labels refuse.",
+    "stop_matrix": "FAILED/CANCELLED/INTERRUPTED each terminate the attempt and job; invalid outcomes, empty reasons and unowned leases refuse, and a stopped attempt cannot checkpoint.",
+    "profile_matrix": "Reads, claim, checkpoint, stop and prepare all refuse a foreign-profile job; two profiles can hold independent leases concurrently in one root.",
+    "concurrency_matrix": "Two workers cannot claim one attempt (existing), same-lease same-detail checkpoints are idempotent, same-lease conflicting details race to one winner plus one changed-metadata refusal, and prepare idempotency remains single-identity."
+  },
+  "witnessed": {
+    "RED": "development-unit-1792545355788541874.json — 4 targeted failures: cross-profile claim, checkpoint, stop and prepare all mutated/reached a foreign-profile job instead of raising. (The wider matrix was written first; fixture/clock errors were corrected before this clean RED.)",
+    "GREEN": [
+      "development-unit-1792545345285632192.json — 368 collected, 368 passed, 0 failed, 0 errors, 0 skipped",
+      "development-all-1792545425813031281.json — 395 collected (unit + host + integration + platform), 395 passed, 0 failed, 0 errors, 0 skipped"
+    ],
+    "lint": "development-lint-1792545426335927602.json — pass",
+    "validator": "development-validate-1792545445501724542.json — ok true, warnings empty"
+  },
+  "evidence_root": "/home/kensei/projects/modernisation-benchmarks/control/evidence/",
+  "runner": "Unchanged approved fixed rootless gate (run-development.py all/lint/validate), network=none, read-only source/reference/benchmark mounts, uid 65534; receipts record container_removed true."
+}

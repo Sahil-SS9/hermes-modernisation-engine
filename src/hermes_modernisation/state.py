@@ -39,13 +39,13 @@ def timestamp(value=None):
     return value
 
 
-def _job(connection, job_id):
+def _job(connection, job_id, profile=None):
     identifier(job_id)
     row = connection.execute("SELECT body FROM jobs WHERE id=?", (job_id,)).fetchone()
     if row is None:
         raise ContractError("Job not found in current profile")
     from .store import decode_job
-    return decode_job(connection, row[0], job_id)
+    return decode_job(connection, row[0], job_id, profile)
 
 
 def _attempt(connection, job_id, attempt_id):
@@ -86,7 +86,7 @@ def prepare(store, job_id, request_id, blueprint, operation_factory):
     identifier(request_id)
     fingerprint = hashlib.sha256(dumps(blueprint)).hexdigest()
     with store.connection() as connection:
-        job = _job(connection, job_id)
+        job = _job(connection, job_id, store.profile)
         if job.get("behaviour_contract", {}).get("digest") != blueprint["oracle_digest"]:
             raise ContractError("Protected contract changed before preparation")
         row = connection.execute("SELECT id,input_hash FROM attempts WHERE job_id=? AND request_id=?", (job_id, request_id)).fetchone()
@@ -130,7 +130,7 @@ def claim(store, job_id, attempt_id, worker, *, now=None, lease_seconds=900):
     if type(lease_seconds) is not int or not 1 <= lease_seconds <= 1800:
         raise ContractError("Invalid worker lease duration")
     with store.connection() as connection:
-        job = _job(connection, job_id)
+        job = _job(connection, job_id, store.profile)
         attempt = _attempt(connection, job_id, attempt_id)
         active = connection.execute("SELECT id,body FROM attempts WHERE job_id=? AND state IN ('RUNNING','CLAIMED','COLLECTED')", (job_id,)).fetchone()
         if active:
@@ -171,7 +171,7 @@ def checkpoint(store, job_id, attempt_id, lease, label, details, *, now=None):
     if len(raw) > 65536:
         raise ContractError("Checkpoint metadata budget exceeded")
     with store.connection() as connection:
-        job = _job(connection, job_id)
+        job = _job(connection, job_id, store.profile)
         attempt = _attempt(connection, job_id, attempt_id)
         _owned(job, attempt, lease, now)
         labels = [entry["label"] for entry in attempt["checkpoints"]]
@@ -198,7 +198,7 @@ def stop(store, job_id, attempt_id, lease, outcome, reason, *, now=None):
     if outcome not in {"FAILED", "CANCELLED", "INTERRUPTED"} or type(reason) is not str or not 1 <= len(reason) <= 4000:
         raise ContractError("Explicit bounded interruption reason required")
     with store.connection() as connection:
-        job = _job(connection, job_id)
+        job = _job(connection, job_id, store.profile)
         attempt = _attempt(connection, job_id, attempt_id)
         _owned(job, attempt, lease, now)
         job["fence_epoch"] += 1

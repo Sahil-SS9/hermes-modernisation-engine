@@ -90,7 +90,7 @@ def accept(store, job, grant, policy):
     reference = {**decision, "id": uuid.uuid4().hex, "authenticated": True, "authority_nonce": nonce}
     raw = dumps({"reference": reference, "grant": grant})
     with store.connection() as connection:
-        current = _job(connection, job["job_id"])
+        current = _job(connection, job["job_id"], store.profile)
         if current["revision"] != job["revision"]:
             raise ContractError("Job changed during owner review; grant consumed, no automatic replay")
         purpose = decision["purpose"]

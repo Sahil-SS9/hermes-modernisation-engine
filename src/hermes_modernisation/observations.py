@@ -25,7 +25,7 @@ def complete(store, job_id, attempt_id, lease, captured, grant):
     evaluation = captured["evaluation"]
     reference = {"schema_version": 1, "kind": "ObservationReference", "attempt_id": attempt_id, "sha256": sha, "phase": captured["phase"], "oracle_digest": captured["operation"]["oracle_digest"], "source_digest": captured["operation"]["source_digest"], "passed": evaluation["passed"], "failed": evaluation["failed"], "grade": GRADE}
     with store.connection() as connection:
-        job = _job(connection, job_id)
+        job = _job(connection, job_id, store.profile)
         attempt = _attempt(connection, job_id, attempt_id)
         _owned(job, attempt, lease, timestamp())
         if [entry["label"] for entry in attempt["checkpoints"]] != CHECKPOINTS or dumps(attempt["operation"]) != dumps(captured["operation"]) or captured["phase"] != attempt["phase"]:
