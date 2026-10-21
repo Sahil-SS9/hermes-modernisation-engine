@@ -4,6 +4,8 @@
   "recorded_at": "2026-10-21",
   "base_commit": "986da26b783e74b43c75edf294eeccdfc8be4517",
   "fix_commit": "c4b72dd8b3765fc070a6cc8472d0c59aca11c321",
+  "superseded_by": "fix-pass-2.json",
+  "superseded_reason": "The second independent review found K-01 dependency protection incomplete and introduced a false positive on src/requirements.py; see fix-pass-2.json for the correction and current gate status.",
   "source": {
     "review": "/tmp/independent-review-modernisation-20261021/REPORT.md",
     "review_summary": "/tmp/independent-review-modernisation-20261021/SUMMARY.json",
