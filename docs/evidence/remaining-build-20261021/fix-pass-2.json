@@ -13,6 +13,12 @@
     "replacement_image": "modernise-validator-fixed@sha256:726624ad344fc297a2668087295db20d3671f755d4199adc4f9409928ba5c782",
     "reason": "The exact a947 image's build-layer blobs are missing locally and cannot be restored bit-for-bit. The owner approved the rebuilt image as the new gate after it passed the full suite, lint and validator."
   },
+  "publication": {
+    "visibility": "public",
+    "url": "https://github.com/Sahil-SS9/hermes-modernisation-engine",
+    "default_branch": "build/phase0",
+    "published_at": "2026-10-21"
+  },
   "source": {
     "review": "/tmp/independent-review-modernisation-fix-20261021/REPORT.md",
     "review_summary": "/tmp/independent-review-modernisation-fix-20261021/SUMMARY.json",
