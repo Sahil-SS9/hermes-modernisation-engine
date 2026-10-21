@@ -1,12 +1,14 @@
 # Resume here — Modernisation Engine
 
-## ACTIVE BUILD — points 1–3 implementation repaired after second independent review; point 4 HOLD
+## ACTIVE BUILD — points 1–3 implementation repaired; gate pass under owner-approved rebuilt image
 
-Current source-bound remediation checkpoint: `docs/evidence/remaining-build-20261021/fix-pass-2.json` at code commit `8393603cbc85a797f565da8abf2325019b54ad2c` (reviewed HEAD `1ec3e9bafced8ef7d2081fb80532ab080b8caad6`; original base `986da26b783e74b43c75edf294eeccdfc8be4517`). The second independent review returned BLOCKED with two path-policy findings: incomplete dependency-manifest protection and a false positive on an ordinary `src/requirements.py`. Both are corrected with focused proposal and contract regressions. Local checks: focused suite **53 passed**; unit lane **431 passed, 2 skipped**, with two failures solely because the hard-coded `/source` mount is absent on the host; `ruff check` passed. The canonical Docker gate is **BLOCKED** because the pinned image `modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6` is missing; no fresh full-gate result is claimed. The prior 451/0/0/0 receipt is historical evidence only.
+Current source-bound remediation checkpoint: `docs/evidence/remaining-build-20261021/fix-pass-2.json` at code commit `8393603cbc85a797f565da8abf2325019b54ad2c` (reviewed HEAD `1ec3e9bafced8ef7d2081fb80532ab080b8caad6`; original base `986da26b783e74b43c75edf294eeccdfc8be4517`). The second independent review returned BLOCKED with two path-policy findings: incomplete dependency-manifest protection and a false positive on an ordinary `src/requirements.py`. Both are corrected with focused proposal and contract regressions.
+
+The canonical `hermes verify --json` gate now passes: **463 passed, 0 failed, 0 errors, 0 skipped**; lint and validator pass. It runs against the owner-approved replacement image `modernise-validator-fixed@sha256:726624ad344fc297a2668087295db20d3671f755d4199adc4f9409928ba5c782`. The previous exact image `a947dae2…` could not be restored because five build-layer blobs are missing locally; the owner approved the rebuilt image as the new gate on 2026-10-21. The prior 451/0/0/0 receipt is historical evidence only.
 
 Point 3’s implementation is repaired, not newly declared release-qualified. 3a preserves engine-owned staging/literal proposals/reviewed lanes and the explicitly blocked dependency-resolution port. 3b now enforces token exhaustion before the next call and refuses a blocking proposer at the total-run deadline. 3c now refuses parent/child normalisation overlaps and container-wide `drop`, understands unauthenticated reviews as candidates only, and recomputes rule-trace counts/citations/phase consistency before allowing verified coverage. The remaining limits are recorded in `fix-pass-2.json`; notably, the deadline wrapper stops waiting and refuses late results but cannot forcibly terminate arbitrary blocking Python proposer code.
 
-Explicitly not claimed: real dependency resolution, live model/provider calls, real-project execution, source-mutant execution, install, deploy, publish, or point 4 final review. The journey collector is a declared offline artifact fixture, not a real Docker launch. Point 4 remains HOLD: do not start final independent review, release qualification or INSTALL/DEPLOY/PUBLISH without a separate owner decision.
+Explicitly not claimed: real dependency resolution, live model/provider calls, real-project execution, source-mutant execution, install, deploy, or point 4 independent review. The journey collector is a declared offline artifact fixture, not a real Docker launch. The owner separately approved commit, push and public publication after the gate passed; independent re-review was not performed.
 
 The historical sections below preserve the earlier 20 October authorisation and v5 checkpoint. Historical v5 commands/signatures remain spent and must not be replayed.
 
@@ -67,7 +69,7 @@ The recovery scripts are ARCHIVAL copies of trusted local control recipes, not p
 
 Existing local control root: `/home/kensei/projects/modernisation-benchmarks/control`.
 Engine root: `/home/kensei/repos/hermes-modernisation-engine`.
-Rootless development image: `modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6`.
+Rootless development image: `modernise-validator-fixed@sha256:726624ad344fc297a2668087295db20d3671f755d4199adc4f9409928ba5c782` (owner-approved rebuilt replacement, 2026-10-21). The original `a947dae2…` image is historical and unavailable locally because five build-layer blobs are missing.
 
 Read-only runtime preflight:
 

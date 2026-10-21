@@ -6,6 +6,13 @@
   "reviewed_head": "1ec3e9bafced8ef7d2081fb80532ab080b8caad6",
   "code_commit": "8393603cbc85a797f565da8abf2325019b54ad2c",
   "reviewed_base": "986da26b783e74b43c75edf294eeccdfc8be4517",
+  "gate_replacement": {
+    "approved_by": "owner",
+    "approved_at": "2026-10-21",
+    "previous_image": "modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6",
+    "replacement_image": "modernise-validator-fixed@sha256:726624ad344fc297a2668087295db20d3671f755d4199adc4f9409928ba5c782",
+    "reason": "The exact a947 image's build-layer blobs are missing locally and cannot be restored bit-for-bit. The owner approved the rebuilt image as the new gate after it passed the full suite, lint and validator."
+  },
   "source": {
     "review": "/tmp/independent-review-modernisation-fix-20261021/REPORT.md",
     "review_summary": "/tmp/independent-review-modernisation-fix-20261021/SUMMARY.json",
@@ -60,18 +67,23 @@
       "exit_code": 0
     },
     "canonical_gate": {
-      "command": "python3 -B /home/kensei/projects/modernisation-benchmarks/control/run-development.py checks",
-      "result": "BLOCKED; fresh full suite, lint and native validation were not run",
-      "exit_code": 125,
-      "reason": "Docker daemon reports: No such image: modernise-validator-fixed@sha256:a947dae20c8ec37ff157da73edb6e98477db536387ba1a10d867b1b7151f66e6",
-      "receipt": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-checks-1792602113448782755.json"
+      "command": "hermes verify --json",
+      "result": "PASS: 463 passed, 0 failed, 0 errors, 0 skipped; lint and validator passed",
+      "exit_code": 0,
+      "image": "modernise-validator-fixed@sha256:726624ad344fc297a2668087295db20d3671f755d4199adc4f9409928ba5c782",
+      "receipts": {
+        "all": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-all-1792614327497629539.json",
+        "lint": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-lint-1792614327892896605.json",
+        "validate": "/home/kensei/projects/modernisation-benchmarks/control/evidence/development-validate-1792614335522228497.json"
+      },
+      "verify_receipt": "/home/kensei/handoff/modernisation-engine/hermes-verify-approved-rebuild-20261021.json"
     }
   },
   "honest_limits": [
-    "The local unit run is not the canonical gate. Its two failures are environment-only: tests hard-code /source, which is supplied by the approved container.",
-    "The prior 451/0/0/0 receipt is historical and is not fresh evidence for this code commit.",
-    "No full Docker verification, native validator run or fresh source-manifest reproduction was possible while the pinned image is absent.",
-    "No live provider, real-project execution, dependency resolution, install, deploy, publish or point 4 release qualification is claimed.",
-    "Point 4 remains HOLD pending the separate owner decision."
+    "The exact a947 image could not be restored bit-for-bit because five build-layer blobs are missing locally. The owner approved the rebuilt 726624 image as the new gate after it passed the full suite, lint and validator.",
+    "The replacement image was rebuilt from the approved local recipe; it is not the original image bytes. The prior 451/0/0/0 receipt is historical and is not evidence for this commit.",
+    "The local unit run is not the canonical gate. Its two failures are environment-only: tests hard-code /source, which the approved container supplies.",
+    "No live provider, real-project execution, dependency resolution, install, deploy, publish or point 4 independent review is claimed.",
+    "The owner separately approved commit, push and public publication after the gate passed; independent re-review was not performed."
   ]
 }
