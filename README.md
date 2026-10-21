@@ -14,6 +14,14 @@ Public repository: https://github.com/Sahil-SS9/hermes-modernisation-engine (bra
 
 Current isolated remediation gate: 463 passed, zero failures/errors/skips; lint and warning-free native validation pass. The gate was run against the owner-approved rebuilt sandbox image after the exact `a947dae2…` image could not be restored locally. This includes the repairs for the independent review’s two P1 findings and one P2 finding. A configured owned-fixture journey still proves fixture orchestration, not live application execution or release qualification. Points 2–3 remain fixture-bound; point 4 independent review/release remains separate.
 
+## Architecture
+
+![Modernisation Engine architecture](docs/assets/modernisation-engine-architecture.png)
+
+See [the architecture notes](docs/architecture.md) for the full flow and trust
+boundaries. The diagram source is available as
+[SVG](docs/assets/modernisation-engine-architecture.svg).
+
 Implemented: source-only bounded assessment, lexical Python inventory with exact citations, conservative rule candidates, source fingerprints, durable profile-owned assessment jobs and content-addressed inventory pages, idempotent creation, stale-revision checks, source-replacement proposal validation and separate-candidate materialisation primitives, deterministic data comparison with conservative partial proof policy, review-only plans, explicit missing-evidence JSON/text/offline-HTML reporting, real Hermes CLI/tool/registered-slash-handler surfaces and external owner-signature primitives. An operator-only executor primitive has real synthetic-container tests for success, streaming output cap, timeout/descendant cleanup and replay refusal. Those are fixture-authority controls, not real owner migration acceptance.
 
 The current isolated build also connects separate signed contract/migration review, exact one-use operation grants, protected input-only process collection, engine-reserved candidates, authenticated private observation recomputation and explicit cancellation/runtime/build recovery. Without trusted operator configuration and current exact authority, run still refuses. Resume revalidates completed work only; uncertain work needs explicit signed retirement and a fresh attempt, never blind replay. Current MigrationJob v1 headers are strict and profile/row/contract-bound; sparse legacy assessment records remain readable without being silently upgraded. No operation can manufacture owner approval.
